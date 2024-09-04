@@ -21,3 +21,10 @@ Route::get('/about', function () {
 Route::get('/member', function () {
     return view('member');
 })->name('member');
+
+
+
+//forgot password form
+Route::get('/forgot-password', function () {
+    return view('auth.passwords.forgot-password');
+})->name('forgot-password');

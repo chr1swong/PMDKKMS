@@ -1,7 +1,13 @@
-    <header>
-        @include('components.header')
-    </header>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <!-- Add your external CSS and JS files here -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
+    
 <style>
 /* Hero Section */
 .hero {
@@ -213,6 +219,12 @@
     }
 }
 </style>
+</head>
+
+    <header>
+        @include('components.header')
+    </header>
+
 
 <div class="hero" style="background-image: url('{{ asset('images/homePageImages/homeBanner1.png') }}');">
     <div class="hero-content">

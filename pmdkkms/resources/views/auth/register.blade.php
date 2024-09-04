@@ -122,7 +122,7 @@
     .radio-group {
         display: flex;
         justify-content: flex-start; /* Align radio buttons to the left */
-        gap: 10px; /* Space between radio buttons */
+        gap: 6rem; /* Space between radio buttons */
         margin-bottom: 1.5rem;
     }
 

@@ -231,60 +231,61 @@
 
         <!-- Right Panel -->
         <div class="right-panel">
-            @if ($errors->any())
-                <div {{ $attributes }}>
-                    <div class="font-medium text-red-600">{{ __('Whoops! Something went wrong.') }}</div>
+        @if ($errors->any())
+            <div>
+                <div class="font-medium text-red-600">{{ __('Whoops! Something went wrong.') }}</div>
 
-                    <ul class="mt-3 list-disc list-inside text-sm text-red-600">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+                <ul class="mt-3 list-disc list-inside text-sm text-red-600">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-            <form method="POST" action="{{ route('register') }}">
+            <form method="POST" action="{{ route('account.register') }}">
                 @csrf
 
                 <div class="radio-group">
                     <label>
-                        <input type="radio" name="role" value="1" required>
+                        <input type="radio" name="account_role" value="1" required>
                         Archer
                     </label>
                     <label>
-                        <input type="radio" name="role" value="2" required>
+                        <input type="radio" name="account_role" value="2" required>
                         Coach
                     </label>
                     <label>
-                        <input type="radio" name="role" value="3" required>
+                        <input type="radio" name="account_role" value="3" required>
                         Committee Member
                     </label>
                 </div>
 
                 <div class="block">
-                    <x-label for="name" value="{{ __('Name') }}" />
-                    <input id="name" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="text" name="name" :value="old('name')" required autofocus />
+                    <label for="full_name" class="block font-medium text-sm text-gray-700">Name</label>
+                    <input id="full_name" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="text" name="account_full_name" :value="old('name')" required autofocus />
                 </div>
 
                 <div class="block">
-                    <x-label for="email" value="{{ __('Email') }}" />
-                    <input id="email" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="email" name="email" :value="old('email')" required />
+                    <label for="email" class="block font-medium text-sm text-gray-700">Email</label>
+                    <input id="email" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="email" name="account_email_address" :value="old('email')" required />
                 </div>
 
                 <div class="block">
-                    <x-label for="contact_number" value="{{ __('Contact Number') }}" />
-                    <input id="contact_number" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="text" name="contact_number" :value="old('contact_number')" required />
+                    <label for="contact_number" class="block font-medium text-sm text-gray-700">Contact Number</label>
+                    <input id="contact_number" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="text" name="account_contact_number" :value="old('contact_number')" required />
                 </div>
 
                 <div class="block">
-                    <x-label for="password" value="{{ __('Password') }}" />
-                    <input id="password" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="password" name="password" required autocomplete="new-password" />
+                    <label for="password" class="block font-medium text-sm text-gray-700">Password</label>
+                    <input id="password" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="password" name="account_password" required autocomplete="new-password" />
                 </div>
 
                 <div class="block">
-                    <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
-                    <input id="password_confirmation" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="password" name="password_confirmation" required autocomplete="new-password" />
+                    <label for="password_confirmation" class="block font-medium text-sm text-gray-700">Confirm Password</label>
+                    <input id="password_confirmation" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="password" name="account_password_confirmation" required autocomplete="new-password" />
                 </div>
+
 
                 <div class="mt-6">
                     <button type="submit" class="register-button">

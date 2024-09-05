@@ -237,7 +237,7 @@
         }
 
         .text-center .link {
-            color: #5f4bb6;
+            color: #000000;
             font-weight: bold;
             transition: color 0.3s;
         }
@@ -246,6 +246,20 @@
             color: #483a99;
         }
 
+        .logout-button {
+            width: 100%;
+            padding: 1rem;
+            background-color: #ff5f56;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .logout-button:hover {
+            background-color: #ff3b30;
+        }
     </style>
 </head>
 <body>
@@ -291,17 +305,17 @@
 
                     <div class="block">
                         <label for="email" class="block font-medium text-sm text-gray-700">{{ __('Email') }}</label>
-                        <input id="email" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+                        <input id="email" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="email" name="account_email_address" :value="old('email')" required autofocus autocomplete="username" />
                     </div>
 
                     <div class="block">
                         <label for="password" class="block font-medium text-sm text-gray-700">{{ __('Password') }}</label>
-                        <input id="password" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="password" name="password" required autocomplete="current-password" />
+                        <input id="password" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="password" name="account_password" required autocomplete="current-password" />
                     </div>
 
                     <div class="remember-me-container">
                         <label for="remember_me" class="flex items-center">
-                            <input id="remember_me" type="checkbox" class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out" name="remember">
+                            <input id="remember_me" type="checkbox" class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out" name="account_remember">
                             <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
                         </label>
 

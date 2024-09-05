@@ -1,6 +1,6 @@
 
     <header>
-        @include('partials.header')
+        @include('components.header')
     </header>
 
     <!-- Inline CSS -->

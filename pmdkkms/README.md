@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://laravel.com" target="_blank">
+    <a href="#" target="_blank">
         <img src="{{ asset('images/pmdkkLogo.png') }}" width="400" alt="PMDKK Logo">
     </a>
 </p>

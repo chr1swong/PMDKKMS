@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
-use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -89,26 +88,23 @@ class AccountController extends Controller
             // Redirect based on the role
             switch (Auth::user()->account_role) {
                 case '1': // Archer
-                    // return redirect()->route('archer.dashboard');
-                    return view('archer.dashboard');
+                    return redirect()->route('archer.dashboard');
+                    break;
+                    // return view('archer.dashboard');
                 case '2': // Coach
-                    // return redirect()->intended('coach.dashboard');
-                    return view('coach.dashboard');
+                    return redirect()->route('coach.dashboard');
+                    break;
+                    // return view('coach.dashboard');
                 case '3': // Committee Member
-                    // return redirect()->route('committee.dashboard');
-                    return view('committee.dashboard');
+                    return redirect()->route('committee.dashboard');
+                    break;
+                    // return view('committee.dashboard');
                 default:
                     return redirect()->route('login'); // Fallback if no role matches
+                    break;
             }
         }
         
-        // public function logout(Request $request) {
-        //     Auth::guard('web')->logout();
-        //     $request->session()->invalidate();
-        //     $request->session()->regenerateToken();
-        
-        //     return redirect('/');
-        // }
         public function logout(Request $request)
         {
             dd('logout called');

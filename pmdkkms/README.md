@@ -1,9 +1,9 @@
 <p align="center">
-    <a>
-        <img src="images/pmdkkLogo.png" width="400" alt="PMDKK Logo">
+    <a href="#" target="_blank">
+        <img src="images/pmdkkLogo.png](https://github.com/chr1swong/PMDKKMS/blob/main/pmdkkms/public/images/pmdkkLogo.png" width="400" alt="PMDKK Logo">
     </a>
 </p>
-
+https://github.com/chr1swong/PMDKKMS/blob/main/pmdkkms/public/images/pmdkkLogo.png
 ## About PMDKK Management System (PMDKKMS)
 
 PMDKKMS is a web-based system designed to help the Kota Kinabalu Archery Association manage their members, and to provide a platform for archers, coaches and committee members automating routine tasks such as member registration, event management, and attendance tracking. This system is a final year project.

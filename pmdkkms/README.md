@@ -1,6 +1,6 @@
 <p align="center">
     <a href="#" target="_blank">
-        <img src="images/pmdkkLogo.png](https://github.com/chr1swong/PMDKKMS/blob/main/pmdkkms/public/images/pmdkkLogo.png" width="400" alt="PMDKK Logo">
+        <img src="https://github.com/chr1swong/PMDKKMS/blob/main/pmdkkms/public/images/pmdkkLogo.png" width="400" alt="PMDKK Logo">
     </a>
 </p>
 https://github.com/chr1swong/PMDKKMS/blob/main/pmdkkms/public/images/pmdkkLogo.png

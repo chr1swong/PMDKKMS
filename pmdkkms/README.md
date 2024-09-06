@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://laravel.com" target="_blank">
+    <a>
         <img src="images/pmdkkLogo.png" width="400" alt="PMDKK Logo">
     </a>
 </p>

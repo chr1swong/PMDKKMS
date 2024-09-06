@@ -14,7 +14,7 @@
     <form id="logout-form" action="#" method="POST" style="display: none;">
         @csrf
     </form> -->
-    <form id="logout-form" action="#" method="POST" style="display: none;">
+    <form id="logout-form" action="#" method="GET" style="display: none;">
         @csrf
     </form>
 

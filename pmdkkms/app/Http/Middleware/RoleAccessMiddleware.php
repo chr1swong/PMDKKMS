@@ -3,28 +3,31 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class RoleAccessMiddleware
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @param  mixed  $email
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  string  $role
+     * @return mixed
      */
-    public function handle(Request $request, Closure $next, $email): Response
+    public function handle($request, Closure $next, $role)
     {
-        $user = $request->user();
-
-        // Check if the user is authenticated and if the email matches
-        if ($user && $user->account_email_address == $email) {
-            return $next($request);
+        // Check if the user is authenticated
+        if (!Auth::check()) {
+            return redirect()->route('login');
         }
 
-        // Redirect or abort if the user does not have the required email
-        abort(403, 'Forbidden - Access Denied');
+        // Check if the user's role matches the required role
+        if (Auth::user()->account_role != $role) {
+            return redirect()->route('login')->with('error', 'You do not have access to this page.');
+        }
+
+        // Allow the request to proceed
+        return $next($request);
     }
 }

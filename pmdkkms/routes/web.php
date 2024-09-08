@@ -62,22 +62,24 @@ Route::post('/forgot-password/email', [PasswordResetController::class, 'sendRese
 // });
 
 //Routes accessible to archer (account_role=1)
-Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function () {
+// Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function () {
     Route::get('/archer/dashboard', function () {
         return view('archer.dashboard');
     })->name('archer.dashboard');
-});
+// });
 
-// Routes accessible to coach (account_role=2)
-Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function () {
+// // Routes accessible to coach (account_role=2)
+// Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function () {
     Route::get('/coach/dashboard', function () {
         return view('coach.dashboard');
     })->name('coach.dashboard');
-});
+// });
 
 // Routes accessible to committee member (account_role=3)
-Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function () {
+// Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function () {
     Route::get('/committee/dashboard', function () {
         return view('committee.dashboard');
     })->name('committee.dashboard');
-});
+// });
+
+;

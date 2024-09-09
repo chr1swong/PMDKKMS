@@ -93,7 +93,7 @@ class AccountController extends Controller
             $request->session()->regenerateToken();
             Log::info('SESSION ID AFTER FLUSH ----> ' . $request->session()->getId());
 
-            return redirect('/'); // or wherever you want to redirect after logout
+            return redirect('/login'); // or wherever you want to redirect after logout
         }
 
     }

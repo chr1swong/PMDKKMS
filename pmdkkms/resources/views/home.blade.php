@@ -18,7 +18,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 30vh;
+    height: 30vh; /* Adjusted height for better responsiveness */
     color: white;
 }
 
@@ -37,9 +37,9 @@
 }
 
 .hero-text h1 {
-    font-size: 3rem;
+    font-size: 3rem; /* Adjusted for responsiveness */
     font-weight: bold;
-    margin-bottom: 80px;
+    margin-bottom: 40px; /* Reduced margin for spacing */
 }
 
 .hero-text p {
@@ -82,19 +82,20 @@
 
 .highlight .slideshow-container {
     position: relative;
-    width: 800px; /* Fixed width */
-    height: 500px; /* Fixed height */
+    width: 100%; /* Made width flexible for smaller screens */
+    max-width: 800px; /* Maximum width */
+    height: 500px;
     overflow: hidden;
     border-radius: 8px;
     background-color: #f0f0f0; /* Placeholder color */
-    border: 3px solid #333; /* Add a solid border for the frame */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for a 3D effect */
+    border: 3px solid #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .highlight img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures the image covers the container without distortion */
+    object-fit: cover;
     opacity: 0;
     position: absolute;
     top: 0;
@@ -123,7 +124,7 @@
 .highlights .highlight p {
     font-size: 1.5em;
     color: #555;
-    text-align: justify; /* Justify text */
+    text-align: justify;
 }
 
 .highlights .highlight:nth-child(odd) {
@@ -132,12 +133,28 @@
 
 .highlights .highlight:nth-child(even) {
     flex-direction: row-reverse;
-    text-align: left;
 }
 
 @media (max-width: 768px) {
+    .hero {
+        flex-direction: column;
+        height: auto;
+        text-align: center;
+    }
+
     .hero-text h1 {
         font-size: 2rem;
+        margin-bottom: 20px;
+    }
+
+    .hero-text p {
+        font-size: 1.2rem;
+    }
+
+    .hero-image img {
+        max-width: 40vw; /* Scaled down image for mobile */
+        margin-left: 0;
+        margin-top: 20px;
     }
 
     .highlights .highlight {
@@ -218,6 +235,7 @@
         flex-direction: column;
     }
 }
+
 </style>
 </head>
 

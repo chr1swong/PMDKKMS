@@ -15,30 +15,20 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: calc(90vh); /* Increased height */
+        min-height: calc(90vh);
         background-color: #f4f4f4;
         animation: fadeIn 1s ease-in-out;
     }
 
     @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
     /* Slide-in effect for the left panel */
     @keyframes slideInLeft {
-        from {
-            transform: translateX(-100%); /* Slide in from the left */
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
+        from { transform: translateX(-100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
     }
 
     /* Custom styles for the register page */
@@ -46,13 +36,12 @@
         width: 100%;
         max-width: 1200px;
         margin: auto;
-        padding: 0;
         background-color: #ffffff;
         border-radius: 8px;
         display: flex;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         overflow: hidden;
-        min-height: 700px; /* Increased height */
+        min-height: 700px;
     }
 
     .left-panel {
@@ -64,8 +53,7 @@
         justify-content: flex-start;
         align-items: flex-start;
         width: 40%;
-        position: relative;
-        animation: slideInLeft 0.8s ease-out; /* Applying the slide-in effect */
+        animation: slideInLeft 0.8s ease-out;
     }
 
     .left-panel h2 {
@@ -76,7 +64,7 @@
     }
 
     .left-panel img {
-        max-width: 80%;
+        max-width: 100%;
         height: auto;
         margin-bottom: 2rem;
         transition: transform 0.3s ease;
@@ -98,7 +86,6 @@
         margin-bottom: 1.5rem;
     }
 
-    /* Make labels bold */
     .block label {
         font-weight: bold;
     }
@@ -121,8 +108,8 @@
     /* Radio buttons */
     .radio-group {
         display: flex;
-        justify-content: flex-start; /* Align radio buttons to the left */
-        gap: 6rem; /* Space between radio buttons */
+        justify-content: flex-start;
+        gap: 6rem;
         margin-bottom: 1.5rem;
     }
 
@@ -134,14 +121,13 @@
     }
 
     .radio-group input[type="radio"] {
-        margin-right: 0.25rem; /* Reduced spacing for closer radios */
+        margin-right: 0.25rem;
         width: 18px;
         height: 18px;
         appearance: none;
         border: 2px solid #718096;
         border-radius: 50%;
         background-color: #fff;
-        display: inline-block;
         position: relative;
         transition: background-color 0.3s, border-color 0.3s;
     }
@@ -178,11 +164,30 @@
         cursor: pointer;
         transition: background-color 0.3s, box-shadow 0.3s;
         font-size: 1.1rem;
+        position: relative;
     }
 
-    .register-button:hover {
-        background-color: #483a99;
-        box-shadow: 0 6px 18px rgba(95, 75, 182, 0.3);
+    .register-button:disabled {
+        background-color: #999;
+        cursor: not-allowed;
+    }
+
+    .register-button.loading::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #fff;
+        border-top: 3px solid #5f4bb6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
     }
 
     .text-sm {
@@ -191,11 +196,11 @@
 
     .text-center {
         text-align: center;
-        padding-top: 1rem; /* Added padding-top */
+        padding-top: 1rem;
     }
 
     .link {
-        color: black; /* Changed to black */
+        color: black;
         text-decoration: none;
         font-weight: bold;
         transition: color 0.3s;
@@ -206,18 +211,11 @@
         text-decoration: underline;
     }
 
-    .text-center .link {
-        color: black; /* Changed to black */
-        font-weight: bold;
-        transition: color 0.3s;
-    }
-
     .text-center .link:hover {
         color: #483a99;
     }
 </style>
 </head>
-
 <header>
     @include('components.header')
 </header>
@@ -234,7 +232,6 @@
         @if ($errors->any())
             <div>
                 <div class="font-medium text-red-600">{{ __('Whoops! Something went wrong.') }}</div>
-
                 <ul class="mt-3 list-disc list-inside text-sm text-red-600">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -243,7 +240,7 @@
             </div>
         @endif
 
-            <form method="POST" action="{{ route('account.register') }}">
+            <form method="POST" action="{{ route('account.register') }}" onsubmit="handleSubmit(event)">
                 @csrf
 
                 <div class="radio-group">
@@ -263,32 +260,31 @@
 
                 <div class="block">
                     <label for="full_name" class="block font-medium text-sm text-gray-700">Name</label>
-                    <input id="full_name" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="text" name="account_full_name" :value="old('name')" required autofocus />
+                    <input id="full_name" type="text" name="account_full_name" :value="old('name')" required autofocus />
                 </div>
 
                 <div class="block">
                     <label for="email" class="block font-medium text-sm text-gray-700">Email</label>
-                    <input id="email" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="email" name="account_email_address" :value="old('email')" required />
+                    <input id="email" type="email" name="account_email_address" :value="old('email')" required />
                 </div>
 
                 <div class="block">
                     <label for="contact_number" class="block font-medium text-sm text-gray-700">Contact Number</label>
-                    <input id="contact_number" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="text" name="account_contact_number" :value="old('contact_number')" required />
+                    <input id="contact_number" type="text" name="account_contact_number" :value="old('contact_number')" required />
                 </div>
 
                 <div class="block">
                     <label for="password" class="block font-medium text-sm text-gray-700">Password</label>
-                    <input id="password" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="password" name="account_password" required autocomplete="new-password" />
+                    <input id="password" type="password" name="account_password" required autocomplete="new-password" />
                 </div>
 
                 <div class="block">
                     <label for="password_confirmation" class="block font-medium text-sm text-gray-700">Confirm Password</label>
-                    <input id="password_confirmation" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="password" name="account_password_confirmation" required autocomplete="new-password" />
+                    <input id="password_confirmation" type="password" name="account_password_confirmation" required autocomplete="new-password" />
                 </div>
 
-
                 <div class="mt-6">
-                    <button type="submit" class="register-button">
+                    <button type="submit" class="register-button" id="register-button">
                         {{ __('Register') }}
                     </button>
                 </div>
@@ -300,3 +296,12 @@
         </div>
     </div>
 </div>
+
+<script>
+    function handleSubmit(event) {
+        const button = document.getElementById('register-button');
+        button.classList.add('loading');
+        button.disabled = true;
+    }
+</script>
+</html>

@@ -36,14 +36,7 @@ class AccountController extends Controller
                 : '', // Assign empty string if no file uploaded
         ]);
 
-        // Auth::login($account);
-
-        /*
-            consider switch statement as
-            switch (account_role)
-        */
-
-        return redirect()->route('account.login');
+        return redirect()->route('account.login')->with('success', 'Registration successful! Please log in.');
     }
 
         public function login(Request $request) {

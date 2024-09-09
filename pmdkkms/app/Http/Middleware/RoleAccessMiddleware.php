@@ -4,6 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
 
 class RoleAccessMiddleware
 {
@@ -15,19 +18,15 @@ class RoleAccessMiddleware
      * @param  string  $role
      * @return mixed
      */
-    public function handle($request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, $role): Response
     {
-        // Check if the user is authenticated
-        if (!Auth::check()) {
-            return redirect()->route('login');
+        $user = $request->user();
+
+        if ($user && $user->account_role == $role) {
+            return $next($request);
         }
 
-        // Check if the user's role matches the required role
-        if (Auth::user()->account_role != $role) {
-            return redirect()->route('login')->with('error', 'You do not have access to this page.');
-        }
-
-        // Allow the request to proceed
-        return $next($request);
+        // Redirect or abort if the user does not have the required role
+        abort(403, 'Forbidden');
     }
 }

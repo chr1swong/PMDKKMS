@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class AccountController extends Controller
 {
@@ -35,29 +36,19 @@ class AccountController extends Controller
                 : '', // Assign empty string if no file uploaded
         ]);
 
-        Auth::login($account);
+        // Auth::login($account);
 
         /*
             consider switch statement as
             switch (account_role)
         */
 
-        return redirect()->route('login');
+        return redirect()->route('account.login');
     }
-
-
-        /*
-        submit login form
-        query db
-        return account matches email
-        read account->account_role
-        switch(account_role):
-            case 'archer': redirect()->route('....');
-        */
 
         public function login(Request $request) {
             // Validate the request
-            $credentials = $request->validate([
+            $request->validate([
                 'account_email_address' => 'required|email',
                 'account_password' => 'required',
             ]);
@@ -81,39 +72,35 @@ class AccountController extends Controller
         
             // Log in the user
             Auth::login($account);
+            Log::info('user after login: ', [Auth::user()]);
+            Log::info('SESSION ID BEFORE REGENERATION ----> ' . $request->session()->getId());
             $request->session()->regenerate();
-
-            // dd(Auth::user()->account_role);
+            Log::info('SESSION ID AFTER REGENERATION ----> ' . $request->session()->getId());
         
             // Redirect based on the role
-            switch (Auth::user()->account_role) {
-                case '1': // Archer
-                    return redirect()->route('archer.dashboard');
-                    break;
-                    // return view('archer.dashboard');
-                case '2': // Coach
-                    return redirect()->route('coach.dashboard');
-                    break;
-                    // return view('coach.dashboard');
-                case '3': // Committee Member
-                    return redirect()->route('committee.dashboard');
-                    break;
-                    // return view('committee.dashboard');
-                default:
-                    return redirect()->route('login'); // Fallback if no role matches
-                    break;
+            if (Auth::user()->account_role == 1) { // Archer
+                return redirect()->route('archer.dashboard');
+                // return view('archer.dashboard');
+            } elseif (Auth::user()->account_role == 2) { // Coach
+                return redirect()->route('coach.dashboard');
+            } elseif (Auth::user()->account_role == 3) { // Committee Member
+                return redirect()->route('committee.dashboard');
+                // return view('committee.dashboard');
+            } else {
+                return redirect()->route('account.login'); // Fallback if no role matches
             }
         }
         
         public function logout(Request $request)
         {
-            dd('logout called');
+            // dd('logout called');
             Auth::guard('web')->logout();
 
             $request->session()->invalidate();
             $request->session()->regenerateToken();
+            Log::info('SESSION ID AFTER FLUSH ----> ' . $request->session()->getId());
 
-            return redirect('/login'); // or wherever you want to redirect after logout
+            return redirect('/'); // or wherever you want to redirect after logout
         }
 
     }

@@ -267,6 +267,12 @@
         @include('components.header')
     </header>
 
+    @if (!Auth::user()) 
+        INTENDED! NOT LOGGED IN!
+    @else 
+        FORBIDDEN! LOGGED IN WITH ID {{ Auth::user()->account_id }} AND ROLE {{ Auth::user()->account_role }}
+    @endif
+
     <div class="flex-center">
         <div class="authentication-card">
             <!-- Left Panel -->

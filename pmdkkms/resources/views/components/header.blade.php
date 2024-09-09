@@ -132,13 +132,13 @@
 
             <div class="login-container">
                 @auth
-                    <a href="{{ route('logout') }}" class="header-login-button"
+                    <a href="{{ route('account.logout') }}" class="header-login-button"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="fas fa-sign-out-alt"></i>
                         Logout
                     </a>
 
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    <form id="logout-form" action="{{ route('account.logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
                 @else

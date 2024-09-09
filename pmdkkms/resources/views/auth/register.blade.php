@@ -83,7 +83,7 @@
     }
 
     .block {
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.5rem;
     }
 
     .block label {
@@ -97,6 +97,8 @@
         margin-bottom: 0.5rem;
         border: 1px solid #ccc;
         transition: border-color 0.3s, box-shadow 0.3s;
+        box-sizing: border-box;
+        
     }
 
     .block input:focus {
@@ -157,7 +159,8 @@
     .register-button {
         width: 100%;
         padding: 1rem 0.75rem;
-        background-color: #5f4bb6;
+        padding-top: 1rem;
+        background: linear-gradient(135deg, #5f4bb6 0%, #483a99 100%);
         color: white;
         border: none;
         border-radius: 4px;
@@ -165,25 +168,13 @@
         transition: background-color 0.3s, box-shadow 0.3s;
         font-size: 1.1rem;
         position: relative;
+        margin-top: 1.5rem; /* Add margin-top here */
     }
 
-    .register-button:disabled {
-        background-color: #999;
-        cursor: not-allowed;
-    }
-
-    .register-button.loading::after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        right: 20px;
-        width: 20px;
-        height: 20px;
-        border: 3px solid #fff;
-        border-top: 3px solid #5f4bb6;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
+    .register-button:hover {
+            background: linear-gradient(135deg, #483a99 0%, #5f4bb6 100%);
+            box-shadow: 0 6px 18px rgba(95, 75, 182, 0.3);
+        }
 
     @keyframes spin {
         from { transform: rotate(0deg); }

@@ -131,7 +131,7 @@
 
         /* Input block */
         .block {
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.5rem;
         }
 
         .block label {
@@ -142,9 +142,10 @@
             padding: 0.75rem;
             border-radius: 4px;
             width: 100%;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
             border: 1px solid #ccc;
             transition: border-color 0.3s, box-shadow 0.3s;
+            box-sizing: border-box;
         }
 
         .block input:focus {
@@ -159,7 +160,7 @@
             justify-content: flex-start;
             align-items: center;
             width: 100%;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-checkbox {

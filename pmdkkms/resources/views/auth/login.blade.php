@@ -16,29 +16,29 @@
             box-sizing: border-box;
         }
 
+        /* Main content wrapper (for background blur) */
+        .main-content {
+            transition: filter 0.3s ease;
+        }
+
         /* Flexbox to center content vertically and horizontally */
         .flex-center {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: calc(85vh); /* Adjusted height minus header height */
+            min-height: calc(85vh);
             background-color: #f4f4f4;
             animation: fadeIn 1s ease-in-out;
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        /* Custom styles for the login page */
         .authentication-card {
             width: 100%;
-            max-width: 1200px; /* Adjusted max width to fit content */
+            max-width: 1200px;
             margin: auto;
             padding: 0;
             background-color: #ffffff;
@@ -48,6 +48,7 @@
             overflow: hidden;
         }
 
+        /* Left panel design */
         .left-panel {
             background: linear-gradient(135deg, #6EC1E4 0%, #1F69C3 100%);
             color: #fff;
@@ -67,7 +68,7 @@
             position: absolute;
             top: 20px;
             left: 20px;
-            color: black; /* Change text color to black */
+            color: black;
         }
 
         .left-panel img {
@@ -84,6 +85,7 @@
             transform: scale(1.05);
         }
 
+        /* Right panel design */
         .right-panel {
             width: 60%;
             padding: 4rem 2rem;
@@ -94,12 +96,8 @@
         }
 
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-            }
-            to {
-                transform: translateX(0);
-            }
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
         }
 
         .text-center {
@@ -131,11 +129,11 @@
             transform: rotate(5deg);
         }
 
+        /* Input block */
         .block {
             margin-bottom: 1.5rem;
         }
 
-        /* Make labels bold */
         .block label {
             font-weight: bold;
         }
@@ -155,10 +153,11 @@
             outline: none;
         }
 
+        /* Remember me checkbox */
         .remember-me-container {
             display: flex;
+            justify-content: flex-start;
             align-items: center;
-            justify-content: space-between;
             width: 100%;
             margin-bottom: 2rem;
         }
@@ -167,13 +166,12 @@
             width: 20px;
             height: 20px;
             margin-right: 0.5rem;
+            vertical-align: middle;
             appearance: none;
             background-color: #fff;
             border: 2px solid #718096;
             border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative;
             transition: background-color 0.3s, border-color 0.3s;
             cursor: pointer;
         }
@@ -187,19 +185,16 @@
             content: '✓';
             color: #fff;
             font-size: 14px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
-        label[for="remember_me"] {
-            display: flex;
-            align-items: center;
-            margin-right: auto;
-            cursor: pointer;
-        }
-
-        /* Make the login button taller */
+        /* Login button */
         .login-button {
             width: 100%;
-            padding: 1.5rem 0.75rem; /* Increased vertical padding for a taller button */
+            padding: 1.5rem 0.75rem;
             color: black;
             border: none;
             border-radius: 4px;
@@ -207,7 +202,7 @@
             cursor: pointer;
             transition: background 0.3s, box-shadow 0.3s;
             margin-bottom: 1rem;
-            font-size: 1.1rem; /* Slightly larger font size */
+            font-size: 1.1rem;
         }
 
         .login-button:hover {
@@ -219,10 +214,7 @@
             font-size: 0.875rem;
         }
 
-        .text-center {
-            text-align: center;
-        }
-
+        /* Links styling */
         .link {
             color: #ff5f56;
             text-decoration: none;
@@ -246,104 +238,229 @@
             color: #483a99;
         }
 
-        .logout-button {
-            width: 100%;
-            padding: 1rem;
-            background-color: #ff5f56;
+        /* Popup message styles */
+        .popup-message {
+            background-color: #007BFF;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
             color: white;
+            text-align: center;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1001; /* Higher z-index than the blurred content */
+            max-width: 90%;
+            width: 400px;
+            border: 2px solid #0056b3;
+        }
+
+        .popup-message h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .popup-message p {
+            font-size: 1rem;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .popup-message button {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            background-color: white;
+            color: #007BFF;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
+            transition: background-color 0.3s ease;
         }
 
-        .logout-button:hover {
-            background-color: #ff3b30;
+        .popup-message button:hover {
+            background-color: #e2e6ea;
+        }
+
+        /* Overlay to block interaction with blurred background */
+        .blur-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            z-index: 1000; /* Just below the popup */
+            display: none; /* Hidden by default */
+        }
+
+        /* Popup fade-in animation */
+        @keyframes popupFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .popup-message {
+                width: 90%;
+                max-width: 90%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .popup-message h2 {
+                font-size: 1.5rem;
+            }
+
+            .popup-message p {
+                font-size: 0.875rem;
+            }
+        }
+
+        /* Blur effect applied only to the main content */
+        .main-content.blur-background {
+            filter: blur(8px);
+            transition: filter 0.3s ease;
         }
     </style>
 </head>
 <body>
-    <header>
-        @include('components.header')
-    </header>
+    <div class="main-content"> <!-- Main content wrapper -->
+        <header>
+            @include('components.header')
+        </header>
 
-    @if (!Auth::user()) 
-        INTENDED! NOT LOGGED IN!
-    @else 
-        FORBIDDEN! LOGGED IN WITH ID {{ Auth::user()->account_id }} AND ROLE {{ Auth::user()->account_role }}
-    @endif
+        @if (!Auth::user()) 
+            INTENDED! NOT LOGGED IN!
+        @else 
+            FORBIDDEN! LOGGED IN WITH ID {{ Auth::user()->account_id }} AND ROLE {{ Auth::user()->account_role }}
+        @endif
 
-    <div class="flex-center">
-        <div class="authentication-card">
-            <!-- Left Panel -->
-            <div class="left-panel">
-                <h2 class="text-3xl font-bold">Log in</h2>
-                <img src="{{ asset('images/loginLogo.png') }}" alt="Login Illustration">
-            </div>
-
-            <!-- Right Panel -->
-            <div class="right-panel">
-                <div class="text-center">
-                    <h2>Welcome to <span>PMDKK!</span></h2>
-                    <img src="{{ asset('images/pmdkkLogo.png') }}" alt="Logo">
+        <div class="flex-center">
+            <div class="authentication-card">
+                <!-- Left Panel -->
+                <div class="left-panel">
+                    <h2 class="text-3xl font-bold">Log in</h2>
+                    <img src="{{ asset('images/loginLogo.png') }}" alt="Login Illustration">
                 </div>
 
-                @if ($errors->any())
-                    <div>
-                        <div class="font-medium text-red-600">{{ __('Whoops! Something went wrong.') }}</div>
-
-                        <ul class="mt-3 list-disc list-inside text-sm text-red-600">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
-                @if (session('status'))
-                    <div class="mb-4 font-medium text-sm text-green-600">
-                        {{ session('status') }}
-                    </div>
-                @endif
-
-                <form method="POST" action="{{ route('login') }}">
-                    @csrf
-
-                    <div class="block">
-                        <label for="email" class="block font-medium text-sm text-gray-700">{{ __('Email') }}</label>
-                        <input id="email" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="email" name="account_email_address" :value="old('email')" required autofocus autocomplete="username" />
+                <!-- Right Panel -->
+                <div class="right-panel">
+                    <div class="text-center">
+                        <h2>Welcome to <span>PMDKK!</span></h2>
+                        <img src="{{ asset('images/pmdkkLogo.png') }}" alt="Logo">
                     </div>
 
-                    <div class="block">
-                        <label for="password" class="block font-medium text-sm text-gray-700">{{ __('Password') }}</label>
-                        <input id="password" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="password" name="account_password" required autocomplete="current-password" />
-                    </div>
+                    <!-- Error messages -->
+                    @if ($errors->any())
+                        <div>
+                            <div class="font-medium text-red-600">{{ __('Whoops! Something went wrong.') }}</div>
 
-                    <div class="remember-me-container">
-                        <label for="remember_me" class="flex items-center">
-                            <input id="remember_me" type="checkbox" class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out" name="account_remember">
-                            <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-                        </label>
+                            <ul class="mt-3 list-disc list-inside text-sm text-red-600">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
-                        @if (Route::has('forgot-password'))
-                            <a class="text-sm text-red-600 hover:text-red-500 link" href="{{ route('forgot-password') }}">
-                                {{ __('Forgot Password?') }}
-                            </a>
-                        @endif
-                    </div>
+                    @if (session('status'))
+                        <div class="mb-4 font-medium text-sm text-green-600">
+                            {{ session('status') }}
+                        </div>
+                    @endif
 
-                    <div class="mt-6">
-                        <button type="submit" class="login-button">
-                            {{ __('Login') }}
-                        </button>
-                    </div>
+                    <!-- Login form -->
+                    <form method="POST" action="{{ route('login') }}" onsubmit="handleSubmit(event)">
+                        @csrf
 
-                    <div class="mt-4 text-center">
-                        <span class="text-sm text-gray-600">Not a member? <a href="{{ route('register') }}" class="link">Register Now</a></span>
-                    </div>
-                </form>
+                        <div class="block">
+                            <label for="email" class="block font-medium text-sm text-gray-700">{{ __('Email') }}</label>
+                            <input id="email" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="email" name="account_email_address" :value="old('email')" required autofocus autocomplete="username" />
+                        </div>
+
+                        <div class="block">
+                            <label for="password" class="block font-medium text-sm text-gray-700">{{ __('Password') }}</label>
+                            <input id="password" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="password" name="account_password" required autocomplete="current-password" />
+                        </div>
+
+                        <div class="remember-me-container">
+                            <label for="remember_me" class="flex items-center">
+                                <input id="remember_me" type="checkbox" class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out" name="account_remember">
+                                <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+                            </label>
+
+                            @if (Route::has('forgot-password'))
+                                <a class="text-sm text-red-600 hover:text-red-500 link" href="{{ route('forgot-password') }}">
+                                    {{ __('Forgot Password?') }}
+                                </a>
+                            @endif
+                        </div>
+
+                        <div class="mt-6">
+                            <button type="submit" class="login-button" id="login-button">
+                                {{ __('Login') }}
+                            </button>
+                        </div>
+
+                        <div class="mt-4 text-center">
+                            <span class="text-sm text-gray-600">Not a member? <a href="{{ route('register') }}" class="link">Register Now</a></span>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+    </div> <!-- End of main-content -->
+
+    <!-- Overlay to block interaction with the blurred background -->
+    <div class="blur-overlay" id="blurOverlay"></div>
+
+    <!-- Popup for successful registration -->
+    @if (session('success'))
+        <div class="popup-message" id="popupMessage">
+            <h2>Success!</h2>
+            <p>{{ session('success') }}</p>
+            <button id="closePopup">OK</button>
+        </div>
+    @endif
+
+    <script>
+        // Handle form submission
+        function handleSubmit(event) {
+            const button = document.getElementById('login-button');
+            button.classList.add('loading');
+            button.disabled = true;
+        }
+
+        // Handle popup message close and apply blur
+        document.addEventListener('DOMContentLoaded', function () {
+            const popupMessage = document.getElementById('popupMessage');
+            const closePopup = document.getElementById('closePopup');
+            const mainContent = document.querySelector('.main-content');
+            const blurOverlay = document.getElementById('blurOverlay'); // Overlay element
+
+            if (popupMessage) {
+                // Show the popup and apply blur to the content
+                popupMessage.style.display = 'block';
+                mainContent.classList.add('blur-background');
+                blurOverlay.style.display = 'block'; // Show overlay
+
+                // Close the popup when the button is clicked
+                closePopup.addEventListener('click', function () {
+                    popupMessage.style.display = 'none';
+                    mainContent.classList.remove('blur-background');
+                    blurOverlay.style.display = 'none'; // Hide overlay
+                });
+            }
+        });
+    </script>
 </body>
 </html>

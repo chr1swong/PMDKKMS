@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PasswordResetController extends Controller
 {
@@ -27,6 +28,7 @@ class PasswordResetController extends Controller
         $status = Password::broker('accounts')->sendResetLink(
             ['account_email_address' => $request->account_email_address]
         );
+        Log::info("STATUS RETURNED: ", ['status' => $status]);
 
         return $status === Password::RESET_LINK_SENT
             ? back()->with('success', 'An email with a password reset link has been sent. Please check your email address to continue with resetting your password.')
@@ -35,7 +37,7 @@ class PasswordResetController extends Controller
 
     // Step 2: Show the reset form
     public function showResetForm(Request $request, $token = null) {
-        return view('auth.passwords.reset')->with(
+        return view('auth.reset-password')->with(
             ['token' => $token, 'account_email_address' => $request->account_email_address]
         );
     }
@@ -89,7 +91,8 @@ class PasswordResetController extends Controller
             'new_account_password' => 'required|string|min:8|confirmed',
         ], $messages);
 
-        $account = Account::where('account_id', currentAccount()->account_id)->firstOrFail();
+        $account = Account::where('account_id', currentAccount()->account_id)->firstOrFail();       // possible error will be thrown here
+                                                                                                    // currentAccount() is part of a helper function not yet defined
 
         if (!Hash::check($request->current_password, $account->account_password)) {
             return redirect()->back()->withErrors(['current_password' => 'The current password is incorrect. Please try again.'])->withInput();

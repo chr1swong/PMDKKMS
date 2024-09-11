@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class PasswordResetController extends Controller
 {
@@ -28,10 +27,9 @@ class PasswordResetController extends Controller
         $status = Password::broker('accounts')->sendResetLink(
             ['account_email_address' => $request->account_email_address]
         );
-        Log::info("STATUS RETURNED: ", ['status' => $status]);
 
         return $status === Password::RESET_LINK_SENT
-            ? back()->with('success', 'An email with a password reset link has been sent. Please check your email address to continue with resetting your password.')
+            ? back()->with('status', __($status))
             : back()->withErrors(['account_email_address' => __($status)]);
     }
 

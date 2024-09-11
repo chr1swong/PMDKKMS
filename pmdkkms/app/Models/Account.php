@@ -35,4 +35,14 @@ class Account extends Authenticatable
             'account_password' => 'hashed',
         ];
     }
+    // Override method to get email address for password reset
+    public function getEmailForPasswordReset() {
+        return $this->account_email_address;
+    }
+
+    // Define the email attribute to satisfy the password reset broker
+    public function getEmailAttribute() {
+        return $this->account_email_address;
+    }
+    
 }

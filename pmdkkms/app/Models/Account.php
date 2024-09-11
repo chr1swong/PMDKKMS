@@ -35,4 +35,8 @@ class Account extends Authenticatable
             'account_password' => 'hashed',
         ];
     }
+    
+    public function getEmailForPasswordReset() {
+        return $this->account_email_address;
+    }
 }

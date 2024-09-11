@@ -29,7 +29,7 @@ class PasswordResetController extends Controller
         );
 
         return $status === Password::RESET_LINK_SENT
-            ? back()->with('status', __($status))
+            ? back()->with('success', 'An email with a password reset link has been sent. Please check your email address to continue with resetting your password.')
             : back()->withErrors(['account_email_address' => __($status)]);
     }
 
@@ -61,8 +61,6 @@ class PasswordResetController extends Controller
             'token' => $request->token,
         ];
 
-        // dd($credentials);
-
         $status = Password::broker('accounts')->reset(
             $credentials,
             function ($user, $password) {
@@ -91,8 +89,6 @@ class PasswordResetController extends Controller
             'new_account_password' => 'required|string|min:8|confirmed',
         ], $messages);
 
-        // $user = currentAccount();
-
         $account = Account::where('account_id', currentAccount()->account_id)->firstOrFail();
 
         if (!Hash::check($request->current_password, $account->account_password)) {
@@ -109,5 +105,3 @@ class PasswordResetController extends Controller
             : back()->withErrors(['account_email_address' => [__($status)]]);
     }
 }
-
-// NOTE YOUR CURRENT PASSWORD IS 12121212

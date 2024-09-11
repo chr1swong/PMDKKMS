@@ -54,7 +54,7 @@
         .left-panel h2 {
             font-size: 2.5rem;
             font-weight: bold;
-            color: #fff;
+            color: #000;
             margin-bottom: 2rem;
         }
 
@@ -197,7 +197,7 @@
 
                     <div class="block">
                         <label for="email">{{ __('Email') }}</label>
-                        <input id="email" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="email" name="email" :value="old('email')" required autofocus />
+                        <input id="email" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="email" name="account_email_address" :value="old('email')" required autofocus />
                     </div>
 
                     <div class="mt-6">

@@ -82,7 +82,7 @@
             padding: 0.75rem;
             border-radius: 4px;
             border: 1px solid #ccc;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             box-sizing: border-box;
         }
 
@@ -95,6 +95,7 @@
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin-top: 1.5rem;
             margin-bottom: 2rem;
             font-size: 1rem;
         }
@@ -161,7 +162,7 @@
             <!-- Left Panel -->
             <div class="left-panel">
                 <h2>Reset Password</h2>
-                <img src="{{ asset('images/reset_password_illustration.jpg') }}" alt="Reset Password Illustration">
+                <img src="{{ asset('images/reset_password_illustration.png') }}" alt="Reset Password Illustration">
             </div>
 
             <!-- Right Panel -->

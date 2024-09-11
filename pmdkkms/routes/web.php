@@ -61,7 +61,7 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function ()
         return view('archer.dashboard');
     })->name('archer.dashboard');
 });
-
+    
 // Routes accessible to coach only
 Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function () {
     Route::get('/coach/dashboard', function () {

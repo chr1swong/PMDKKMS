@@ -134,7 +134,7 @@
                         <a href="/member" class="{{ request()->is('member') ? 'active' : '' }}">Performance</a>
                     </li>
                     <li>
-                        <a href="/profile" class="{{ request()->is('profile') ? 'active' : '' }}">Profile</a>
+                        <a href="/archer/profile" class="{{ request()->is('archer.profile') ? 'active' : '' }}">Profile</a>
                     </li>
                 </ul>
             </div>

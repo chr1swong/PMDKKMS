@@ -73,12 +73,10 @@ class AccountController extends Controller
             // Redirect based on the role
             if (Auth::user()->account_role == 1) { // Archer
                 return redirect()->route('archer.dashboard');
-                // return view('archer.dashboard');
             } elseif (Auth::user()->account_role == 2) { // Coach
                 return redirect()->route('coach.dashboard');
             } elseif (Auth::user()->account_role == 3) { // Committee Member
                 return redirect()->route('committee.dashboard');
-                // return view('committee.dashboard');
             } else {
                 return redirect()->route('account.login'); // Fallback if no role matches
             }

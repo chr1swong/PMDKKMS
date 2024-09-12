@@ -60,6 +60,15 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function ()
     Route::get('/archer/dashboard', function () {
         return view('archer.dashboard');
     })->name('archer.dashboard');
+
+    //Archer Profile
+    Route::get('/archer/profile', function () {
+        return view('archer.profile');
+    })->name('archer.profile');
+
+    Route::get('/archer/editProfile', function () {
+        return view('archer.editProfile');
+    })->name('archer.editProfile');
 });
     
 // Routes accessible to coach only

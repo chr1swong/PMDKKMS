@@ -79,39 +79,16 @@
             margin-bottom: 5px;
         }
 
-        .profile-details input {
+        .profile-details span {
             padding: 10px;
             font-size: 16px;
+            background-color: #E0E0E0; /* Gray background for display fields */
             border-radius: 8px;
-            border: 1px solid #ccc;
-            background-color: #E0E0E0; /* Gray background for input fields */
-        }
-
-        .profile-details input:disabled {
-            background-color: #B0B0B0; /* Darker gray for disabled fields */
-            color: #555555; /* Darker text color for disabled fields */
+            display: inline-block;
         }
 
         .full-width {
             grid-column: span 2; /* Make element take the whole row */
-        }
-
-        .extend-btn {
-            background-color: #5f4bb6;
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-            margin-top: 20px;
-            grid-column: 1; /* Ensure it aligns under the first column */
-            border: none; /* Remove border */
-        }
-
-        .extend-btn:hover {
-            background-color: #3b1f8b;
         }
 
         /* Media Queries for Responsiveness */
@@ -123,10 +100,6 @@
 
             .profile-details {
                 grid-template-columns: 1fr;
-            }
-
-            .extend-btn {
-                grid-column: 1;
             }
         }
     </style>
@@ -143,7 +116,6 @@
         <!-- Sidebar Section -->
         <div class="profile-sidebar">
             <img src="https://via.placeholder.com/150" alt="Profile Picture">
-            <button>Change</button>
             <a href="{{ url('/archer/editProfile') }}">
                 <button>Edit Profile</button>
             </a>
@@ -153,34 +125,34 @@
         <div class="profile-details">
             <div>
                 <label for="membership-id">Membership ID</label>
-                <input type="text" id="membership-id" value="00001" disabled>
+                <span id="membership-id">{{ $user->id }}</span>
             </div>
             <div>
                 <label for="role">Role</label>
-                <input type="text" id="role" value="Archer" disabled>
+                <span id="role">{{ $user->account_role == 1 ? 'Archer' : ($user->account_role == 2 ? 'Coach' : 'Committee Member') }}</span>
             </div>
             <div class="full-width">
                 <label for="full-name">Full Name</label>
-                <input type="text" id="full-name" value="Full Name">
+                <span id="full-name">{{ $user->account_full_name }}</span>
             </div>
             <div>
                 <label for="email">Email</label>
-                <input type="email" id="email" value="email@example.com">
+                <span id="email">{{ $user->account_email_address }}</span>
             </div>
             <div>
                 <label for="contact-number">Contact Number</label>
-                <input type="text" id="contact-number" value="0123456789">
+                <span id="contact-number">{{ $user->account_contact_number }}</span>
             </div>
             <div>
                 <label for="membership-status">Membership Status</label>
-                <input type="text" id="membership-status" value="Active" disabled>
+                <span id="membership-status">{{ $user->account_membership_status == 2 ? 'Active' : 'Inactive' }}</span>
             </div>
             <div>
                 <label for="membership-expiry">Membership Expiry</label>
-                <input type="text" id="membership-expiry" value="2025-01-24" disabled>
+                <span id="membership-expiry">{{ $user->account_membership_expiry }}</span>
             </div>
-            <button class="extend-btn">Extend Membership</button>
         </div>
     </div>
 </body>
 </html>
+

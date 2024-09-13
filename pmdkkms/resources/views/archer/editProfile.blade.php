@@ -165,30 +165,32 @@
         </div>
 
         <!-- Profile Details Section -->
-        <form class="profile-details">
+        <!-- Ensure the form action points to the correct POST route for updating the profile -->
+        <form class="profile-details" action="{{ route('archer.updateProfile') }}" method="POST">
+            @csrf
             <!-- Existing Profile Edit Section -->
             <div>
                 <label for="membership-id">Membership ID</label>
-                <input type="text" id="membership-id" value="00001" disabled>
+                <input type="text" id="membership-id" value="{{ $user->id }}" disabled>
             </div>
             <div>
                 <label for="role">Role</label>
-                <input type="text" id="role" value="Archer" disabled>
+                <input type="text" id="role" value="{{ $user->account_role == 1 ? 'Archer' : ($user->account_role == 2 ? 'Coach' : 'Committee Member') }}" disabled>
             </div>
             <div class="full-width">
                 <label for="name">Full Name</label>
-                <input type="text" id="name" placeholder="Enter your name">
+                <input type="text" id="name" name="account_full_name" value="{{ $user->account_full_name }}">
             </div>
             <div>
                 <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Enter your email">
+                <input type="email" id="email" name="account_email_address" value="{{ $user->account_email_address }}">
             </div>
             <div>
                 <label for="contact-number">Contact Number</label>
-                <input type="text" id="contact-number" placeholder="Mobile Number">
+                <input type="text" id="contact-number" name="account_contact_number" value="{{ $user->account_contact_number }}">
             </div>
             <!-- Cancel and Update Buttons -->
-            <div style="margin-top: 15px;"> 
+            <div style="margin-top: 15px;">
                 <a href="{{ url('archer/profile') }}" class="btn-cancel">Cancel</a>
             </div>
             <div style="margin-top: 15px;">
@@ -199,7 +201,7 @@
         <!-- Horizontal Line to Split the Sections -->
         <hr>
 
-        <!-- Change Password Section -->
+        <!-- Change Password Section (Optional for future) -->
         <h3>Change Password</h3>
         <form class="profile-details">
             <div class="full-width">

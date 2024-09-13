@@ -203,25 +203,26 @@
 
         <!-- Change Password Section (Optional for future) -->
         <h3>Change Password</h3>
-        <form class="profile-details">
-            <div class="full-width">
-                <label for="old-password">Old Password</label>
-                <input type="password" id="old-password" placeholder="Enter your old password">
-            </div>
-            <div class="half-width">
-                <label for="new-password">New Password</label>
-                <input type="password" id="new-password" placeholder="Enter your new password">
-            </div>
-            <div class="half-width">
-                <label for="confirm-new-password">Confirm New Password</label>
-                <input type="password" id="confirm-new-password" placeholder="Confirm your new password">
-            </div>
+        <form class="profile-details" action="{{ route('account.changePassword') }}" method="POST">
+        @csrf
+        <div class="full-width">
+            <label for="current-password">Current Password</label>
+            <input type="password" id="current-password" name="current_password" placeholder="Enter your current password" required>
+        </div>
+        <div class="half-width">
+            <label for="new-password">New Password</label>
+            <input type="password" id="new-password" name="new_account_password" placeholder="Enter your new password" required>
+        </div>
+        <div class="half-width">
+            <label for="confirm-new-password">Confirm New Password</label>
+            <input type="password" id="confirm-new-password" name="new_account_password_confirmation" placeholder="Confirm your new password" required>
+        </div>
 
-            <!-- Submit Button for Password Change -->
-            <div style="margin-top: 15px;">
-                <button type="submit" class="btn-update">Change Password</button>
-            </div>
-        </form>
+        <!-- Submit Button for Password Change -->
+        <div style="margin-top: 15px;">
+            <button type="submit" class="btn-update">Change Password</button>
+        </div>
+    </form>
     </div>
 </body>
 </html>

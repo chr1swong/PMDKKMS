@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class PasswordResetController extends Controller
 {
@@ -77,21 +77,23 @@ class PasswordResetController extends Controller
             : back()->withErrors(['account_email_address' => [__($status)]]);
     }
 
-    // Different case of changing password, for user already logged in
+    // Step 4: Change password for logged-in users
     public function changePassword(Request $request) {
         // Custom validation messages
         $messages = [
             'new_account_password.confirmed' => 'The password and confirm password fields do not match. Please try again.',
         ];
 
+        // Validate current and new password
         $request->validate([
             'current_password' => 'required|string',
             'new_account_password' => 'required|string|min:8|confirmed',
         ], $messages);
 
-        $account = Account::where('account_id', currentAccount()->account_id)->firstOrFail();       // possible error will be thrown here
-                                                                                                    // currentAccount() is part of a helper function not yet defined
+        // Get the currently authenticated user
+        $account = Auth::user();
 
+        // Check if the provided current password matches the one in the database
         if (!Hash::check($request->current_password, $account->account_password)) {
             return redirect()->back()->withErrors(['current_password' => 'The current password is incorrect. Please try again.'])->withInput();
         }
@@ -100,9 +102,9 @@ class PasswordResetController extends Controller
         $account->account_password = Hash::make($request->new_account_password);
         $status = $account->save();
 
-        // Redirect back with a success message
+        // Redirect back with a success message if the password was updated successfully
         return $status
-            ? redirect()->route('profile')->with('success', 'Account password changed successfully!')
-            : back()->withErrors(['account_email_address' => [__($status)]]);
+            ? redirect()->route('archer.profile')->with('success', 'Account password changed successfully!')
+            : back()->withErrors(['new_account_password' => 'Unable to change the password, please try again.']);
     }
 }

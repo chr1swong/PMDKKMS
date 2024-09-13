@@ -22,7 +22,8 @@
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             display: flex;
-            gap: 30px;
+            flex-direction: column;
+            gap: 40px;
         }
 
         .profile-sidebar {
@@ -35,6 +36,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center; /* Center content horizontally */
+            margin: 0 auto; /* Center the sidebar horizontally within its parent */
         }
 
         .profile-sidebar img {
@@ -62,7 +64,7 @@
         }
 
         .profile-details {
-            width: 70%;
+            width: 100%;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
@@ -92,25 +94,18 @@
             color: #555555; /* Darker text color for disabled fields */
         }
 
-        .password-input {
-            display: flex;
-            align-items: center;
-            position: relative;
-        }
-
-        .password-input input {
-            flex-grow: 1;
-            padding-right: 40px; /* Add space for the icon */
-        }
-
-        .password-input .toggle-password {
-            position: absolute;
-            right: 10px;
-            cursor: pointer;
+        .half-width {
+            grid-column: span 1; /* Makes the element take half of the row */
         }
 
         .full-width {
             grid-column: span 2; /* Make element take the whole row */
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin: 30px 0; /* Adds spacing around the line */
         }
 
         .btn-cancel, .btn-update {
@@ -171,6 +166,7 @@
 
         <!-- Profile Details Section -->
         <form class="profile-details">
+            <!-- Existing Profile Edit Section -->
             <div>
                 <label for="membership-id">Membership ID</label>
                 <input type="text" id="membership-id" value="00001" disabled>
@@ -191,19 +187,37 @@
                 <label for="contact-number">Contact Number</label>
                 <input type="text" id="contact-number" placeholder="Mobile Number">
             </div>
-            <div>
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Password (at least 8 characters)">
-            </div>
-            <div>
-                <label for="confirm-password">Confirm Password</label>
-                <input type="password" id="confirm-password" placeholder="Confirm Password">
-            </div>
+            <!-- Cancel and Update Buttons -->
             <div style="margin-top: 15px;"> 
                 <a href="{{ url('archer/profile') }}" class="btn-cancel">Cancel</a>
             </div>
             <div style="margin-top: 15px;">
                 <button type="submit" class="btn-update">Update</button>
+            </div>
+        </form>
+
+        <!-- Horizontal Line to Split the Sections -->
+        <hr>
+
+        <!-- Change Password Section -->
+        <h3>Change Password</h3>
+        <form class="profile-details">
+            <div class="full-width">
+                <label for="old-password">Old Password</label>
+                <input type="password" id="old-password" placeholder="Enter your old password">
+            </div>
+            <div class="half-width">
+                <label for="new-password">New Password</label>
+                <input type="password" id="new-password" placeholder="Enter your new password">
+            </div>
+            <div class="half-width">
+                <label for="confirm-new-password">Confirm New Password</label>
+                <input type="password" id="confirm-new-password" placeholder="Confirm your new password">
+            </div>
+
+            <!-- Submit Button for Password Change -->
+            <div style="margin-top: 15px;">
+                <button type="submit" class="btn-update">Change Password</button>
             </div>
         </form>
     </div>

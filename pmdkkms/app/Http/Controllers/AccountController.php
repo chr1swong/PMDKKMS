@@ -39,59 +39,115 @@ class AccountController extends Controller
         return redirect()->route('account.login')->with('success', 'Registration successful! Please log in.');
     }
 
-        public function login(Request $request) {
-            // Validate the request
-            $request->validate([
-                'account_email_address' => 'required|email',
-                'account_password' => 'required',
-            ]);
-        
-            // Find the account based on the email address
-            $account = Account::where('account_email_address', $request->account_email_address)->first();
-        
-            // Check if the account exists
-            if (!$account) {
-                return back()->withErrors([
-                    'account_email_address' => 'We could not find an account with that email. Please try again or <a href="' . route('register') . '">register an account</a>.',
-                ])->withInput();
-            }
-        
-            // Check if the password is correct
-            if (!Hash::check($request->account_password, $account->account_password)) {
-                return back()->withErrors([
-                    'account_password' => 'The password you entered was incorrect. Please try again.',
-                ])->withInput();
-            }
-        
-            // Log in the user
-            Auth::login($account);
-            Log::info('user after login: ', [Auth::user()]);
-            Log::info('SESSION ID BEFORE REGENERATION ----> ' . $request->session()->getId());
-            $request->session()->regenerate();
-            Log::info('SESSION ID AFTER REGENERATION ----> ' . $request->session()->getId());
-        
-            // Redirect based on the role
-            if (Auth::user()->account_role == 1) { // Archer
-                return redirect()->route('archer.dashboard');
-            } elseif (Auth::user()->account_role == 2) { // Coach
-                return redirect()->route('coach.dashboard');
-            } elseif (Auth::user()->account_role == 3) { // Committee Member
-                return redirect()->route('committee.dashboard');
-            } else {
-                return redirect()->route('account.login'); // Fallback if no role matches
-            }
-        }
-        
-        public function logout(Request $request)
-        {
-            // dd('logout called');
-            Auth::guard('web')->logout();
+    public function login(Request $request) {
+        // Validate the request
+        $request->validate([
+            'account_email_address' => 'required|email',
+            'account_password' => 'required',
+        ]);
 
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            Log::info('SESSION ID AFTER FLUSH ----> ' . $request->session()->getId());
+        // Find the account based on the email address
+        $account = Account::where('account_email_address', $request->account_email_address)->first();
 
-            return redirect('/login'); // or wherever you want to redirect after logout
+        // Check if the account exists
+        if (!$account) {
+            return back()->withErrors([
+                'account_email_address' => 'We could not find an account with that email. Please try again or <a href="' . route('register') . '">register an account</a>.',
+            ])->withInput();
         }
 
+        // Check if the password is correct
+        if (!Hash::check($request->account_password, $account->account_password)) {
+            return back()->withErrors([
+                'account_password' => 'The password you entered was incorrect. Please try again.',
+            ])->withInput();
+        }
+
+        // Log in the user
+        Auth::login($account);
+        Log::info('user after login: ', [Auth::user()]);
+        Log::info('SESSION ID BEFORE REGENERATION ----> ' . $request->session()->getId());
+        $request->session()->regenerate();
+        Log::info('SESSION ID AFTER REGENERATION ----> ' . $request->session()->getId());
+
+        // Redirect based on the role
+        if (Auth::user()->account_role == 1) { // Archer
+            return redirect()->route('archer.dashboard');
+        } elseif (Auth::user()->account_role == 2) { // Coach
+            return redirect()->route('coach.dashboard');
+        } elseif (Auth::user()->account_role == 3) { // Committee Member
+            return redirect()->route('committee.dashboard');
+        } else {
+            return redirect()->route('account.login'); // Fallback if no role matches
+        }
     }
+
+    public function logout(Request $request)
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        Log::info('SESSION ID AFTER FLUSH ----> ' . $request->session()->getId());
+
+        return redirect('/login'); // or wherever you want to redirect after logout
+    }
+
+    // Method to handle displaying the profile
+    public function profile()
+    {
+        // Retrieve the currently authenticated user
+        $user = Auth::user();
+
+        // Return the 'archer.profile' view and pass the user data
+        return view('archer.profile', compact('user'));
+    }
+
+    // Method to handle editing the profile
+    public function editProfile()
+    {
+        // Retrieve the currently authenticated user
+        $user = Auth::user();
+
+        // Return the 'archer.editProfile' view and pass the user data
+        return view('archer.editProfile', compact('user'));
+    }
+
+    // Method to handle profile update
+    public function updateProfile(Request $request)
+    {
+        // Get the currently authenticated user
+        $user = Auth::user();
+
+        // Validate the incoming request
+        $request->validate([
+            'account_full_name' => 'required|string|max:255',
+            'account_email_address' => 'required|string|email|max:255|unique:account,account_email_address,' . $user->account_id . ',account_id',  // Use account_id as the primary key
+            'account_contact_number' => 'required|string|max:15',
+        ]);
+
+        // Update the user's information
+        $user->update([
+            'account_full_name' => $request->account_full_name,
+            'account_email_address' => $request->account_email_address,
+            'account_contact_number' => $request->account_contact_number,
+        ]);
+
+        // Redirect back to the profile page with a success message
+        return redirect()->route('archer.profile')->with('success', 'Profile updated successfully.');
+    }
+
+    // Method to handle profile picture update
+    public function updateProfilePicture(Request $request)
+    {
+        $user = Auth::user();
+
+        if ($request->hasFile('profile_picture')) {
+            $path = $request->file('profile_picture')->store('profile_pictures', 'public');
+            $user->account_profile_picture_path = $path;
+            $user->save();
+        }
+
+        return back()->with('success', 'Profile picture updated successfully.');
+    }
+}

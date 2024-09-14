@@ -151,7 +151,9 @@
     <div class="profile-container">
         <!-- Sidebar Section -->
         <div class="profile-sidebar">
-            <img src="https://via.placeholder.com/150" alt="Profile Picture">
+            <!-- Display user profile picture if exists, else use placeholder -->
+            <img src="{{ $user->account_profile_picture_path ? asset('storage/' . $user->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile Picture">
+            
             <a href="{{ url('/archer/editProfile') }}">
                 <button>Edit Profile</button>
             </a>

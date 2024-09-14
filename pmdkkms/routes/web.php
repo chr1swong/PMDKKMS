@@ -71,6 +71,8 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function ()
     // Route for handling changing password
     Route::post('/archer/changePassword', [PasswordResetController::class, 'changePassword'])->name('account.changePassword');
 
+    // Route for updating profile picture
+    Route::put('/archer/updateProfilePicture', [AccountController::class, 'updateProfilePicture'])->name('archer.updateProfilePicture');
 });
 
 // Routes accessible to coach only

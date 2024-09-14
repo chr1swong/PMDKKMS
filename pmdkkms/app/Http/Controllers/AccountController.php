@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class AccountController extends Controller
 {
+    // Registration method
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
             'account_full_name' => 'required|string|max:255',
@@ -23,6 +25,13 @@ class AccountController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+        // Handle profile picture upload if present
+        $profilePicturePath = '';
+        if ($request->hasFile('profile_picture')) {
+            $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
+        }
+
+        // Create new account
         $account = Account::create([
             'account_full_name' => $request->account_full_name,
             'account_email_address' => $request->account_email_address,
@@ -31,32 +40,31 @@ class AccountController extends Controller
             'account_contact_number' => $request->account_contact_number,
             'account_membership_status' => '2', // default status
             'account_membership_expiry' => now()->addYear(), // example expiration date
-            'account_profile_picture_path' => $request->hasFile('profile_picture') 
-                ? $request->file('profile_picture')->store('profile_pictures', 'public') 
-                : '', // Assign empty string if no file uploaded
+            'account_profile_picture_path' => $profilePicturePath, // Store the uploaded picture path or empty string
         ]);
 
         return redirect()->route('account.login')->with('success', 'Registration successful! Please log in.');
     }
 
+    // Login method
     public function login(Request $request) {
-        // Validate the request
+        // Validate login request
         $request->validate([
             'account_email_address' => 'required|email',
             'account_password' => 'required',
         ]);
 
-        // Find the account based on the email address
+        // Find account by email
         $account = Account::where('account_email_address', $request->account_email_address)->first();
 
-        // Check if the account exists
+        // Handle invalid email
         if (!$account) {
             return back()->withErrors([
                 'account_email_address' => 'We could not find an account with that email. Please try again or <a href="' . route('register') . '">register an account</a>.',
             ])->withInput();
         }
 
-        // Check if the password is correct
+        // Handle invalid password
         if (!Hash::check($request->account_password, $account->account_password)) {
             return back()->withErrors([
                 'account_password' => 'The password you entered was incorrect. Please try again.',
@@ -65,23 +73,25 @@ class AccountController extends Controller
 
         // Log in the user
         Auth::login($account);
-        Log::info('user after login: ', [Auth::user()]);
+        Log::info('User after login: ', [Auth::user()]);
         Log::info('SESSION ID BEFORE REGENERATION ----> ' . $request->session()->getId());
         $request->session()->regenerate();
         Log::info('SESSION ID AFTER REGENERATION ----> ' . $request->session()->getId());
 
-        // Redirect based on the role
-        if (Auth::user()->account_role == 1) { // Archer
-            return redirect()->route('archer.dashboard');
-        } elseif (Auth::user()->account_role == 2) { // Coach
-            return redirect()->route('coach.dashboard');
-        } elseif (Auth::user()->account_role == 3) { // Committee Member
-            return redirect()->route('committee.dashboard');
-        } else {
-            return redirect()->route('account.login'); // Fallback if no role matches
+        // Redirect based on user role
+        switch (Auth::user()->account_role) {
+            case 1: // Archer
+                return redirect()->route('archer.dashboard');
+            case 2: // Coach
+                return redirect()->route('coach.dashboard');
+            case 3: // Committee Member
+                return redirect()->route('committee.dashboard');
+            default:
+                return redirect()->route('account.login');
         }
     }
 
+    // Logout method
     public function logout(Request $request)
     {
         Auth::guard('web')->logout();
@@ -90,62 +100,66 @@ class AccountController extends Controller
         $request->session()->regenerateToken();
         Log::info('SESSION ID AFTER FLUSH ----> ' . $request->session()->getId());
 
-        return redirect('/login'); // or wherever you want to redirect after logout
+        return redirect('/login'); // Redirect to login after logout
     }
 
-    // Method to handle displaying the profile
+    // Display profile method
     public function profile()
     {
-        // Retrieve the currently authenticated user
-        $user = Auth::user();
-
-        // Return the 'archer.profile' view and pass the user data
-        return view('archer.profile', compact('user'));
+        $user = Auth::user(); // Get the currently authenticated user
+        return view('archer.profile', compact('user')); // Return the profile view with user data
     }
 
-    // Method to handle editing the profile
+    // Edit profile method
     public function editProfile()
     {
-        // Retrieve the currently authenticated user
-        $user = Auth::user();
-
-        // Return the 'archer.editProfile' view and pass the user data
-        return view('archer.editProfile', compact('user'));
+        $user = Auth::user(); // Get the currently authenticated user
+        return view('archer.editProfile', compact('user')); // Return the edit profile view with user data
     }
 
-    // Method to handle profile update
+    // Update profile method
     public function updateProfile(Request $request)
     {
-        // Get the currently authenticated user
-        $user = Auth::user();
+        $user = Auth::user(); // Get the currently authenticated user
 
-        // Validate the incoming request
+        // Validate profile update data
         $request->validate([
             'account_full_name' => 'required|string|max:255',
-            'account_email_address' => 'required|string|email|max:255|unique:account,account_email_address,' . $user->account_id . ',account_id',  // Use account_id as the primary key
+            'account_email_address' => 'required|string|email|max:255|unique:account,account_email_address,' . $user->account_id . ',account_id', // Exclude current user
             'account_contact_number' => 'required|string|max:15',
         ]);
 
-        // Update the user's information
+        // Update user profile
         $user->update([
             'account_full_name' => $request->account_full_name,
             'account_email_address' => $request->account_email_address,
             'account_contact_number' => $request->account_contact_number,
         ]);
 
-        // Redirect back to the profile page with a success message
         return redirect()->route('archer.profile')->with('success', 'Profile updated successfully.');
     }
 
-    // Method to handle profile picture update
+    // Update profile picture method
     public function updateProfilePicture(Request $request)
     {
         $user = Auth::user();
 
+        // Validate the uploaded profile picture
+        $request->validate([
+            'profile_picture' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', // 2MB limit
+        ]);
+
         if ($request->hasFile('profile_picture')) {
+            // Store new profile picture
             $path = $request->file('profile_picture')->store('profile_pictures', 'public');
-            $user->account_profile_picture_path = $path;
-            $user->save();
+
+            // Delete old profile picture if it exists
+            if ($user->account_profile_picture_path) {
+                Storage::disk('public')->delete($user->account_profile_picture_path);
+            }
+
+            // Update user's profile picture path
+            $user->update(['account_profile_picture_path' => $path]);
         }
 
         return back()->with('success', 'Profile picture updated successfully.');

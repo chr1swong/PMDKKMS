@@ -28,15 +28,15 @@
 
         .profile-sidebar {
             width: 30%;
-            background-color: #E0ECF8; /* Light blue background */
+            background-color: #E0ECF8;
             padding: 20px;
             border-radius: 10px;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center; /* Center content horizontally */
-            margin: 0 auto; /* Center the sidebar horizontally within its parent */
+            align-items: center;
+            margin: 0 auto;
         }
 
         .profile-sidebar img {
@@ -46,21 +46,54 @@
             margin-bottom: 20px;
         }
 
-        .profile-sidebar button {
-            background-color: #555555; /* Dark grey button */
+        /* General Button Styling */
+        .btn-cancel, .btn-update {
+            display: inline-block;
             color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            margin-bottom: 15px;
+            padding: 15px 20px;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            border: none;
+            text-decoration: none;
+            font-size: 16px;
+            width: 100%;
+            text-transform: uppercase;
+            box-sizing: border-box;
         }
 
-        .profile-sidebar button:hover {
-            background-color: #333333;
+        /* Cancel Button */
+        .btn-cancel {
+            background-color: #ff6b6b;
+        }
+
+        .btn-cancel:hover {
+            background-color: #e04a4a;
+        }
+
+        /* Update Button */
+        .btn-update {
+            background-color: #5f4bb6;
+        }
+
+        .btn-update:hover {
+            background-color: #3b1f8b;
+        }
+
+        /* Specific Styling for the Upload Picture Button */
+        .profile-sidebar .btn-update {
+            background-color: #f59342;
+            padding: 10px 15px; /* Smaller button */
+        }
+
+        .profile-sidebar .btn-update:hover {
+            background-color: #d57829;
+        }
+
+        .profile-sidebar button[type="button"] {
+            margin-bottom: 15px; /* Increase gap between Browse and Upload buttons */
         }
 
         .profile-details {
@@ -86,56 +119,28 @@
             font-size: 16px;
             border-radius: 8px;
             border: 1px solid #ccc;
-            background-color: #E0E0E0; /* Gray background for input fields */
+            background-color: #E0E0E0;
         }
 
         .profile-details input:disabled {
-            background-color: #B0B0B0; /* Darker gray for disabled fields */
-            color: #555555; /* Darker text color for disabled fields */
+            background-color: #B0B0B0;
+            color: #555555;
         }
 
         .half-width {
-            grid-column: span 1; /* Makes the element take half of the row */
+            grid-column: span 1;
         }
 
         .full-width {
-            grid-column: span 2; /* Make element take the whole row */
+            grid-column: span 2;
         }
 
         hr {
             border: none;
             border-top: 1px solid #ccc;
-            margin: 30px 0; /* Adds spacing around the line */
+            margin: 30px 0;
         }
 
-        .btn-cancel, .btn-update {
-            display: inline-block;
-            background-color: #ff6b6b;
-            color: white;
-            padding: 15px 20px; /* Increased padding for taller buttons */
-            text-align: center;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            border: none;
-            text-decoration: none; /* Remove the underline from the anchor */
-            font-size: 16px;
-        }
-
-        .btn-update {
-            background-color: #5f4bb6;
-        }
-
-        .btn-cancel:hover {
-            background-color: #e04a4a;
-        }
-
-        .btn-update:hover {
-            background-color: #3b1f8b;
-        }
-
-        /* Media Queries for Responsiveness */
         @media (max-width: 768px) {
             .profile-container {
                 flex-direction: column;
@@ -145,25 +150,49 @@
             .profile-details {
                 grid-template-columns: 1fr;
             }
-        }
 
-        .alert {
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            font-size: 14px;
+            /* Ensure full-width buttons on smaller screens */
+            .btn-cancel, .btn-update {
+                width: 100%;
+            }
         }
 
         .alert-success {
             background-color: #d4edda;
             color: #155724;
-            border: 1px solid #c3e6cb;
+            padding: 15px 40px 15px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .alert-danger {
             background-color: #f8d7da;
             color: #721c24;
-            border: 1px solid #f5c6cb;
+            padding: 15px 40px 15px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Close Button Styling */
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 30px;
+            font-weight: bold;
+            color: #155724;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #0c3d20; /* Darker green on hover */
         }
     </style>
 </head>
@@ -174,15 +203,44 @@
         @include('components.archerHeader')
     </header>
 
-    <!-- Main Profile Content -->
-    <div class="profile-container">
-        
+    <!-- Success or Error Message -->
+    @if (session('success'))
+        <div class="alert alert-success" id="success-message">
+            {{ session('success') }}
+            <button type="button" class="close" onclick="closeSuccessMessage()">&times;</button>
+        </div>
+    @endif
 
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="close" onclick="closeSuccessMessage()">&times;</button>
+        </div>
+    @endif
+
+    <div class="profile-container">
         <!-- Sidebar Section -->
         <div class="profile-sidebar">
             <h2>Edit Profile</h2>
-            <img src="https://via.placeholder.com/150" alt="Profile Picture">
-            <button>Change</button>
+            <img src="{{ $user->account_profile_picture_path ? asset('storage/' . $user->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile Picture">
+            <!-- Profile Picture Upload Form -->
+            <form action="{{ route('archer.updateProfilePicture') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                
+                <!-- Hidden file input -->
+                <input type="file" id="profile-picture-input" name="profile_picture" accept="image/*" style="display: none;">
+                
+                <!-- Button to trigger file input -->
+                <button type="button" onclick="document.getElementById('profile-picture-input').click();">Browse file</button>
+                
+                <!-- Submit button -->
+                <button type="submit" class="btn-update">Upload Picture</button>
+            </form>
         </div>
 
         <!-- Profile Details Section -->
@@ -239,25 +297,14 @@
         <div style="margin-top: 15px;">
             <button type="submit" class="btn-update">Change Password</button>
         </div>
-
-        <br>
-        <!-- Display Success or Error Messages -->
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
     </form>
     </div>
+
+    <!-- JavaScript for closing the success message -->
+    <script>
+        function closeSuccessMessage() {
+            document.getElementById('success-message').style.display = 'none';
+        }
+    </script>
 </body>
 </html>

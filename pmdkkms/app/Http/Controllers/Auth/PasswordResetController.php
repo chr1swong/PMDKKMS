@@ -98,13 +98,18 @@ class PasswordResetController extends Controller
             return redirect()->back()->withErrors(['current_password' => 'The current password is incorrect. Please try again.'])->withInput();
         }
 
+        // Check if the new password is the same as the existing one
+        if (Hash::check($request->new_account_password, $account->account_password)) {
+            return redirect()->back()->withErrors(['new_account_password' => 'The new password cannot be the same as the current password. Please choose a different password.'])->withInput();
+        }
+
         // Update the user's password
         $account->account_password = Hash::make($request->new_account_password);
         $status = $account->save();
 
         // Redirect back with a success message if the password was updated successfully
         return $status
-            ? redirect()->route('archer.profile')->with('success', 'Account password changed successfully!')
+            ? redirect()->route('archer.editProfile')->with('success', 'Account password changed successfully!')
             : back()->withErrors(['new_account_password' => 'Unable to change the password, please try again.']);
     }
 }

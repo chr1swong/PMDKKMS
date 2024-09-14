@@ -146,6 +146,25 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .alert {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 
@@ -157,6 +176,8 @@
 
     <!-- Main Profile Content -->
     <div class="profile-container">
+        
+
         <!-- Sidebar Section -->
         <div class="profile-sidebar">
             <h2>Edit Profile</h2>
@@ -165,10 +186,8 @@
         </div>
 
         <!-- Profile Details Section -->
-        <!-- Ensure the form action points to the correct POST route for updating the profile -->
         <form class="profile-details" action="{{ route('archer.updateProfile') }}" method="POST">
             @csrf
-            <!-- Existing Profile Edit Section -->
             <div>
                 <label for="membership-id">Membership ID</label>
                 <input type="text" id="membership-id" value="{{ $user->id }}" disabled>
@@ -189,7 +208,6 @@
                 <label for="contact-number">Contact Number</label>
                 <input type="text" id="contact-number" name="account_contact_number" value="{{ $user->account_contact_number }}">
             </div>
-            <!-- Cancel and Update Buttons -->
             <div style="margin-top: 15px;">
                 <a href="{{ url('archer/profile') }}" class="btn-cancel">Cancel</a>
             </div>
@@ -198,10 +216,9 @@
             </div>
         </form>
 
-        <!-- Horizontal Line to Split the Sections -->
         <hr>
 
-        <!-- Change Password Section (Optional for future) -->
+        <!-- Change Password Section -->
         <h3>Change Password</h3>
         <form class="profile-details" action="{{ route('account.changePassword') }}" method="POST">
         @csrf
@@ -222,6 +239,24 @@
         <div style="margin-top: 15px;">
             <button type="submit" class="btn-update">Change Password</button>
         </div>
+
+        <br>
+        <!-- Display Success or Error Messages -->
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
     </form>
     </div>
 </body>

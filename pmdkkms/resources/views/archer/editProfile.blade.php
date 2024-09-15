@@ -138,7 +138,11 @@
         hr {
             border: none;
             border-top: 1px solid #ccc;
-            margin: 30px 0;
+            margin: 10px 0; /* Reduced margin to shorten gap */
+        }
+
+        h3 {
+            margin-top: 0px; /* Reduced top margin for Change Password section */
         }
 
         @media (max-width: 768px) {

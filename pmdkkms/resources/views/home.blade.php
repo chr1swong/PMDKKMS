@@ -14,11 +14,11 @@
     position: relative;
     background-size: cover;
     background-position: center;
-    padding: 2vw;
+    padding: 5vw 2vw; /* Increased padding for better scaling */
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 30vh; /* Adjusted height for better responsiveness */
+    height: 20vh; /* Adjusted height for better responsiveness */
     color: white;
 }
 
@@ -37,30 +37,63 @@
 }
 
 .hero-text h1 {
-    font-size: 3rem; /* Adjusted for responsiveness */
+    font-size: 3vw; /* Scales with screen width */
     font-weight: bold;
-    margin-bottom: 40px; /* Reduced margin for spacing */
+    margin-bottom: 2vw;
 }
 
 .hero-text p {
-    font-size: 1.5rem;
+    font-size: 1.5vw; /* Scales with screen width */
     margin-top: 10px;
 }
 
 .hero-image img {
-    max-width: 20vw;
+    max-width: 15vw; /* Scaled for larger screens */
     height: auto;
     border-radius: 50%;
     border: 5px solid white;
     margin-left: 2vw;
 }
 
-.hero-image img {
-    max-width: 300px;
-    height: auto;
-    border-radius: 50%;
-    border: 5px solid white;
-    margin-left: 50px;
+@media (max-width: 1024px) {
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        height: 60vh;
+    }
+
+    .hero-text h1 {
+        font-size: 6vw; /* Scales larger for smaller screens */
+    }
+
+    .hero-text p {
+        font-size: 3vw;
+    }
+
+    .hero-image img {
+        max-width: 30vw; /* Scaled down for tablets */
+        margin: 20px 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero {
+        height: auto;
+        padding: 5vw;
+    }
+
+    .hero-text h1 {
+        font-size: 7vw;
+        margin-bottom: 10px;
+    }
+
+    .hero-text p {
+        font-size: 4vw;
+    }
+
+    .hero-image img {
+        max-width: 40vw; /* Scaled down for mobile devices */
+    }
 }
 
 /* Highlights */
@@ -136,27 +169,6 @@
 }
 
 @media (max-width: 768px) {
-    .hero {
-        flex-direction: column;
-        height: auto;
-        text-align: center;
-    }
-
-    .hero-text h1 {
-        font-size: 2rem;
-        margin-bottom: 20px;
-    }
-
-    .hero-text p {
-        font-size: 1.2rem;
-    }
-
-    .hero-image img {
-        max-width: 40vw; /* Scaled down image for mobile */
-        margin-left: 0;
-        margin-top: 20px;
-    }
-
     .highlights .highlight {
         flex-direction: column;
     }
@@ -207,42 +219,22 @@
 }
 
 @media (max-width: 1024px) {
-    .hero-content {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .hero-image {
-        margin: 2vh 0 0 0;
-    }
-
-    .highlights .highlight {
-        flex-direction: column;
-        align-items: center;
-    }
-}
-
-@media (max-width: 768px) {
-    .hero-text h1 {
-        font-size: 2rem;
-    }
-
-    .highlights .highlight img {
-        width: 100%;
-    }
-
     .info-section {
         flex-direction: column;
     }
 }
 
+@media (max-width: 768px) {
+    .info-section {
+        flex-direction: column;
+    }
+}
 </style>
 </head>
 
-    <header>
-        @include('components.header')
-    </header>
-
+<header>
+    @include('components.header')
+</header>
 
 <div class="hero" style="background-image: url('{{ asset('images/homePageImages/homeBanner1.png') }}');">
     <div class="hero-content">
@@ -316,6 +308,5 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <footer>
-        @include('components.footer')
+    @include('components.footer')
 </footer>
-

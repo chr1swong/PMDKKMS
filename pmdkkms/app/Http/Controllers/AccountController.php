@@ -45,7 +45,7 @@ class AccountController extends Controller
         ]);
 
         // Generate the zero-padded membership ID based on account_id
-         $membership_id = str_pad($account->account_id, 6, '0', STR_PAD_LEFT);
+        $membership_id = str_pad($account->account_id, 6, '0', STR_PAD_LEFT);
 
         // Insert into membership table
         DB::table('membership')->insert([
@@ -116,28 +116,52 @@ class AccountController extends Controller
         return redirect('/login'); // Redirect to login after logout
     }
 
-    // Display profile method
+    // Display profile method for Archer
     public function profile()
     {
         $user = Auth::user(); // Get the currently authenticated user
 
-        // return view('archer.profile', compact('user')); // Return the profile view with user data
-        
         // Retrieve membership details based on account_id, if it exists
         $membership = DB::table('membership')->where('account_id', $user->account_id)->first();
     
         // Check if the membership exists
         $membership_id = $membership ? $membership->membership_id : 'N/A'; // If membership is null, fallback to 'N/A'
 
-    return view('archer.profile', ['user' => $user, 'membership_id' => $membership_id]);
+        return view('archer.profile', ['user' => $user, 'membership_id' => $membership_id]);
     }
 
-    // Edit profile method
-    public function editProfile()
+    // Display profile method for Coach
+    public function coachProfile()
     {
         $user = Auth::user(); // Get the currently authenticated user
 
-        // return view('archer.editProfile', compact('user')); // Return the edit profile view with user data
+        // Retrieve membership details based on account_id, if it exists
+        $membership = DB::table('membership')->where('account_id', $user->account_id)->first();
+    
+        // Check if the membership exists
+        $membership_id = $membership ? $membership->membership_id : 'N/A'; // If membership is null, fallback to 'N/A'
+
+        return view('coach.profile', ['user' => $user, 'membership_id' => $membership_id]);
+    }
+
+    // Display profile method for Committee
+    public function committeeProfile()
+    {
+        $user = Auth::user(); // Get the currently authenticated user
+
+        // Retrieve membership details based on account_id, if it exists
+        $membership = DB::table('membership')->where('account_id', $user->account_id)->first();
+    
+        // Check if the membership exists
+        $membership_id = $membership ? $membership->membership_id : 'N/A'; // If membership is null, fallback to 'N/A'
+
+        return view('committee.profile', ['user' => $user, 'membership_id' => $membership_id]);
+    }
+
+    // Edit profile method for Archer
+    public function editProfile()
+    {
+        $user = Auth::user(); // Get the currently authenticated user
 
         // Retrieve membership details based on account_id
         $membership = DB::table('membership')->where('account_id', $user->account_id)->first();
@@ -145,10 +169,38 @@ class AccountController extends Controller
         // Check if the membership exists
         $membership_id = $membership ? $membership->membership_id : 'N/A'; // Fallback to 'N/A' if null
 
-    return view('archer.editProfile', ['user' => $user, 'membership_id' => $membership_id]);
+        return view('archer.editProfile', ['user' => $user, 'membership_id' => $membership_id]);
     }
 
-    // Update profile method
+    // Edit profile method for Coach
+    public function coachEditProfile()
+    {
+        $user = Auth::user(); // Get the currently authenticated user
+
+        // Retrieve membership details based on account_id
+        $membership = DB::table('membership')->where('account_id', $user->account_id)->first();
+    
+        // Check if the membership exists
+        $membership_id = $membership ? $membership->membership_id : 'N/A'; // Fallback to 'N/A' if null
+
+        return view('coach.editProfile', ['user' => $user, 'membership_id' => $membership_id]);
+    }
+
+    // Edit profile method for Committee
+    public function committeeEditProfile()
+    {
+        $user = Auth::user(); // Get the currently authenticated user
+
+        // Retrieve membership details based on account_id
+        $membership = DB::table('membership')->where('account_id', $user->account_id)->first();
+    
+        // Check if the membership exists
+        $membership_id = $membership ? $membership->membership_id : 'N/A'; // Fallback to 'N/A' if null
+
+        return view('committee.editProfile', ['user' => $user, 'membership_id' => $membership_id]);
+    }
+
+    // Update profile method for Archer
     public function updateProfile(Request $request)
     {
         $user = Auth::user(); // Get the currently authenticated user
@@ -170,8 +222,104 @@ class AccountController extends Controller
         return redirect()->route('archer.profile')->with('success', 'Profile updated successfully.');
     }
 
-    // Update profile picture method
+    // Update profile method for Coach
+    public function updateCoachProfile(Request $request)
+    {
+        $user = Auth::user(); // Get the currently authenticated user
+
+        // Validate profile update data
+        $request->validate([
+            'account_full_name' => 'required|string|max:255',
+            'account_email_address' => 'required|string|email|max:255|unique:account,account_email_address,' . $user->account_id . ',account_id', // Exclude current user
+            'account_contact_number' => 'required|string|max:15',
+        ]);
+
+        // Update user profile
+        $user->update([
+            'account_full_name' => $request->account_full_name,
+            'account_email_address' => $request->account_email_address,
+            'account_contact_number' => $request->account_contact_number,
+        ]);
+
+        return redirect()->route('coach.profile')->with('success', 'Profile updated successfully.');
+    }
+
+    // Update profile method for Committee
+    public function updateCommitteeProfile(Request $request)
+    {
+        $user = Auth::user(); // Get the currently authenticated user
+
+        // Validate profile update data
+        $request->validate([
+            'account_full_name' => 'required|string|max:255',
+            'account_email_address' => 'required|string|email|max:255|unique:account,account_email_address,' . $user->account_id . ',account_id', // Exclude current user
+            'account_contact_number' => 'required|string|max:15',
+        ]);
+
+        // Update user profile
+        $user->update([
+            'account_full_name' => $request->account_full_name,
+            'account_email_address' => $request->account_email_address,
+            'account_contact_number' => $request->account_contact_number,
+        ]);
+
+        return redirect()->route('committee.profile')->with('success', 'Profile updated successfully.');
+    }
+
+    // Update profile picture method for Archer
     public function updateProfilePicture(Request $request)
+    {
+        $user = Auth::user();
+
+        // Validate the uploaded profile picture
+        $request->validate([
+            'profile_picture' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', // 2MB limit
+        ]);
+
+        if ($request->hasFile('profile_picture')) {
+            // Store new profile picture
+            $path = $request->file('profile_picture')->store('profile_pictures', 'public');
+
+            // Delete old profile picture if it exists
+            if ($user->account_profile_picture_path) {
+                Storage::disk('public')->delete($user->account_profile_picture_path);
+            }
+
+            // Update user's profile picture path
+            $user->update(['account_profile_picture_path' => $path]);
+        }
+
+        return back()->with('success', 'Profile picture updated successfully.');
+    }
+
+    // Update profile picture method for Coach
+    public function updateCoachProfilePicture(Request $request)
+    {
+        $user = Auth::user();
+
+        // Validate the uploaded profile picture
+        $request->validate([
+            'profile_picture' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', // 2MB limit
+        ]);
+
+        if ($request->hasFile('profile_picture')) {
+            // Store new profile picture
+            $path = $request->file('profile_picture')->store('profile_pictures', 'public');
+
+            // Delete old profile picture if it exists
+            if ($user->account_profile_picture_path) {
+                Storage::disk('public')->delete($user->account_profile_picture_path);
+            }
+
+            // Update user's profile picture path
+            $user->update(['account_profile_picture_path' => $path]);
+        }
+
+        return back()->with('success', 'Profile picture updated successfully.');
+    }
+
+    // Update profile picture method for Committee
+    public function updateCommitteeProfilePicture(Request $request)
     {
         $user = Auth::user();
 

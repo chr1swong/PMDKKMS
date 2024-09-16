@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile</title>
+    <title>Edit Committee Profile</title>
     <!-- External CSS and Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -204,7 +204,7 @@
 <body>
     <!-- Header is included here -->
     <header>
-        @include('components.archerHeader')
+        @include('components.committeeHeader')
     </header>
 
     <!-- Success or Error Message -->
@@ -232,23 +232,17 @@
             <h2>Edit Profile</h2>
             <img src="{{ $user->account_profile_picture_path ? asset('storage/' . $user->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile Picture">
             <!-- Profile Picture Upload Form -->
-            <form action="{{ route('archer.updateProfilePicture') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('committee.updateProfilePicture') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                
-                <!-- Hidden file input -->
                 <input type="file" id="profile-picture-input" name="profile_picture" accept="image/*" style="display: none;">
-                
-                <!-- Button to trigger file input -->
                 <button type="button" onclick="document.getElementById('profile-picture-input').click();">Browse file</button>
-                
-                <!-- Submit button -->
                 <button type="submit" class="btn-update">Upload Picture</button>
             </form>
         </div>
 
         <!-- Profile Details Section -->
-        <form class="profile-details" action="{{ route('archer.updateProfile') }}" method="POST">
+        <form class="profile-details" action="{{ route('committee.updateProfile') }}" method="POST">
             @csrf
             <div>
                 <label for="membership-id">Membership ID</label>
@@ -256,7 +250,7 @@
             </div>
             <div>
                 <label for="role">Role</label>
-                <input type="text" id="role" value="{{ $user->account_role == 1 ? 'Archer' : ($user->account_role == 2 ? 'Coach' : 'Committee Member') }}" disabled>
+                <input type="text" id="role" value="Committee" disabled>
             </div>
             <div class="full-width">
                 <label for="name">Full Name</label>
@@ -271,7 +265,7 @@
                 <input type="text" id="contact-number" name="account_contact_number" value="{{ $user->account_contact_number }}">
             </div>
             <div style="margin-top: 15px;">
-                <a href="{{ url('archer/profile') }}" class="btn-cancel">Cancel</a>
+                <a href="{{ url('committee/profile') }}" class="btn-cancel">Cancel</a>
             </div>
             <div style="margin-top: 15px;">
                 <button type="submit" class="btn-update">Update</button>
@@ -282,7 +276,7 @@
 
         <!-- Change Password Section -->
         <h3>Change Password</h3>
-        <form class="profile-details" action="{{ route('archer.changePassword') }}" method="POST">
+        <form class="profile-details" action="{{ route('committee.changePassword') }}" method="POST">
         @csrf
         <div class="full-width">
             <label for="current-password">Current Password</label>

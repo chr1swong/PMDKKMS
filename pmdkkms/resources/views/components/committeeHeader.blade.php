@@ -125,16 +125,16 @@
                 </a>
                 <ul class="nav-links">
                     <li>
-                        <a href="/coach/dashboard" class="{{ request()->is('coach.dashboard') ? 'active' : '' }}">Home</a>
+                        <a href="/committee/dashboard" class="{{ request()->is('coach.dashboard') ? 'active' : '' }}">Home</a>
                     </li>
                     <li>
                         <a href="/about" class="{{ request()->is('about') ? 'active' : '' }}">Events</a>
                     </li>
                     <li>
-                        <a href="/member" class="{{ request()->is('member') ? 'active' : '' }}">MyArcher</a>
+                        <a href="/member" class="{{ request()->is('member') ? 'active' : '' }}">Members</a>
                     </li>
                     <li>
-                        <a href="/profile" class="{{ request()->is('profile') ? 'active' : '' }}">Profile</a>
+                    <a href="/committee/profile" class="{{ request()->is('committee.profile') ? 'active' : '' }}">Profile</a>
                     </li>
                 </ul>
             </div>

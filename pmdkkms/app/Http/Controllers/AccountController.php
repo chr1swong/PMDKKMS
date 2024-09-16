@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB; 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -41,6 +42,18 @@ class AccountController extends Controller
             'account_membership_status' => '2', // default status
             'account_membership_expiry' => now()->addYear(), // example expiration date
             'account_profile_picture_path' => $profilePicturePath, // Store the uploaded picture path or empty string
+        ]);
+
+        // Generate the zero-padded membership ID based on account_id
+         $membership_id = str_pad($account->account_id, 6, '0', STR_PAD_LEFT);
+
+        // Insert into membership table
+        DB::table('membership')->insert([
+            'membership_id' => $membership_id,
+            'account_id' => $account->account_id,
+            'membership_expiry' => now()->addYear(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return redirect()->route('account.login')->with('success', 'Registration successful! Please log in.');
@@ -107,14 +120,32 @@ class AccountController extends Controller
     public function profile()
     {
         $user = Auth::user(); // Get the currently authenticated user
-        return view('archer.profile', compact('user')); // Return the profile view with user data
+
+        // return view('archer.profile', compact('user')); // Return the profile view with user data
+        
+        // Retrieve membership details based on account_id, if it exists
+        $membership = DB::table('membership')->where('account_id', $user->account_id)->first();
+    
+        // Check if the membership exists
+        $membership_id = $membership ? $membership->membership_id : 'N/A'; // If membership is null, fallback to 'N/A'
+
+    return view('archer.profile', ['user' => $user, 'membership_id' => $membership_id]);
     }
 
     // Edit profile method
     public function editProfile()
     {
         $user = Auth::user(); // Get the currently authenticated user
-        return view('archer.editProfile', compact('user')); // Return the edit profile view with user data
+
+        // return view('archer.editProfile', compact('user')); // Return the edit profile view with user data
+
+        // Retrieve membership details based on account_id
+        $membership = DB::table('membership')->where('account_id', $user->account_id)->first();
+    
+        // Check if the membership exists
+        $membership_id = $membership ? $membership->membership_id : 'N/A'; // Fallback to 'N/A' if null
+
+    return view('archer.editProfile', ['user' => $user, 'membership_id' => $membership_id]);
     }
 
     // Update profile method

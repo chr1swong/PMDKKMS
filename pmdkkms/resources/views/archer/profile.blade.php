@@ -163,7 +163,7 @@
         <div class="profile-details">
             <div>
                 <label for="membership-id">Membership ID</label>
-                <span id="membership-id">{{ $user->id }}</span>
+                <span id="membership-id">{{ $membership_id }}</span>
             </div>
             <div>
                 <label for="role">Role</label>

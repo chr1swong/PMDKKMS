@@ -69,7 +69,7 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function ()
     Route::post('/archer/updateProfile', [AccountController::class, 'updateProfile'])->name('archer.updateProfile');
 
     // Route for handling changing password
-    Route::post('/archer/changePassword', [PasswordResetController::class, 'changePassword'])->name('account.changePassword');
+    Route::post('/archer/changePassword', [PasswordResetController::class, 'changePassword'])->name('archer.changePassword'); // Changed route name here
 
     // Route for updating profile picture
     Route::put('/archer/updateProfilePicture', [AccountController::class, 'updateProfilePicture'])->name('archer.updateProfilePicture');
@@ -80,6 +80,21 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
     Route::get('/coach/dashboard', function () {
         return view('coach.dashboard');
     })->name('coach.dashboard');
+
+    // Coach Profile
+    Route::get('/coach/profile', [AccountController::class, 'coachProfile'])->name('coach.profile');
+
+    // Route for viewing the edit profile form (GET)
+    Route::get('/coach/editProfile', [AccountController::class, 'coachEditProfile'])->name('coach.editProfile'); // Ensure this is present
+
+    // Route for handling profile update (POST)
+    Route::post('/coach/updateProfile', [AccountController::class, 'updateCoachProfile'])->name('coach.updateProfile');
+
+    // Route for handling changing password
+    Route::post('/coach/changePassword', [PasswordResetController::class, 'changePassword'])->name('coach.changePassword');
+
+    // Route for updating profile picture
+    Route::put('/coach/updateProfilePicture', [AccountController::class, 'updateCoachProfilePicture'])->name('coach.updateProfilePicture');
 });
 
 // Routes accessible to committee member only
@@ -87,4 +102,19 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
     Route::get('/committee/dashboard', function () {
         return view('committee.dashboard');
     })->name('committee.dashboard');
+
+    // Committee Profile
+    Route::get('/committee/profile', [AccountController::class, 'committeeProfile'])->name('committee.profile');
+
+    // Route for viewing the edit profile form (GET)
+    Route::get('/committee/editProfile', [AccountController::class, 'committeeEditProfile'])->name('committee.editProfile'); // Ensure this is present
+
+    // Route for handling profile update (POST)
+    Route::post('/committee/updateProfile', [AccountController::class, 'updateCommitteeProfile'])->name('committee.updateProfile');
+
+    // Route for handling changing password
+    Route::post('/committee/changePassword', [PasswordResetController::class, 'changePassword'])->name('committee.changePassword');
+
+    // Route for updating profile picture
+    Route::put('/committee/updateProfilePicture', [AccountController::class, 'updateCommitteeProfilePicture'])->name('committee.updateProfilePicture');
 });

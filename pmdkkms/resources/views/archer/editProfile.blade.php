@@ -252,7 +252,7 @@
             @csrf
             <div>
                 <label for="membership-id">Membership ID</label>
-                <input type="text" id="membership-id" value="{{ $user->id }}" disabled>
+                <input type="text" id="membership-id" value="{{ $membership_id }}" disabled>
             </div>
             <div>
                 <label for="role">Role</label>

@@ -5,6 +5,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Middleware\PreventAuthenticatedAccess;
 use App\Http\Middleware\RoleAccessMiddleware;
+use App\Http\Controllers\EventController;
 
 // Public routes (no authentication required)
 Route::middleware([PreventAuthenticatedAccess::class])->group(function () {
@@ -118,3 +119,8 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
     // Route for updating profile picture
     Route::put('/committee/updateProfilePicture', [AccountController::class, 'updateCommitteeProfilePicture'])->name('committee.updateProfilePicture');
 });
+
+//Events
+Route::get('/committee/events', [EventController::class, 'index'])->name('events.index');
+Route::post('/committee/events', [EventController::class, 'store'])->name('events.store');
+Route::delete('/committee/events/{id}', [EventController::class, 'destroy'])->name('events.destroy');

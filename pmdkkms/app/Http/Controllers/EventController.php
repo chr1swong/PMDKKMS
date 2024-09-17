@@ -46,5 +46,26 @@ class EventController extends Controller
 
         return response()->json(['status' => 'Event deleted successfully!']);
     }
+
+    // New method to handle updating the event date when dragged
+    public function updateDate($id, Request $request)
+    {
+        $event = Event::findOrFail($id);
+        $event->event_date = $request->event_date; // Update event date
+        $event->save();
+
+        return response()->json(['status' => 'Event date updated successfully!']);
+    }
+
+    // New method to handle updating the event duration when resized
+    public function updateDuration($id, Request $request)
+    {
+        $event = Event::findOrFail($id);
+        $event->end_time = $request->end_time; // Update event end time
+        $event->save();
+
+        return response()->json(['status' => 'Event duration updated successfully!']);
+    }
 }
+
 

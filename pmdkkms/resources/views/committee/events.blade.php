@@ -121,7 +121,76 @@
         // FullCalendar initialization
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            events: @json($events) // Removed trailing comma here
+            editable: true, // Allow drag and drop
+            eventResizableFromStart: true, // Allow resizing from start
+            events: @json($events), // Load events from server
+
+            // Allow dragging of events to another date
+            eventDrop: function(info) {
+                var eventId = info.event.id;
+                var newDate = info.event.start.toISOString().slice(0, 10); // Format date
+
+                $.ajax({
+                    url: "/events/" + eventId + "/update-date",
+                    method: "POST",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        event_date: newDate
+                    },
+                    success: function(response) {
+                        alert(response.status); // Show a message that the event was updated
+                    },
+                    error: function() {
+                        alert('Could not update event date.');
+                    }
+                });
+            },
+
+            // Allow resizing of events
+            eventResize: function(info) {
+                var eventId = info.event.id;
+                var newEnd = info.event.end.toISOString().slice(0, 10); // Format date
+
+                $.ajax({
+                    url: "/events/" + eventId + "/update-duration",
+                    method: "POST",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        end_time: newEnd
+                    },
+                    success: function(response) {
+                        alert(response.status); // Show a message that the event was updated
+                    },
+                    error: function() {
+                        alert('Could not update event duration.');
+                    }
+                });
+            },
+
+            // Handle event click to allow editing or deleting
+            eventClick: function(info) {
+                var eventId = info.event.id;
+                if (confirm('Do you want to delete this event?')) {
+                    $.ajax({
+                        url: "/events/" + eventId,
+                        method: "DELETE",
+                        data: {_token: '{{ csrf_token() }}'},
+                        success: function(response) {
+                            info.event.remove(); // Remove event from calendar
+                            alert(response.status); // Show a success message
+                        },
+                        error: function() {
+                            alert('Could not delete the event.');
+                        }
+                    });
+                }
+            },
+
+            // Allow clicking on a date to create an event
+            dateClick: function(info) {
+                const eventDate = info.dateStr;
+                document.querySelector('input[name="event_date"]').value = eventDate;
+            }
         });
 
         calendar.render();
@@ -138,21 +207,6 @@
                 success: function(response) {
                     alert(response.status);
                     location.reload(); // Reload the page to reflect new events
-                }
-            });
-        });
-
-        // AJAX for deleting an event
-        $('.delete-event').on('click', function() {
-            var eventId = $(this).closest('li').data('id');
-
-            $.ajax({
-                url: "/events/" + eventId,
-                method: 'DELETE',
-                data: {_token: '{{ csrf_token() }}'},
-                success: function(response) {
-                    alert(response.status);
-                    location.reload(); // Reload the page to reflect changes
                 }
             });
         });

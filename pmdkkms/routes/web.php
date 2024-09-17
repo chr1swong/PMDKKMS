@@ -124,3 +124,7 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
 Route::get('/committee/events', [EventController::class, 'index'])->name('events.index');
 Route::post('/committee/events', [EventController::class, 'store'])->name('events.store');
 Route::delete('/committee/events/{id}', [EventController::class, 'destroy'])->name('events.destroy');
+
+// New routes for updating event date and duration
+Route::post('/events/{id}/update-date', [EventController::class, 'updateDate'])->name('events.update-date');
+Route::post('/events/{id}/update-duration', [EventController::class, 'updateDuration'])->name('events.update-duration');

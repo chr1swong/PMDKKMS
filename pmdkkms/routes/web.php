@@ -80,6 +80,10 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function ()
 
     //Route for viewing events
     Route::get('/archer/events', [EventController::class, 'viewEvents'])->name('archer.events');
+
+    //Route for viewing events in dashboard
+    Route::get('/archer/dashboard', [EventController::class, 'showArcherDashboard'])->name('archer.dashboard');
+
 });
 
 // Routes accessible to coach only
@@ -105,6 +109,9 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
 
     // Route for viewing events
     Route::get('/coach/events', [EventController::class, 'viewEvents'])->name('coach.events');
+
+    //Route for viewing events in dashboard
+    Route::get('/coach/dashboard', [EventController::class, 'showCoachDashboard'])->name('coach.dashboard');
 });
 
 // Routes accessible to committee member only

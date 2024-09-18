@@ -7,6 +7,7 @@
     <!-- External CSS and Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -27,13 +28,13 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
-            gap: 30px; /* Increase gap between the cards */
+            gap: 30px;
             margin-bottom: 20px;
         }
 
         .card {
             flex: 1;
-            min-width: 220px; /* Minimum width for small screens */
+            min-width: 220px;
             background-color: #f1f1f1;
             border-radius: 10px;
             padding: 20px;
@@ -77,48 +78,39 @@
         .upcoming-events {
             margin-top: 30px;
             display: flex;
-            justify-content: space-between;
-            gap: 30px; /* Add a gap between events and application card */
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .event-card,
-        .application-card {
+        .event-card {
             background-color: #f9f9f9;
             padding: 15px;
             border-radius: 10px;
-            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            width: 45%;
+            transition: all 0.3s ease;
         }
 
-        .event-card{
-            padding-left: 30px;
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
-        .application-card {
-            padding-right: 30px;
-        }
-
-        .event-details,
-        .application-details {
+        .event-details {
             font-size: 16px;
         }
 
-        .event-details i,
-        .application-details i {
+        .event-details i {
             margin-right: 8px;
         }
 
-        .event-action,
-        .application-action {
+        .event-action {
             text-align: right;
         }
 
-        .edit-btn,
-        .view-btn {
+        .edit-btn {
             background-color: #5A67D8;
             color: white;
             padding: 10px 20px;
@@ -128,8 +120,7 @@
             transition: background-color 0.3s ease;
         }
 
-        .edit-btn:hover,
-        .view-btn:hover {
+        .edit-btn:hover {
             background-color: #434190;
         }
 
@@ -139,30 +130,27 @@
                 flex-direction: column;
             }
 
-            .event-card,
-            .application-card {
+            .event-card {
                 flex-direction: column;
                 align-items: flex-start;
                 width: 100%;
             }
 
-            .event-action,
-            .application-action {
+            .event-action {
                 margin-top: 10px;
                 text-align: left;
             }
         }
     </style>
 </head>
-
 <body>
     <!-- Header is included here -->
     <header>
         @include('components.committeeHeader')
     </header>
 
-    <!-- Main Dashboard Content -->
-    <div class="dashboard-container">
+     <!-- Main Dashboard Content -->
+     <div class="dashboard-container">
         <h2>Committee Dashboard</h2>
 
         <!-- Cards Section -->
@@ -190,39 +178,63 @@
 
         <!-- Upcoming Events Section -->
         <div class="upcoming-events">
-            <div class="event-card">
-                <div class="event-details">
-                    <p><i class="fas fa-calendar-alt"></i> Sabah Open</p>
-                    <p><i class="fas fa-clock"></i> 13 January 2024, 8:00am - 11:00am</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Padang Sukma Likas</p>
-                </div>
-                <div class="event-action">
-                    <a href="#" class="edit-btn">Edit</a>
-                </div>
-            </div>
-        
-            <div class="application-card">
-                <div class="application-details">
-                    <p>Pending Request: <span style="color: #FFD700; font-weight: bold;">3</span></p>
-                </div>
-                <div class="application-action">
-                    <a href="#" class="view-btn">View Applications</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="upcoming-events">
-            <div class="event-card">
-                <div class="event-details">
-                    <p><i class="fas fa-calendar-alt"></i> Sabah Open</p>
-                    <p><i class="fas fa-clock"></i> 14 January 2024, 8:00am - 11:00am</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Padang Sukma Likas</p>
-                </div>
-                <div class="event-action">
-                    <a href="#" class="edit-btn">Edit</a>
-                </div>
-            </div>
+        <h3>Upcoming Events</h3>
+            @if($upcomingEvents->isEmpty())
+                <p>No upcoming events available.</p>
+            @else
+                @foreach($upcomingEvents as $event)
+                    <div class="event-card">
+                        <div class="event-details">
+                            <p><i class="fas fa-calendar-alt"></i> {{ \Carbon\Carbon::parse($event->event_date)->format('d M Y') }}</p>
+                            <p><i class="fas fa-clock"></i> {{ \Carbon\Carbon::parse($event->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }}</p>
+                            <p><i class="fas fa-map-marker-alt"></i> {{ $event->location }}</p>
+                        </div>
+                        <div class="event-action">
+                            <a href="javascript:void(0);" class="edit-btn" onclick="sendEventToCalendar(
+                                '{{ $event->id }}', 
+                                '{{ $event->title }}', 
+                                '{{ $event->event_date }}', 
+                                '{{ $event->start_time }}', 
+                                '{{ $event->end_time }}', 
+                                '{{ $event->location }}', 
+                                '{{ $event->color }}'
+                            )">Edit</a>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var editButtons = document.querySelectorAll('.edit-btn');
+            
+            editButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    // Pass the event data to FullCalendar
+                    var eventId = this.getAttribute('data-event-id');
+                    var eventTitle = this.getAttribute('data-event-title');
+                    var eventDate = this.getAttribute('data-event-date');
+                    var startTime = this.getAttribute('data-event-start-time');
+                    var endTime = this.getAttribute('data-event-end-time');
+                    var location = this.getAttribute('data-event-location');
+                    var color = this.getAttribute('data-event-color');
+
+                    // Use window.postMessage to send the event data to committee/events.blade.php
+                    window.postMessage({
+                        type: 'openModal',
+                        eventId: eventId,
+                        title: eventTitle,
+                        eventDate: eventDate,
+                        startTime: startTime,
+                        endTime: endTime,
+                        location: location,
+                        color: color
+                    }, '*');
+                });
+            });
+        });
+    </script>
 </body>
 </html>

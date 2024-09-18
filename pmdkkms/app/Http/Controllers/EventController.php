@@ -151,4 +151,16 @@ class EventController extends Controller
 
         return view('home', compact('upcomingEvents'));
     }
+
+    public function showDashboard()
+    {
+        // Fetch upcoming events from the database
+        $upcomingEvents = Event::where('event_date', '>=', now())
+                            ->orderBy('event_date', 'asc')
+                            ->take(5) // Adjust the limit as needed
+                            ->get(); // Get the collection of upcoming events
+
+        // Pass the events to the view
+        return view('committee.dashboard', compact('upcomingEvents')); // Pass the variable to the view
+    }
 }

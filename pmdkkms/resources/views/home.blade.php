@@ -191,7 +191,7 @@
 
     .news-updates, .upcoming-events {
         width: 45%;
-        padding: 20px;
+        padding: 10px;
     }
 
     .news-updates h3, .upcoming-events h3 {

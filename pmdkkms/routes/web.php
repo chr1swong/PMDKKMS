@@ -13,6 +13,9 @@ Route::middleware([PreventAuthenticatedAccess::class])->group(function () {
         return view('home');
     })->name('home');
 
+    // Route to display the home page with events
+    Route::get('/', [EventController::class, 'showHomePage'])->name('home');
+
     Route::get('/about', function () {
         return view('about');
     })->name('about');

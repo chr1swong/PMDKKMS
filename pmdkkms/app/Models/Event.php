@@ -9,9 +9,10 @@ class Event extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'event_date', 'start_time', 'end_time', 'location'];
+    // These are the fields that can be mass-assigned
+    protected $fillable = ['title', 'event_date', 'start_time', 'end_time', 'location', 'color'];
 
-    // Ensure event_date is cast as a date
+    // Ensure event_date is treated as a date when retrieved
     protected $casts = [
         'event_date' => 'date',
     ];

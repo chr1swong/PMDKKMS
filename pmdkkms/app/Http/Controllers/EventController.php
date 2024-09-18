@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
+    /**
+     * Display a listing of events for the calendar.
+     */
     public function index()
     {
         // Prepare the events array to pass to the view
@@ -14,31 +17,41 @@ class EventController extends Controller
             return [
                 'id' => $event->id,
                 'title' => $event->title,
-                'start' => $event->event_date->toDateString(), // Converts date to string
+                'start' => $event->event_date->toDateString(),
+                'start_time' => $event->start_time,
+                'end_time' => $event->end_time,
+                'location' => $event->location,
+                'color' => $event->color   // Pass the color to FullCalendar
             ];
         });
 
-        // Pass the events array to the view
         return view('committee.events', compact('events'));
     }
 
+    /**
+     * Store a newly created event in the database.
+     */
     public function store(Request $request)
     {
-        // Validate incoming request
+        // Validate the event details including the color
         $request->validate([
             'title' => 'required|string|max:255',
             'event_date' => 'required|date',
             'start_time' => 'required',
             'end_time' => 'required',
             'location' => 'required|string|max:255',
+            'color' => 'required|string'  // Validate the color input
         ]);
 
-        // Store the new event
+        // Store the new event in the database
         Event::create($request->all());
 
         return response()->json(['status' => 'Event added successfully!']);
     }
 
+    /**
+     * Delete the specified event from the database.
+     */
     public function destroy($id)
     {
         $event = Event::findOrFail($id);
@@ -47,25 +60,50 @@ class EventController extends Controller
         return response()->json(['status' => 'Event deleted successfully!']);
     }
 
-    // New method to handle updating the event date when dragged
+    /**
+     * Update the event date when dragged on the calendar.
+     */
     public function updateDate($id, Request $request)
     {
         $event = Event::findOrFail($id);
-        $event->event_date = $request->event_date; // Update event date
+        $event->event_date = $request->event_date;
         $event->save();
 
         return response()->json(['status' => 'Event date updated successfully!']);
     }
 
-    // New method to handle updating the event duration when resized
+    /**
+     * Update the event duration when resized on the calendar.
+     */
     public function updateDuration($id, Request $request)
     {
         $event = Event::findOrFail($id);
-        $event->end_time = $request->end_time; // Update event end time
+        $event->end_time = $request->end_time;
         $event->save();
 
         return response()->json(['status' => 'Event duration updated successfully!']);
     }
+
+    /**
+     * Update the specified event in the database.
+     */
+    public function update($id, Request $request)
+    {
+        $event = Event::findOrFail($id);
+
+        // Validate the updated event details
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'event_date' => 'required|date',
+            'start_time' => 'required',
+            'end_time' => 'required',
+            'location' => 'required|string|max:255',
+            'color' => 'required|string'
+        ]);
+
+        // Update the event in the database
+        $event->update($request->all());
+
+        return response()->json(['status' => 'Event updated successfully!']);
+    }
 }
-
-

@@ -302,156 +302,223 @@
         </div>
     </div>
 
-    <!-- FullCalendar and jQuery Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        var modal = document.getElementById('eventModal');
-        var closeModal = document.getElementsByClassName('close')[0];
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var modal = document.getElementById('eventModal');
+    var closeModal = document.getElementsByClassName('close')[0];
 
-        // FullCalendar initialization
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            editable: true,
-            eventResizableFromStart: true,
-            events: @json($events), // Load events from server
+    // FullCalendar initialization
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        editable: true,
+        eventResizableFromStart: true,
+        events: @json($events), // Load events from server
 
-            // Apply the event color dynamically from data
-            eventDidMount: function(info) {
-                info.el.style.backgroundColor = info.event.extendedProps.color;
+        // Apply the event color dynamically from data
+        eventDidMount: function(info) {
+            info.el.style.backgroundColor = info.event.extendedProps.color;
+        },
+
+        // Open modal on event click and set default color
+        eventClick: function(info) {
+            info.jsEvent.preventDefault();
+            openEventModal(info.event);
+        },
+
+        // Handle event dragging to update event date
+        eventDrop: function(info) {
+            updateEventDate(info.event);
+        },
+
+        // Handle event resizing to update event duration
+        eventResize: function(info) {
+            updateEventDuration(info.event);
+        }
+    });
+
+    calendar.render();
+
+    // Function to open the event modal with the event data
+    function openEventModal(event) {
+        modal.classList.add('show'); // Add 'show' class for smooth opening
+
+        // Adjust date for timezone offset before displaying
+        var eventStart = new Date(event.start.getTime() - (event.start.getTimezoneOffset() * 60000));
+
+        document.getElementById('modalTitleInput').value = event.title;
+        document.getElementById('modalDate').value = eventStart.toISOString().slice(0, 10);
+        document.getElementById('modalStartTime').value = event.extendedProps.start_time;
+        document.getElementById('modalEndTime').value = event.extendedProps.end_time;
+        document.getElementById('modalLocation').value = event.extendedProps.location;
+        document.getElementById('modalColor').value = event.extendedProps.color;
+        document.getElementById('modalEventId').value = event.id;
+    }
+
+    // Function to update event date via AJAX
+    function updateEventDate(event) {
+        var eventId = event.id;
+
+        // Adjust date for timezone before sending it
+        var newDate = new Date(event.start.getTime() - (event.start.getTimezoneOffset() * 60000))
+                      .toISOString().split("T")[0];  // Get date part only
+
+        $.ajax({
+            url: "/events/" + eventId + "/update-date",
+            method: "POST",
+            data: {
+                _token: '{{ csrf_token() }}',
+                event_date: newDate
             },
-
-            // Open modal on event click and set default color
-            eventClick: function(info) {
-                info.jsEvent.preventDefault();
-                modal.classList.add('show'); // Add 'show' class for smooth opening
-                document.getElementById('modalTitleInput').value = info.event.title;
-                document.getElementById('modalDate').value = info.event.start.toISOString().slice(0, 10);
-                document.getElementById('modalStartTime').value = info.event.extendedProps.start_time;
-                document.getElementById('modalEndTime').value = info.event.extendedProps.end_time;
-                document.getElementById('modalLocation').value = info.event.extendedProps.location;
-                
-                // Set the color picker value to the event color
-                document.getElementById('modalColor').value = info.event.extendedProps.color;
-                
-                document.getElementById('modalEventId').value = info.event.id;
+            success: function(response) {
+                alert(response.status);
             },
-
-            // Handle event dragging to update event date
-            eventDrop: function(info) {
-                var eventId = info.event.id;
-
-                // Convert date to the correct format (YYYY-MM-DD)
-                var newDate = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000))
-                              .toISOString().split("T")[0];  // Get date part only
-
-                $.ajax({
-                    url: "/events/" + eventId + "/update-date",
-                    method: "POST",
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        event_date: newDate
-                    },
-                    success: function(response) {
-                        alert(response.status);
-                    },
-                    error: function() {
-                        alert('Could not update event date.');
-                    }
-                });
-            },
-
-            // Handle event resizing to update event duration
-            eventResize: function(info) {
-                var eventId = info.event.id;
-                var newEndTime = info.event.extendedProps.end_time;
-
-                $.ajax({
-                    url: "/events/" + eventId + "/update-duration",
-                    method: "POST",
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        end_time: newEndTime
-                    },
-                    success: function(response) {
-                        alert(response.status);
-                    },
-                    error: function() {
-                        alert('Could not update event duration.');
-                    }
-                });
+            error: function() {
+                alert('Could not update event date.');
             }
         });
+    }
 
-        calendar.render();
+    // Function to update event duration via AJAX
+    function updateEventDuration(event) {
+        var eventId = event.id;
+        var newEndTime = event.extendedProps.end_time;
 
-        // Close modal functionality
-        closeModal.onclick = function() {
+        $.ajax({
+            url: "/events/" + eventId + "/update-duration",
+            method: "POST",
+            data: {
+                _token: '{{ csrf_token() }}',
+                end_time: newEndTime
+            },
+            success: function(response) {
+                alert(response.status);
+            },
+            error: function() {
+                alert('Could not update event duration.');
+            }
+        });
+    }
+
+    // Close modal functionality
+    closeModal.onclick = function() {
+        modal.classList.remove('show'); // Remove 'show' class for smooth closing
+    };
+
+    // Close modal on outside click
+    window.onclick = function(event) {
+        if (event.target == modal) {
             modal.classList.remove('show'); // Remove 'show' class for smooth closing
-        };
+        }
+    };
 
-        // Close modal on outside click
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.classList.remove('show'); // Remove 'show' class for smooth closing
+    // Handle communication from dashboard to open modal with specific event
+    window.addEventListener('message', function (event) {
+        if (event.data.type === 'openModal') {
+            // Simulate a FullCalendar event click
+            var matchingEvent = calendar.getEventById(event.data.eventId);
+            if (matchingEvent) {
+                // Fill in event data to ensure it syncs properly
+                matchingEvent.setProp('title', event.data.title);
+                matchingEvent.setStart(event.data.eventDate);
+                matchingEvent.setExtendedProp('start_time', event.data.startTime);
+                matchingEvent.setExtendedProp('end_time', event.data.endTime);
+                matchingEvent.setExtendedProp('location', event.data.location);
+                matchingEvent.setExtendedProp('color', event.data.color);
+
+                // Open the modal
+                openEventModal(matchingEvent);
             }
-        };
+        }
+    });
 
-        // AJAX for adding a new event
-        $('#add-event-form').on('submit', function(e) {
-            e.preventDefault();
-            var formData = $(this).serialize();
+    // AJAX for adding a new event
+    $('#add-event-form').on('submit', function(e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
 
-            $.ajax({
-                url: "{{ route('events.store') }}",
-                method: 'POST',
-                data: formData,
-                success: function(response) {
-                    alert(response.status);
-                    calendar.refetchEvents(); // Refresh calendar to reflect new event
-                }
-            });
-        });
-
-        // AJAX for updating an existing event
-        $('#edit-event-form').on('submit', function(e) {
-            e.preventDefault();
-            var formData = $(this).serialize();
-            var eventId = $('#modalEventId').val();
-
-            $.ajax({
-                url: "/events/" + eventId + "/update",
-                method: 'POST',
-                data: formData,
-                success: function(response) {
-                    alert(response.status);
-                    calendar.refetchEvents(); // Refresh calendar to reflect updated event
-                    modal.classList.remove('show'); // Close modal
-                }
-            });
-        });
-
-        // AJAX for deleting an event
-        $('#delete-event').on('click', function() {
-            var eventId = $('#modalEventId').val();
-
-            if (confirm('Are you sure you want to delete this event?')) {
-                $.ajax({
-                    url: "/events/" + eventId,
-                    method: "DELETE",
-                    data: {_token: '{{ csrf_token() }}'},
-                    success: function(response) {
-                        alert(response.status);
-                        calendar.refetchEvents(); // Refresh calendar after event deletion
-                        modal.classList.remove('show'); // Close modal
-                    }
-                });
+        $.ajax({
+            url: "{{ route('events.store') }}",
+            method: 'POST',
+            data: formData,
+            success: function(response) {
+                alert(response.status);
+                calendar.refetchEvents(); // Refresh calendar to reflect new event
             }
         });
     });
-    </script>
+
+    // AJAX for updating an existing event
+    $('#edit-event-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        var eventId = $('#modalEventId').val();
+
+        // Directly retrieve the date value from the input field
+        var eventDate = $('#modalDate').val(); // This is already in the correct YYYY-MM-DD format
+
+        var formData = {
+            _token: '{{ csrf_token() }}',
+            title: $('#modalTitleInput').val(),
+            event_date: eventDate, // Directly use the date input value
+            start_time: $('#modalStartTime').val(),
+            end_time: $('#modalEndTime').val(),
+            location: $('#modalLocation').val(),
+            color: $('#modalColor').val(),
+        };
+
+        $.ajax({
+            url: "/events/" + eventId + "/update",
+            method: 'POST',
+            data: formData,
+            success: function(response) {
+                alert(response.status);
+                calendar.refetchEvents(); // Refresh calendar to reflect updated event
+                modal.classList.remove('show'); // Close modal
+            },
+            error: function() {
+                alert('Could not update event.');
+            }
+        });
+    });
+
+    // AJAX for deleting an event
+    $('#delete-event').on('click', function() {
+        var eventId = $('#modalEventId').val();
+
+        if (confirm('Are you sure you want to delete this event?')) {
+            $.ajax({
+                url: "/events/" + eventId,
+                method: "DELETE",
+                data: {_token: '{{ csrf_token() }}'},
+                success: function(response) {
+                    alert(response.status);
+                    calendar.refetchEvents(); // Refresh calendar after event deletion
+                    modal.classList.remove('show'); // Close modal
+                }
+            });
+        }
+    });
+
+    // Function to send event from dashboard to FullCalendar
+    function sendEventToCalendar(eventId, title, eventDate, startTime, endTime, location, color) {
+        // Post message to the events page
+        window.postMessage({
+            type: 'openModal',
+            eventId: eventId,
+            title: title,
+            eventDate: eventDate,
+            startTime: startTime,
+            endTime: endTime,
+            location: location,
+            color: color
+        }, '*');  // Replace '*' with the origin if security concerns exist.
+    }
+});
+</script>
+
 </body>
 </html>

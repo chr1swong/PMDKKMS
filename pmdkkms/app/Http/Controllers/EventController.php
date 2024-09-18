@@ -140,4 +140,15 @@ class EventController extends Controller
 
         return response()->json(['status' => 'Event updated successfully!']);
     }
+
+    public function showHomePage()
+    {
+        // Fetch upcoming events from the database
+        $upcomingEvents = Event::where('event_date', '>=', now())
+                            ->orderBy('event_date', 'asc')
+                            ->take(5) // Limit to the next 5 upcoming events
+                            ->get();
+
+        return view('home', compact('upcomingEvents'));
+    }
 }

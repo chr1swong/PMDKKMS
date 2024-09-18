@@ -120,11 +120,12 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
     Route::put('/committee/updateProfilePicture', [AccountController::class, 'updateCommitteeProfilePicture'])->name('committee.updateProfilePicture');
 });
 
-//Events
-Route::get('/committee/events', [EventController::class, 'index'])->name('events.index');
-Route::post('/committee/events', [EventController::class, 'store'])->name('events.store');
-Route::delete('/committee/events/{id}', [EventController::class, 'destroy'])->name('events.destroy');
-
-// New routes for updating event date and duration
-Route::post('/events/{id}/update-date', [EventController::class, 'updateDate'])->name('events.update-date');
-Route::post('/events/{id}/update-duration', [EventController::class, 'updateDuration'])->name('events.update-duration');
+// Events Routes
+Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function () {
+    Route::get('/committee/events', [EventController::class, 'index'])->name('events.index');  // Event listing
+    Route::post('/committee/events', [EventController::class, 'store'])->name('events.store'); // Event creation
+    Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('events.destroy'); // Event deletion
+    Route::post('/events/{id}/update-date', [EventController::class, 'updateDate'])->name('events.update-date'); // Update event date when dragged
+    Route::post('/events/{id}/update-duration', [EventController::class, 'updateDuration'])->name('events.update-duration'); // Update event duration when resized
+    Route::post('/events/{id}/update', [EventController::class, 'update'])->name('events.update'); // Update event details
+});

@@ -26,20 +26,87 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .cards {
+        .add-event-form {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 30px;
+            gap: 15px;
+            align-items: center;
             margin-bottom: 20px;
         }
 
-        .event-card {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-right: 20px;
+        }
+
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+
+        .form-group input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9em;
+            min-width: 180px;
+        }
+
+        /* Make the color input a small square */
+        .form-group input[type="color"],
+        .modal-content input[type="color"] {
+            padding: 0;
+            border: none;
+            height: 30px;
+            width: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: transparent;
+        }
+
+        /* Align color picker and label */
+        .form-group.color-picker-group {
+            display: flex;
+            align-items: left;
+            gap: 0px;
+        }
+
+        /* Center buttons below event color picker */
+        .modal-content .action-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 15px;
+        }
+
+        .modal-content .action-buttons button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+
+        .update-btn {
+            background-color: #48BB78;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .update-btn:hover {
+            background-color: #38A169;
+        }
+
+        .delete-btn {
+            background-color: #E53E3E;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: #C53030;
         }
 
         .calendar-container {
@@ -50,37 +117,100 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .add-event-form {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .add-event-form input, .add-event-form button {
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transform: scale(0.95);
+            animation: modalOpen 0.3s forwards;
+        }
+
+        @keyframes modalOpen {
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .modal-content input,
+        .modal-content label {
+            width: 100%;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .modal-content input {
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            margin-right: 10px;
         }
 
-        .add-event-form button {
-            background-color: #5A67D8;
-            color: white;
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 1.5em;
+            color: #aaa;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #555;
+        }
+
+        /* Style for the Add Event Button */
+        .add-event-btn {
+            padding: 12px 25px;
+            background-color: #483EA8; 
+            color: white; /* White text */
+            border: none;
+            border-radius: 5px; /* Rounded corners */
+            font-size: 1em;
             font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
-        /* Media Queries for Responsiveness */
-        @media (max-width: 768px) {
-            .add-event-form {
-                flex-direction: column;
-            }
-
-            .add-event-form input, .add-event-form button {
-                margin-bottom: 10px;
-                width: 100%;
-            }
+        .add-event-btn:hover {
+            background-color: #627DFF; 
+            transform: scale(1.05); /* Grow slightly when hovered */
         }
+
+        .add-event-btn:active {
+            background-color: #483EA8; /* New active color */
+            transform: scale(1); /* Return to original size when clicked */
+        }
+
     </style>
 </head>
 <body>
@@ -89,46 +219,134 @@
         @include('components.committeeHeader')
     </header>
 
-    <!-- Main Content -->
+    <!-- Main content section for dashboard and calendar -->
     <div class="dashboard-container">
         <h2>Committee Events</h2>
 
-        <!-- Add Event Form -->
+        <!-- Add Event Form (Aligned horizontally with labels) -->
         <form id="add-event-form" class="add-event-form">
             @csrf
-            <input type="text" name="title" placeholder="Event Title" required>
-            <input type="date" name="event_date" required>
-            <input type="time" name="start_time" required>
-            <input type="time" name="end_time" required>
-            <input type="text" name="location" placeholder="Event Location" required>
-            <button type="submit">Add Event</button>
+            <div class="form-group">
+                <label for="title">Event Title</label>
+                <input type="text" name="title" id="title" placeholder="Event Title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="event_date">Date</label>
+                <input type="date" name="event_date" id="event_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="start_time">Start Time</label>
+                <input type="time" name="start_time" id="start_time" required>
+            </div>
+
+            <div class="form-group">
+                <label for="end_time">End Time</label>
+                <input type="time" name="end_time" id="end_time" required>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" name="location" id="location" placeholder="Event Location" required>
+            </div>
+
+            <div class="form-group color-picker-group">
+                <label for="color">Choose Event Color</label>
+                <input type="color" id="color" name="color" value="#5A67D8" required>
+            </div>
+
+            <!-- Updated button style -->
+            <button type="submit" class="add-event-btn">Add Event</button>
         </form>
 
-        <!-- Calendar -->
+        <!-- FullCalendar display -->
         <div class="calendar-container">
             <div id="calendar"></div>
         </div>
     </div>
 
-    <!-- FullCalendar and AJAX Scripts -->
+    <!-- Modal for editing or deleting event -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Event Details</h2>
+
+            <!-- Event Details Form inside the modal -->
+            <form id="edit-event-form">
+                @csrf
+                <input type="hidden" name="event_id" id="modalEventId">
+                <label for="modalTitleInput">Title:</label>
+                <input type="text" name="title" id="modalTitleInput" required>
+                <label for="modalDate">Date:</label>
+                <input type="date" name="event_date" id="modalDate" required>
+                <label for="modalStartTime">Start Time:</label>
+                <input type="time" name="start_time" id="modalStartTime" required>
+                <label for="modalEndTime">End Time:</label>
+                <input type="time" name="end_time" id="modalEndTime" required>
+                <label for="modalLocation">Location:</label>
+                <input type="text" name="location" id="modalLocation" required>
+
+                <!-- Event Color Picker with alignment -->
+                <div class="form-group color-picker-group">
+                    <label for="modalColor">Event Color:</label>
+                    <input type="color" name="color" id="modalColor" required>
+                </div>
+
+                <!-- Action Buttons centered below the color picker -->
+                <div class="action-buttons">
+                    <button type="submit" class="update-btn">Update Event</button>
+                    <button type="button" id="delete-event" class="delete-btn">Delete Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FullCalendar and jQuery Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
+        var modal = document.getElementById('eventModal');
+        var closeModal = document.getElementsByClassName('close')[0];
 
         // FullCalendar initialization
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            editable: true, // Allow drag and drop
-            eventResizableFromStart: true, // Allow resizing from start
+            editable: true,
+            eventResizableFromStart: true,
             events: @json($events), // Load events from server
 
-            // Allow dragging of events to another date
+            // Apply the event color dynamically from data
+            eventDidMount: function(info) {
+                info.el.style.backgroundColor = info.event.extendedProps.color;
+            },
+
+            // Open modal on event click and set default color
+            eventClick: function(info) {
+                info.jsEvent.preventDefault();
+                modal.classList.add('show'); // Add 'show' class for smooth opening
+                document.getElementById('modalTitleInput').value = info.event.title;
+                document.getElementById('modalDate').value = info.event.start.toISOString().slice(0, 10);
+                document.getElementById('modalStartTime').value = info.event.extendedProps.start_time;
+                document.getElementById('modalEndTime').value = info.event.extendedProps.end_time;
+                document.getElementById('modalLocation').value = info.event.extendedProps.location;
+                
+                // Set the color picker value to the event color
+                document.getElementById('modalColor').value = info.event.extendedProps.color;
+                
+                document.getElementById('modalEventId').value = info.event.id;
+            },
+
+            // Handle event dragging to update event date
             eventDrop: function(info) {
                 var eventId = info.event.id;
-                var newDate = info.event.start.toISOString().slice(0, 10); // Format date
+
+                // Convert date to the correct format (YYYY-MM-DD)
+                var newDate = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000))
+                              .toISOString().split("T")[0];  // Get date part only
 
                 $.ajax({
                     url: "/events/" + eventId + "/update-date",
@@ -138,7 +356,7 @@
                         event_date: newDate
                     },
                     success: function(response) {
-                        alert(response.status); // Show a message that the event was updated
+                        alert(response.status);
                     },
                     error: function() {
                         alert('Could not update event date.');
@@ -146,69 +364,92 @@
                 });
             },
 
-            // Allow resizing of events
+            // Handle event resizing to update event duration
             eventResize: function(info) {
                 var eventId = info.event.id;
-                var newEnd = info.event.end.toISOString().slice(0, 10); // Format date
+                var newEndTime = info.event.extendedProps.end_time;
 
                 $.ajax({
                     url: "/events/" + eventId + "/update-duration",
                     method: "POST",
                     data: {
                         _token: '{{ csrf_token() }}',
-                        end_time: newEnd
+                        end_time: newEndTime
                     },
                     success: function(response) {
-                        alert(response.status); // Show a message that the event was updated
+                        alert(response.status);
                     },
                     error: function() {
                         alert('Could not update event duration.');
                     }
                 });
-            },
-
-            // Handle event click to allow editing or deleting
-            eventClick: function(info) {
-                var eventId = info.event.id;
-                if (confirm('Do you want to delete this event?')) {
-                    $.ajax({
-                        url: "/events/" + eventId,
-                        method: "DELETE",
-                        data: {_token: '{{ csrf_token() }}'},
-                        success: function(response) {
-                            info.event.remove(); // Remove event from calendar
-                            alert(response.status); // Show a success message
-                        },
-                        error: function() {
-                            alert('Could not delete the event.');
-                        }
-                    });
-                }
-            },
-
-            // Allow clicking on a date to create an event
-            dateClick: function(info) {
-                const eventDate = info.dateStr;
-                document.querySelector('input[name="event_date"]').value = eventDate;
             }
         });
 
         calendar.render();
 
-        // AJAX for adding an event
+        // Close modal functionality
+        closeModal.onclick = function() {
+            modal.classList.remove('show'); // Remove 'show' class for smooth closing
+        };
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.classList.remove('show'); // Remove 'show' class for smooth closing
+            }
+        };
+
+        // AJAX for adding a new event
         $('#add-event-form').on('submit', function(e) {
             e.preventDefault();
-
             var formData = $(this).serialize();
+
             $.ajax({
                 url: "{{ route('events.store') }}",
                 method: 'POST',
                 data: formData,
                 success: function(response) {
                     alert(response.status);
-                    location.reload(); // Reload the page to reflect new events
+                    calendar.refetchEvents(); // Refresh calendar to reflect new event
                 }
             });
+        });
+
+        // AJAX for updating an existing event
+        $('#edit-event-form').on('submit', function(e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+            var eventId = $('#modalEventId').val();
+
+            $.ajax({
+                url: "/events/" + eventId + "/update",
+                method: 'POST',
+                data: formData,
+                success: function(response) {
+                    alert(response.status);
+                    calendar.refetchEvents(); // Refresh calendar to reflect updated event
+                    modal.classList.remove('show'); // Close modal
+                }
+            });
+        });
+
+        // AJAX for deleting an event
+        $('#delete-event').on('click', function() {
+            var eventId = $('#modalEventId').val();
+
+            if (confirm('Are you sure you want to delete this event?')) {
+                $.ajax({
+                    url: "/events/" + eventId,
+                    method: "DELETE",
+                    data: {_token: '{{ csrf_token() }}'},
+                    success: function(response) {
+                        alert(response.status);
+                        calendar.refetchEvents(); // Refresh calendar after event deletion
+                        modal.classList.remove('show'); // Close modal
+                    }
+                });
+            }
         });
     });
     </script>

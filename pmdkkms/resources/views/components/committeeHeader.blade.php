@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Archery Association</title>
+    <!-- Font Awesome for dropdown arrow icon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
         /* General Styles */
         body {
@@ -29,11 +31,11 @@
         /* Container for the entire nav section */
         .container {
             display: flex;
-            justify-content: space-between; /* Space between logo/nav links and login button */
+            justify-content: space-between;
             align-items: center;
             width: auto;
             margin: 0;
-            padding: 10px 10px; /* Smaller padding for a smaller header */
+            padding: 10px 10px;
         }
 
         /* Navigation container for logo and links */
@@ -44,13 +46,13 @@
 
         /* Style for the logo */
         .logo-container {
-            flex-shrink: 0; /* Prevents the logo from shrinking */
+            flex-shrink: 0;
         }
 
         .headerLogo {
-            height: 80px; /* Adjust the height to make the header smaller */
-            width: auto; /* Maintains aspect ratio */
-            margin-right: 30px; /* Adds space between logo and nav links */
+            height: 80px;
+            width: auto;
+            margin-right: 30px;
         }
 
         /* Navigation links */
@@ -62,21 +64,21 @@
         }
 
         .nav-links li {
-            margin-left: 0px; /* Space between links */
+            margin-left: 0px;
         }
 
         .nav-links li a {
-            color: white; /* Set the link color */
+            color: white;
             font-weight: bold;
             text-transform: uppercase;
             padding: 8px 15px;
             border-radius: 4px;
             transition: background-color 0.3s;
-            font-size: 20px; /* Increase the font size */
+            font-size: 20px;
         }
 
         .nav-links li a:hover, .nav-links li a.active {
-            background-color: #0056b3; /* Change background color on hover and active */
+            background-color: #0056b3;
         }
 
         .header-login-button {
@@ -87,12 +89,68 @@
             text-transform: uppercase;
             transition: background-color 0.3s;
             font-size: 20px;
-            align-items: center; /* Aligns icon and text */
+            align-items: center;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #0056b3;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            padding: 0;
+            z-index: 100;
+        }
+
+        .dropdown-menu li {
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .dropdown-menu li:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            text-transform: none;
+            font-size: 16px;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        /* Hover Effects for Attendance and Performance */
+        .dropdown-menu a[href="/committee/member/attendance"]:hover {
+            background-color: #1a73e8;
+        }
+
+        .dropdown-menu a[href="/committee/member/performance"]:hover {
+            background-color: #34a853;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        /* Dropdown arrow styling */
+        .dropdown > a i {
+            margin-left: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        /* Rotate the dropdown icon on hover */
+        .dropdown:hover > a i {
+            transform: rotate(180deg);
         }
 
         /* Login Button Styles */
         .login-container {
-            margin-left: auto; /* Pushes the login button to the right */
+            margin-left: auto;
         }
 
         .login-button {
@@ -103,12 +161,12 @@
             font-weight: bold;
             text-transform: uppercase;
             transition: background-color 0.3s;
-            align-items: center; /* Aligns icon and text */
+            align-items: center;
         }
 
         .login-button i {
-            margin-right: 8px; /* Space between icon and text */
-            font-size: 16px; /* Adjust icon size if needed */
+            margin-right: 8px;
+            font-size: 16px;
         }
 
         .login-button:hover {
@@ -130,11 +188,22 @@
                     <li>
                         <a href="/committee/events" class="{{ request()->is('committee.events') ? 'active' : '' }}">Events</a>
                     </li>
-                    <li>
-                        <a href="/member" class="{{ request()->is('member') ? 'active' : '' }}">Members</a>
+                    <!-- Members Dropdown with Icon -->
+                    <li class="dropdown">
+                        <a href="/committee/member" class="{{ request()->is('member.events') ? 'active' : '' }}">
+                            Members <i class="fas fa-chevron-down"></i> <!-- Dropdown arrow icon -->
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="/committee/attendance">Attendance</a>
+                            </li>
+                            <li>
+                                <a href="/committee/performance">Performance</a>
+                            </li>
+                        </ul>
                     </li>
                     <li>
-                    <a href="/committee/profile" class="{{ request()->is('committee.profile') ? 'active' : '' }}">Profile</a>
+                        <a href="/committee/profile" class="{{ request()->is('committee.profile') ? 'active' : '' }}">Profile</a>
                     </li>
                 </ul>
             </div>

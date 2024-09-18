@@ -221,7 +221,7 @@
 
     <!-- Main content section for dashboard and calendar -->
     <div class="dashboard-container">
-        <h2>Committee Events</h2>
+        <h2>Add Event</h2>
 
         <!-- Add Event Form (Aligned horizontally with labels) -->
         <form id="add-event-form" class="add-event-form">
@@ -252,7 +252,7 @@
             </div>
 
             <div class="form-group color-picker-group">
-                <label for="color">Choose Event Color</label>
+                <label for="color">Choose Color</label>
                 <input type="color" id="color" name="color" value="#5A67D8" required>
             </div>
 

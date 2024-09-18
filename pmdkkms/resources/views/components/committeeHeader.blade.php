@@ -128,7 +128,7 @@
                         <a href="/committee/dashboard" class="{{ request()->is('coach.dashboard') ? 'active' : '' }}">Home</a>
                     </li>
                     <li>
-                        <a href="/committee/events" class="{{ request()->is('committee/events') ? 'active' : '' }}">Events</a>
+                        <a href="/committee/events" class="{{ request()->is('committee.events') ? 'active' : '' }}">Events</a>
                     </li>
                     <li>
                         <a href="/member" class="{{ request()->is('member') ? 'active' : '' }}">Members</a>

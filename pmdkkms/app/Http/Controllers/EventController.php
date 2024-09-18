@@ -9,6 +9,7 @@ class EventController extends Controller
 {
     /**
      * Display a listing of events for the calendar.
+     * Committee has full access, others have view-only access.
      */
     public function index()
     {
@@ -29,7 +30,36 @@ class EventController extends Controller
     }
 
     /**
+     * Display events in a view-only mode for archers and coaches.
+     */
+    public function viewEvents()
+    {
+        // Prepare the events array to pass to the view
+        $events = Event::all()->map(function ($event) {
+            return [
+                'id' => $event->id,
+                'title' => $event->title,
+                'start' => $event->event_date->toDateString(),
+                'start_time' => $event->start_time,
+                'end_time' => $event->end_time,
+                'location' => $event->location,
+                'color' => $event->color   // Pass the color to FullCalendar
+            ];
+        });
+
+        // Check user role and return the appropriate view (archer or coach)
+        if (auth()->user()->account_role == 1) {
+            return view('archer.events', compact('events'));
+        } elseif (auth()->user()->account_role == 2) {
+            return view('coach.events', compact('events'));
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
+    /**
      * Store a newly created event in the database.
+     * Only for committee members.
      */
     public function store(Request $request)
     {
@@ -51,6 +81,7 @@ class EventController extends Controller
 
     /**
      * Delete the specified event from the database.
+     * Only for committee members.
      */
     public function destroy($id)
     {
@@ -62,6 +93,7 @@ class EventController extends Controller
 
     /**
      * Update the event date when dragged on the calendar.
+     * Only for committee members.
      */
     public function updateDate($id, Request $request)
     {
@@ -74,6 +106,7 @@ class EventController extends Controller
 
     /**
      * Update the event duration when resized on the calendar.
+     * Only for committee members.
      */
     public function updateDuration($id, Request $request)
     {
@@ -86,6 +119,7 @@ class EventController extends Controller
 
     /**
      * Update the specified event in the database.
+     * Only for committee members.
      */
     public function update($id, Request $request)
     {

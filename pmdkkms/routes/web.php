@@ -74,6 +74,9 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function ()
 
     // Route for updating profile picture
     Route::put('/archer/updateProfilePicture', [AccountController::class, 'updateProfilePicture'])->name('archer.updateProfilePicture');
+
+    //Route for viewing events
+    Route::get('/archer/events', [EventController::class, 'viewEvents'])->name('archer.events');
 });
 
 // Routes accessible to coach only
@@ -96,6 +99,9 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
 
     // Route for updating profile picture
     Route::put('/coach/updateProfilePicture', [AccountController::class, 'updateCoachProfilePicture'])->name('coach.updateProfilePicture');
+
+    // Route for viewing events
+    Route::get('/coach/events', [EventController::class, 'viewEvents'])->name('coach.events');
 });
 
 // Routes accessible to committee member only
@@ -118,10 +124,8 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
 
     // Route for updating profile picture
     Route::put('/committee/updateProfilePicture', [AccountController::class, 'updateCommitteeProfilePicture'])->name('committee.updateProfilePicture');
-});
 
-// Events Routes
-Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function () {
+    //Route for Events
     Route::get('/committee/events', [EventController::class, 'index'])->name('events.index');  // Event listing
     Route::post('/committee/events', [EventController::class, 'store'])->name('events.store'); // Event creation
     Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('events.destroy'); // Event deletion
@@ -129,3 +133,5 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
     Route::post('/events/{id}/update-duration', [EventController::class, 'updateDuration'])->name('events.update-duration'); // Update event duration when resized
     Route::post('/events/{id}/update', [EventController::class, 'update'])->name('events.update'); // Update event details
 });
+
+

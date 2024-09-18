@@ -128,7 +128,7 @@
                         <a href="/coach/dashboard" class="{{ request()->is('coach.dashboard') ? 'active' : '' }}">Home</a>
                     </li>
                     <li>
-                        <a href="/about" class="{{ request()->is('about') ? 'active' : '' }}">Events</a>
+                        <a href="/coach/events" class="{{ request()->is('coach.events') ? 'active' : '' }}">Events</a>
                     </li>
                     <li>
                         <a href="/myArcher" class="{{ request()->is('member') ? 'active' : '' }}">MyArcher</a>

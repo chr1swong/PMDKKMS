@@ -25,22 +25,22 @@
 
         .cards {
             display: flex;
-            flex-wrap: wrap; /* Enable wrapping for responsiveness */
+            flex-wrap: wrap;
             justify-content: space-between;
-            gap: 30px; /* Increase gap between the cards */
+            gap: 30px;
             margin-bottom: 20px;
         }
 
         .card {
             flex: 1;
-            min-width: 220px; /* Minimum width for small screens */
+            min-width: 220px;
             background-color: #f1f1f1;
             border-radius: 10px;
             padding: 20px;
             text-align: center;
             color: white;
             position: relative;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Adding shadow for a card effect */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .card i {
@@ -101,24 +101,10 @@
             text-align: right;
         }
 
-        .edit-btn {
-            background-color: #5A67D8;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        .edit-btn:hover {
-            background-color: #434190;
-        }
-
         /* Media Queries for Responsiveness */
         @media (max-width: 768px) {
             .cards {
-                flex-direction: column; /* Stack cards vertically on smaller screens */
+                flex-direction: column;
             }
 
             .event-card {
@@ -168,29 +154,19 @@
         <!-- Upcoming Events Section -->
         <div class="upcoming-events">
             <h3>Upcoming Events</h3>
-
-            <div class="event-card">
-                <div class="event-details">
-                    <p><i class="fas fa-calendar-alt"></i> Sabah Open</p>
-                    <p><i class="fas fa-clock"></i> 13 January 2024, 8:00am - 11:00am</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Padang Sukma Likas</p>
-                </div>
-                <div class="event-action">
-                    <a href="#" class="edit-btn">Edit</a>
-                </div>
-            </div>
-
-            <div class="event-card">
-                <div class="event-details">
-                    <p><i class="fas fa-calendar-alt"></i> Sabah Open</p>
-                    <p><i class="fas fa-clock"></i> 14 January 2024, 8:00am - 11:00am</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Padang Sukma Likas</p>
-                </div>
-                <div class="event-action">
-                    <a href="#" class="edit-btn">Edit</a>
-                </div>
-            </div>
-
+            @if($upcomingEvents->isEmpty())
+                <p>No upcoming events available.</p>
+            @else
+                @foreach($upcomingEvents as $event)
+                    <div class="event-card">
+                        <div class="event-details">
+                            <p><i class="fas fa-calendar-alt"></i> {{ \Carbon\Carbon::parse($event->event_date)->format('d M Y') }}</p>
+                            <p><i class="fas fa-clock"></i> {{ \Carbon\Carbon::parse($event->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }}</p>
+                            <p><i class="fas fa-map-marker-alt"></i> {{ $event->location }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
         </div>
     </div>
 </body>

@@ -25,7 +25,7 @@
 
         .cards {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* Enable wrapping for responsiveness */
             justify-content: space-between;
             gap: 30px; /* Increase gap between the cards */
             margin-bottom: 20px;
@@ -40,7 +40,7 @@
             text-align: center;
             color: white;
             position: relative;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Adding shadow for a card effect */
         }
 
         .card i {
@@ -53,23 +53,29 @@
             margin-bottom: 5px;
         }
 
+        .card span {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .card.archers {
+            background-color: #5A67D8;
+        }
+
         .card.attendance {
-            background-color: #3F76FF;
+            background-color: #F56565;
         }
 
-        .card.scoring-history {
-            background-color: #44D06D;
+        .card.scoring {
+            background-color: #48BB78;
         }
 
-        .card.payment-history {
-            background-color: #FF6C6C;
+        .card.payment {
+            background-color: #ED8936;
         }
 
         .upcoming-events {
             margin-top: 30px;
-            display: flex;
-            justify-content: space-between;
-            gap: 30px; /* Add a gap between events */
         }
 
         .event-card {
@@ -81,7 +87,6 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            width: 48%;
         }
 
         .event-details {
@@ -92,34 +97,15 @@
             margin-right: 8px;
         }
 
-        .event-action {
-            text-align: right;
-        }
-
-        .edit-btn {
-            background-color: #3F76FF;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        .edit-btn:hover {
-            background-color: #0056b3;
-        }
-
         /* Media Queries for Responsiveness */
         @media (max-width: 768px) {
             .cards {
-                flex-direction: column;
+                flex-direction: column; /* Stack cards vertically on smaller screens */
             }
 
             .event-card {
                 flex-direction: column;
                 align-items: flex-start;
-                width: 100%;
             }
 
             .event-action {
@@ -142,43 +128,42 @@
 
         <!-- Cards Section -->
         <div class="cards">
+            <div class="card archers">
+                <i class="fas fa-bullseye"></i>
+                <h3>Archers</h3>
+                <span>2</span>
+            </div>
             <div class="card attendance">
                 <i class="fas fa-users"></i>
                 <h3>Attendance</h3>
             </div>
-            <div class="card scoring-history">
-                <i class="fas fa-pencil-alt"></i>
+            <div class="card scoring">
+                <i class="fas fa-chart-line"></i>
                 <h3>Scoring History</h3>
             </div>
-            <div class="card payment-history">
-                <i class="fas fa-dollar-sign"></i>
+            <div class="card payment">
+                <i class="fas fa-money-bill-wave"></i>
                 <h3>Payment History</h3>
             </div>
         </div>
 
         <!-- Upcoming Events Section -->
         <div class="upcoming-events">
-            <div class="event-card">
-                <div class="event-details">
-                    <p><i class="fas fa-calendar-alt"></i> Sabah Open</p>
-                    <p><i class="fas fa-clock"></i> 13 January 2024, 8:00am - 11:00am</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Padang Sukma Likas</p>
-                </div>
-                <div class="event-action">
-                    <a href="#" class="edit-btn">Edit</a>
-                </div>
-            </div>
-            
-            <div class="event-card">
-                <div class="event-details">
-                    <p><i class="fas fa-calendar-alt"></i> Sabah Open</p>
-                    <p><i class="fas fa-clock"></i> 14 January 2024, 8:00am - 11:00am</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Padang Sukma Likas</p>
-                </div>
-                <div class="event-action">
-                    <a href="#" class="edit-btn">Edit</a>
-                </div>
-            </div>
+            <h3>Upcoming Events</h3>
+
+            @if($upcomingEvents->isEmpty())
+                <p>No upcoming events available.</p>
+            @else
+                @foreach($upcomingEvents as $event)
+                    <div class="event-card">
+                        <div class="event-details">
+                            <p><i class="fas fa-calendar-alt"></i> {{ \Carbon\Carbon::parse($event->event_date)->format('d M Y') }}</p>
+                            <p><i class="fas fa-clock"></i> {{ \Carbon\Carbon::parse($event->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }}</p>
+                            <p><i class="fas fa-map-marker-alt"></i> {{ $event->location }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
         </div>
     </div>
 </body>

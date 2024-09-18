@@ -163,4 +163,30 @@ class EventController extends Controller
         // Pass the events to the view
         return view('committee.dashboard', compact('upcomingEvents')); // Pass the variable to the view
     }
+
+    public function showArcherDashboard()
+    {
+        // Fetch upcoming events for archers (view-only)
+        $upcomingEvents = Event::where('event_date', '>=', now())
+                            ->orderBy('event_date', 'asc')
+                            ->take(5) // Adjust the limit as needed
+                            ->get(); // Get the collection of upcoming events
+
+        // Pass the events to the archer dashboard view
+        return view('archer.dashboard', compact('upcomingEvents'));
+    }
+
+    public function showCoachDashboard()
+    {
+        // Fetch upcoming events for coaches (view-only)
+        $upcomingEvents = Event::where('event_date', '>=', now())
+                            ->orderBy('event_date', 'asc')
+                            ->take(5) // Adjust the limit as needed
+                            ->get(); // Get the collection of upcoming events
+
+        // Pass the events to the archer dashboard view
+        return view('coach.dashboard', compact('upcomingEvents'));
+    }
+
+
 }

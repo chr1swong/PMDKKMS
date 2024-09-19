@@ -379,11 +379,19 @@ class AccountController extends Controller
         return view('committee.member', ['members' => $members]);
     }
 
-    // Update and delete member profile
-    public function viewProfile($id)
+    public function viewProfile($membership_id)
     {
-        $member = Account::findOrFail($id);
-        return view('committee.viewProfile', compact('member'));
+        $member = DB::table('account')
+                    ->join('membership', 'account.account_id', '=', 'membership.account_id')
+                    ->select('account.*', 'membership.membership_id', 'membership.membership_status', 'membership.membership_expiry')
+                    ->where('membership.membership_id', $membership_id)
+                    ->first();
+
+        if (!$member) {
+            return redirect()->back()->with('error', 'Member not found');
+        }
+
+        return view('committee.viewProfile', ['member' => $member]);
     }
 
     public function deleteProfile($id)

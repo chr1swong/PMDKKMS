@@ -131,7 +131,7 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
 
     //Route for Member Management
     Route::get('/committee/member', [AccountController::class, 'manageMember'])->name('committee.member');
-    Route::get('/committee/member/{id}', [AccountController::class, 'viewProfile'])->name('view.profile');
+    Route::get('/committee/member/profile/{membership_id}', [AccountController::class, 'viewProfile'])->name('view.profile');
     Route::delete('/committee/member/{id}', [AccountController::class, 'deleteProfile'])->name('delete.profile');
 
     // Committee Profile

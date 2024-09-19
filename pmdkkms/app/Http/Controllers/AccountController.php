@@ -52,6 +52,7 @@ class AccountController extends Controller
             'membership_id' => $membership_id,
             'account_id' => $account->account_id,
             'membership_expiry' => now()->addYear(),
+            'membership_status' => 1, // 1-active, 2-inactive
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -123,11 +124,19 @@ class AccountController extends Controller
 
         // Retrieve membership details based on account_id, if it exists
         $membership = DB::table('membership')->where('account_id', $user->account_id)->first();
-    
+        
         // Check if the membership exists
         $membership_id = $membership ? $membership->membership_id : 'N/A'; // If membership is null, fallback to 'N/A'
+        $membership_status = $membership ? $membership->membership_status : 'N/A'; // Retrieve membership status
+        $membership_expiry = $membership ? $membership->membership_expiry : 'N/A'; // Retrieve membership expiry
 
-        return view('archer.profile', ['user' => $user, 'membership_id' => $membership_id]);
+        // Pass the user and membership data to the view
+        return view('archer.profile', [
+            'user' => $user,
+            'membership_id' => $membership_id,
+            'membership_status' => $membership_status, // Pass membership_status
+            'membership_expiry' => $membership_expiry, // Pass membership_expiry
+        ]);
     }
 
     // Display profile method for Coach
@@ -140,8 +149,16 @@ class AccountController extends Controller
     
         // Check if the membership exists
         $membership_id = $membership ? $membership->membership_id : 'N/A'; // If membership is null, fallback to 'N/A'
+        $membership_status = $membership ? $membership->membership_status : 'N/A'; // Retrieve membership status
+        $membership_expiry = $membership ? $membership->membership_expiry : 'N/A'; // Retrieve membership expiry
 
-        return view('coach.profile', ['user' => $user, 'membership_id' => $membership_id]);
+        // Pass the user and membership data to the view
+        return view('coach.profile', [
+            'user' => $user,
+            'membership_id' => $membership_id,
+            'membership_status' => $membership_status, // Pass membership_status
+            'membership_expiry' => $membership_expiry, // Pass membership_expiry
+        ]);
     }
 
     // Display profile method for Committee
@@ -151,11 +168,19 @@ class AccountController extends Controller
 
         // Retrieve membership details based on account_id, if it exists
         $membership = DB::table('membership')->where('account_id', $user->account_id)->first();
-    
+
         // Check if the membership exists
         $membership_id = $membership ? $membership->membership_id : 'N/A'; // If membership is null, fallback to 'N/A'
+        $membership_status = $membership ? $membership->membership_status : 'N/A'; // Retrieve membership status
+        $membership_expiry = $membership ? $membership->membership_expiry : 'N/A'; // Retrieve membership expiry
 
-        return view('committee.profile', ['user' => $user, 'membership_id' => $membership_id]);
+        // Pass the user and membership data to the view
+        return view('committee.profile', [
+            'user' => $user,
+            'membership_id' => $membership_id,
+            'membership_status' => $membership_status, // Pass membership_status
+            'membership_expiry' => $membership_expiry, // Pass membership_expiry
+        ]);
     }
 
     // Edit profile method for Archer
@@ -342,5 +367,29 @@ class AccountController extends Controller
         }
 
         return back()->with('success', 'Profile picture updated successfully.');
+    }
+
+    public function manageMember()
+    {
+        $members = DB::table('account') // Join the 'account' and 'membership' tables
+                    ->join('membership', 'account.account_id', '=', 'membership.account_id')
+                    ->select('account.*', 'membership.membership_id', 'membership.membership_status') // Fetch 'membership_status'
+                    ->get();
+
+        return view('committee.member', ['members' => $members]);
+    }
+
+    // Update and delete member profile
+    public function viewProfile($id)
+    {
+        $member = Account::findOrFail($id);
+        return view('committee.viewProfile', compact('member'));
+    }
+
+    public function deleteProfile($id)
+    {
+        $member = Account::findOrFail($id);
+        $member->delete();
+        return redirect()->route('committee.member')->with('success', 'Member deleted successfully');
     }
 }

@@ -120,6 +120,20 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
         return view('committee.dashboard');
     })->name('committee.dashboard');
 
+    //Route for Events
+    Route::get('/committee/events', [EventController::class, 'index'])->name('events.index');  // Event listing
+    Route::post('/committee/events', [EventController::class, 'store'])->name('events.store'); // Event creation
+    Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('events.destroy'); // Event deletion
+    Route::post('/events/{id}/update-date', [EventController::class, 'updateDate'])->name('events.update-date'); // Update event date when dragged
+    Route::post('/events/{id}/update-duration', [EventController::class, 'updateDuration'])->name('events.update-duration'); // Update event duration when resized
+    Route::post('/events/{id}/update', [EventController::class, 'update'])->name('events.update'); // Update event details
+    Route::get('/committee/dashboard', [EventController::class, 'showDashboard'])->name('committee.dashboard');
+
+    //Route for Member Management
+    Route::get('/committee/member', [AccountController::class, 'manageMember'])->name('committee.member');
+    Route::get('/committee/member/{id}', [AccountController::class, 'viewProfile'])->name('view.profile');
+    Route::delete('/committee/member/{id}', [AccountController::class, 'deleteProfile'])->name('delete.profile');
+
     // Committee Profile
     Route::get('/committee/profile', [AccountController::class, 'committeeProfile'])->name('committee.profile');
 
@@ -134,15 +148,6 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
 
     // Route for updating profile picture
     Route::put('/committee/updateProfilePicture', [AccountController::class, 'updateCommitteeProfilePicture'])->name('committee.updateProfilePicture');
-
-    //Route for Events
-    Route::get('/committee/events', [EventController::class, 'index'])->name('events.index');  // Event listing
-    Route::post('/committee/events', [EventController::class, 'store'])->name('events.store'); // Event creation
-    Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('events.destroy'); // Event deletion
-    Route::post('/events/{id}/update-date', [EventController::class, 'updateDate'])->name('events.update-date'); // Update event date when dragged
-    Route::post('/events/{id}/update-duration', [EventController::class, 'updateDuration'])->name('events.update-duration'); // Update event duration when resized
-    Route::post('/events/{id}/update', [EventController::class, 'update'])->name('events.update'); // Update event details
-    Route::get('/committee/dashboard', [EventController::class, 'showDashboard'])->name('committee.dashboard');
 });
 
 

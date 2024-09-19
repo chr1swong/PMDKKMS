@@ -15,6 +15,7 @@ return new class extends Migration
         $table->string('membership_id', 10)->primary(); // Membership ID as primary key
         $table->unsignedInteger('account_id')->unique(); // Link back to the account table
         $table->date('membership_expiry');
+        $table->integer('membership_status')->comment('1 - active, 2 - inactive');
         $table->timestamps();
 
         // Foreign key constraint linking to the account table

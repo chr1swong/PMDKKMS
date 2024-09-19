@@ -181,11 +181,11 @@
             </div>
             <div>
                 <label for="membership-status">Membership Status</label>
-                <span id="membership-status">{{ $user->account_membership_status == 2 ? 'Active' : 'Inactive' }}</span>
+                <span id="membership-status">{{ $membership_status == 1 ? 'Active' : 'Inactive' }}</span> 
             </div>
             <div>
                 <label for="membership-expiry">Membership Expiry</label>
-                <span id="membership-expiry">{{ $user->account_membership_expiry }}</span>
+                <span id="membership-expiry">{{ $membership_expiry }}</span>
             </div>
         </div>
     </div>

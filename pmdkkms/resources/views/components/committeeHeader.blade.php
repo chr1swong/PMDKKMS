@@ -133,13 +133,15 @@
             background-color: #34a853;
         }
 
+        /* Dropdown menu opens when hovering over the link or icon */
         .dropdown:hover .dropdown-menu {
             display: block;
         }
 
         /* Dropdown arrow styling */
         .dropdown > a i {
-            margin-left: 5px;
+            margin-left: 2px;
+            color: white; /* Make the arrow white */
             transition: transform 0.3s ease;
         }
 
@@ -191,7 +193,8 @@
                     <!-- Members Dropdown with Icon -->
                     <li class="dropdown">
                         <a href="/committee/member" class="{{ request()->is('member.events') ? 'active' : '' }}">
-                            Members <i class="fas fa-chevron-down"></i> <!-- Dropdown arrow icon -->
+                            Members
+                            <i class="fas fa-chevron-down"></i> <!-- Dropdown arrow icon -->
                         </a>
                         <ul class="dropdown-menu">
                             <li>

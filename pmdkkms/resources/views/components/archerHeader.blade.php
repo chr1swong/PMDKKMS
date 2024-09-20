@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Archery Association</title>
+    <!-- Font Awesome for dropdown arrow icon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
         /* General Styles */
         body {
@@ -90,6 +92,59 @@
             align-items: center; /* Aligns icon and text */
         }
 
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #0056b3;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            padding: 0;
+            z-index: 100;
+        }
+
+        .dropdown-menu li {
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .dropdown-menu li:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            text-transform: none;
+            font-size: 16px;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        /* Hover Effects for Attendance and Performance */
+        .dropdown-menu a[href="/archer/attendance"]:hover {
+            background-color: #1a73e8;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        /* Dropdown arrow styling */
+        .dropdown > a i {
+            margin-left: 2px;
+            color: white; /* Make the arrow white */
+            transition: transform 0.3s ease;
+        }
+
+        /* Rotate the dropdown icon on hover */
+        .dropdown:hover > a i {
+            transform: rotate(180deg);
+        }
+
         /* Login Button Styles */
         .login-container {
             margin-left: auto; /* Pushes the login button to the right */
@@ -130,8 +185,17 @@
                     <li>
                         <a href="/archer/events" class="{{ request()->is('archer.events') ? 'active' : '' }}">Events</a>
                     </li>
-                    <li>
-                        <a href="/member" class="{{ request()->is('member') ? 'active' : '' }}">Performance</a>
+                    <!-- Performance Dropdown with Icon -->
+                    <li class="dropdown">
+                        <a href="/archer/attendance" class="{{ request()->is('archer.attendance') ? 'active' : '' }}">
+                            Attendance
+                            <i class="fas fa-chevron-down"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="/archer/performance">Performance</a>
+                            </li>
+                        </ul>
                     </li>
                     <li>
                         <a href="/archer/profile" class="{{ request()->is('archer.profile') ? 'active' : '' }}">Profile</a>

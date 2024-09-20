@@ -6,6 +6,8 @@ use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Middleware\PreventAuthenticatedAccess;
 use App\Http\Middleware\RoleAccessMiddleware;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\AttendanceController;
+
 
 // Public routes (no authentication required)
 Route::middleware([PreventAuthenticatedAccess::class])->group(function () {
@@ -65,6 +67,11 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function ()
 
     // Archer Profile
     Route::get('/archer/profile', [AccountController::class, 'profile'])->name('archer.profile');
+
+    // Route for archer attendance
+    Route::get('/archer/attendance', [AttendanceController::class, 'showAttendanceForm'])->name('archer.attendance');
+    Route::post('/archer/attendance', [AttendanceController::class, 'storeAttendance'])->name('attendance.store');
+    Route::get('/archer/attendance/view', [AttendanceController::class, 'viewAttendance'])->name('attendance.view');
 
     // Route for viewing the edit profile form (GET)
     Route::get('/archer/editProfile', [AccountController::class, 'editProfile'])->name('archer.editProfile');

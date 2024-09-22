@@ -221,11 +221,8 @@
             document.getElementById('success-message').style.display = 'none';
         }
 
-        // Pre-existing attendance data (this should come from your backend)
-        var attendanceData = [
-            { date: '2024-09-18', status: 'present' },
-            { date: '2024-09-19', status: 'absent' },
-        ];
+        // Pre-existing attendance data (from the backend)
+        var attendanceData = @json($attendanceData); // Dynamic data from backend
 
         var presentCount = 0; // Initialize counter for present days
 

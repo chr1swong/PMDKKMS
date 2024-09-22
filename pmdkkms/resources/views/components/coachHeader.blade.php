@@ -131,7 +131,7 @@
                         <a href="/coach/events" class="{{ request()->is('coach.events') ? 'active' : '' }}">Events</a>
                     </li>
                     <li>
-                        <a href="/myArcher" class="{{ request()->is('member') ? 'active' : '' }}">MyArcher</a>
+                        <a href="/coach/myArcher" class="{{ request()->is('coach.myArcher') ? 'active' : '' }}">MyArcher</a>
                     </li>
                     <li>
                         <a href="/coach/profile" class="{{ request()->is('coach.profile') ? 'active' : '' }}">Profile</a>

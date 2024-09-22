@@ -7,6 +7,7 @@ use App\Http\Middleware\PreventAuthenticatedAccess;
 use App\Http\Middleware\RoleAccessMiddleware;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\CoachArcherController;
 
 // Public routes (no authentication required)
 Route::middleware([PreventAuthenticatedAccess::class])->group(function () {
@@ -117,6 +118,11 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
 
     //Route for viewing events in dashboard
     Route::get('/coach/dashboard', [EventController::class, 'showCoachDashboard'])->name('coach.dashboard');
+
+    // Move routes to CoachArcherController
+    Route::get('/coach/myArcher', [CoachArcherController::class, 'showMyArchers'])->name('coach.myArcher');
+    Route::post('/coach/enroll-archer/{archer}', [CoachArcherController::class, 'enrollArcher'])->name('coach.enrollArcher');
+    Route::post('/coach/unenroll-archer/{archer}', [CoachArcherController::class, 'unenrollArcher'])->name('coach.unenrollArcher');
 });
 
 // Routes accessible to committee member only

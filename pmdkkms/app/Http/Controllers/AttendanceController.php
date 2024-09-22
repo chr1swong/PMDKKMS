@@ -108,4 +108,27 @@ class AttendanceController extends Controller
             'filterMonth' => $filterMonth
         ]);
     }
+
+    public function viewArcherAttendance($membership_id)
+    {
+        // Get the membership details of the selected archer
+        $membership = Membership::where('membership_id', $membership_id)->firstOrFail();
+
+        // Fetch attendance records for this membership
+        $attendances = Attendance::where('membership_id', $membership->membership_id)->get();
+
+        // Format attendance data for FullCalendar
+        $attendanceData = $attendances->map(function ($attendance) {
+            return [
+                'date' => $attendance->attendance_date,
+                'status' => $attendance->attendance_status,
+            ];
+        });
+
+        // Pass the membership and attendance data to the view
+        return view('committee.attendanceView', [
+            'membership' => $membership,
+            'attendanceData' => $attendanceData
+        ]);
+    }
 }

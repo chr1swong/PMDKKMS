@@ -7,6 +7,7 @@ use App\Models\Attendance;
 use App\Models\Membership;
 use Illuminate\Support\Facades\Auth;
 
+// Archer Section
 class AttendanceController extends Controller
 {
     // Show attendance form for the logged-in archer
@@ -32,7 +33,6 @@ class AttendanceController extends Controller
             'attendanceData' => $attendanceData
         ]);
     }
-
 
     // Store attendance record
     public function storeAttendance(Request $request)
@@ -72,6 +72,40 @@ class AttendanceController extends Controller
         return view('archer.viewAttendance', [
             'membership' => $membership,
             'attendances' => $attendances
+        ]);
+    }
+
+    public function viewAllAttendance(Request $request)
+    {
+        // Get the selected month from the request, default to January
+        $filterMonth = $request->input('attendance-filter', 'January');
+        
+        // Get the month number from the selected month (e.g., January = 1, February = 2, etc.)
+        $monthNumber = date('m', strtotime($filterMonth));
+
+        // Get the total number of days in the selected month
+        $year = date('Y'); // Use the current year or allow the user to select the year
+        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $monthNumber, $year);
+
+        // Query attendance records filtered by the selected month
+        $attendances = Attendance::with('membership', 'membership.account')
+            ->whereMonth('attendance_date', $monthNumber)
+            ->get();
+
+        // Group attendance records by membership_id and calculate attendance count for the month
+        $attendanceSummary = $attendances->groupBy('membership_id')->map(function ($attendanceRecords) use ($daysInMonth) {
+            $presentCount = $attendanceRecords->where('attendance_status', 'present')->count();
+            return [
+                'membership' => $attendanceRecords->first()->membership,
+                'presentCount' => $presentCount,
+                'daysInMonth' => $daysInMonth
+            ];
+        });
+
+        // Pass the attendance summary and month data to the view
+        return view('committee.attendanceList', [
+            'attendanceSummary' => $attendanceSummary,
+            'filterMonth' => $filterMonth
         ]);
     }
 }

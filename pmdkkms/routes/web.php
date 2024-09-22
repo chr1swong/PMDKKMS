@@ -8,7 +8,6 @@ use App\Http\Middleware\RoleAccessMiddleware;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\AttendanceController;
 
-
 // Public routes (no authentication required)
 Route::middleware([PreventAuthenticatedAccess::class])->group(function () {
     Route::get('/', function () {
@@ -90,7 +89,6 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function ()
 
     //Route for viewing events in dashboard
     Route::get('/archer/dashboard', [EventController::class, 'showArcherDashboard'])->name('archer.dashboard');
-
 });
 
 // Routes accessible to coach only
@@ -141,6 +139,9 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
     Route::get('/committee/member/profile/{membership_id}', [AccountController::class, 'viewProfile'])->name('view.profile');
     Route::delete('/committee/member/{id}', [AccountController::class, 'deleteProfile'])->name('delete.profile');
 
+    //Route for Attendance
+    Route::get('/committee/attendanceList', [AttendanceController::class, 'viewAllAttendance'])->name('committee.attendanceList'); // Updated route
+
     // Committee Profile
     Route::get('/committee/profile', [AccountController::class, 'committeeProfile'])->name('committee.profile');
 
@@ -156,5 +157,3 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
     // Route for updating profile picture
     Route::put('/committee/updateProfilePicture', [AccountController::class, 'updateCommitteeProfilePicture'])->name('committee.updateProfilePicture');
 });
-
-

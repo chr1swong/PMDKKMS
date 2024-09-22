@@ -198,10 +198,10 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="/committee/attendance">Attendance</a>
+                                <a href="/committee/attendanceList">Attendance</a>
                             </li>
                             <li>
-                                <a href="/committee/performance">Performance</a>
+                                <a href="/committee/viewPerformance">Performance</a>
                             </li>
                         </ul>
                     </li>

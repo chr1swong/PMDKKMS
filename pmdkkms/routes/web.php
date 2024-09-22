@@ -141,6 +141,8 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
 
     //Route for Attendance
     Route::get('/committee/attendanceList', [AttendanceController::class, 'viewAllAttendance'])->name('committee.attendanceList'); // Updated route
+    // Route for committee to view a specific archer's attendance
+    Route::get('/committee/attendance/{membership_id}', [AttendanceController::class, 'viewArcherAttendance'])->name('committee.attendanceView');
 
     // Committee Profile
     Route::get('/committee/profile', [AccountController::class, 'committeeProfile'])->name('committee.profile');

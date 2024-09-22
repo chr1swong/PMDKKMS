@@ -227,7 +227,7 @@
                     <td><span class="attendance-summary">{{ $summary['presentCount'] }}/{{ $summary['daysInMonth'] }}</span></td>
                     <td>
                         <div class="btn-container">
-                            <a href="#" class="btn btn-view">View Attendance Details</a>
+                            <a href="{{ route('committee.attendanceView', ['membership_id' => $summary['membership']->membership_id]) }}" class="btn btn-view">View Attendance Details</a>
                         </div>
                     </td>
                 </tr>

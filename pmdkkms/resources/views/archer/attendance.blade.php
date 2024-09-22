@@ -31,7 +31,7 @@
         }
 
         .attendance-header {
-            background-color: #E0ECF8; /* Light blue background */
+            background-color: #E0ECF8;
             padding: 20px;
             border-radius: 10px;
             text-align: center;
@@ -56,22 +56,32 @@
             margin-bottom: 5px;
         }
 
+        /* Ensure both membership ID and attendance status have the same fixed width */
         .attendance-form select,
         .attendance-form input {
-            padding: 10px;
+            width: 200px; /* Fixed width for consistency */
+            padding: 8px;
             font-size: 16px;
-            background-color: #E0E0E0; /* Gray background for input fields */
+            background-color: #E0E0E0;
             border-radius: 8px;
             border: none;
             outline: none;
         }
 
+        #membership_id {
+            width: 200px; /* Fixed width for membership ID */
+        }
+
+        #attendance_status {
+            width: 220px; /* Fixed width for attendance status */
+        }
+
         .full-width {
-            grid-column: span 2; /* Make element take the whole row */
+            grid-column: span 2;
         }
 
         .submit-btn {
-            background-color: #555555; /* Dark grey button */
+            background-color: #555555;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -79,7 +89,7 @@
             font-size: 16px;
             margin-top: 20px;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s ease;
             width: fit-content;
         }
@@ -88,38 +98,45 @@
             background-color: #333333;
         }
 
-        /* Selected Date Display */
+        .selected-date-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
         .selected-date {
             font-size: 18px;
-            margin-top: 20px;
         }
 
-        /* Present and Absent Day Styles */
-        .fc-day.present-day {
-            background-color: green !important;
-            color: white;
-        }
-
-        .fc-day.absent-day {
-            background-color: red !important;
-            color: white;
-        }
-
-        /* Present Day Count Display */
         .present-count {
             font-size: 18px;
-            margin-top: 20px;
             font-weight: 600;
+            margin-left: 20px;
         }
 
-        /* Media Queries for Responsiveness */
+        /* Media query for smaller screens */
         @media (max-width: 768px) {
             .attendance-form {
                 grid-template-columns: 1fr;
             }
+
+            .attendance-form select,
+            .attendance-form input {
+                width: 100%; /* Full width on smaller screens */
+            }
+
+            .selected-date-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .present-count {
+                margin-left: 0;
+                margin-top: 10px;
+            }
         }
 
-        /* Success Message Styling */
         .alert-success {
             background-color: #d4edda;
             color: #155724;
@@ -144,7 +161,7 @@
         }
 
         .close:hover {
-            color: #0c3d20; /* Darker green on hover */
+            color: #0c3d20;
         }
 
         #calendar {
@@ -154,16 +171,25 @@
             padding: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
+
+        /* Present and absent day styles */
+        .fc-daygrid-day.present-day {
+            background-color: green !important;
+            color: white !important;
+        }
+
+        .fc-daygrid-day.absent-day {
+            background-color: red !important;
+            color: white !important;
+        }
     </style>
 </head>
 
 <body>
-    <!-- Header is included here -->
     <header>
         @include('components.archerHeader')
     </header>
 
-    <!-- Success Message with Close Button -->
     @if (session('success'))
         <div class="alert alert-success" id="success-message">
             {{ session('success') }}
@@ -171,7 +197,6 @@
         </div>
     @endif
 
-    <!-- Attendance Form Section -->
     <div class="attendance-container">
         <div class="attendance-header">
             Record Archer Attendance
@@ -192,74 +217,64 @@
                 </select>
             </div>
 
-            <!-- Hidden input to store selected date from FullCalendar -->
             <input type="hidden" name="attendance_date" id="attendance_date">
 
             <button type="submit" class="submit-btn">Submit Attendance</button>
         </form>
 
-        <!-- Display selected date -->
-        <div class="selected-date" id="selected-date-display">
-            Selected Date: None
+        <!-- Selected Date and Present Count Section -->
+        <div class="selected-date-container">
+            <div class="selected-date" id="selected-date-display">
+                Selected Date: None
+            </div>
+            <div class="present-count" id="present-count-display">
+                Present Days this Month: 0
+            </div>
         </div>
 
         <!-- FullCalendar Section -->
         <div id="calendar"></div>
-
-        <!-- Display present days count -->
-        <div class="present-count" id="present-count-display">
-            Present Days this Month: 0
-        </div>
     </div>
 
-    <!-- FullCalendar JS -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
 
-    <!-- JavaScript for closing the success message -->
     <script>
         function closeSuccessMessage() {
             document.getElementById('success-message').style.display = 'none';
         }
 
-        // Pre-existing attendance data (from the backend)
-        var attendanceData = @json($attendanceData); // Dynamic data from backend
+        var attendanceData = @json($attendanceData);
 
-        var presentCount = 0; // Initialize counter for present days
+        var presentCount = 0;
 
-        // Function to update present day count display
         function updatePresentCountDisplay(count) {
             document.getElementById('present-count-display').innerText = 'Present Days this Month: ' + count;
         }
 
-        // FullCalendar Initialization
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth', // Month view by default
-                selectable: true, // Allows date selection
+                initialView: 'dayGridMonth',
+                selectable: true,
                 datesSet: function(info) {
-                    presentCount = 0; // Reset present count
-                    var currentMonthStart = info.view.activeStart;
-                    var currentMonthEnd = info.view.activeEnd;
+                    presentCount = 0;
+                    var currentMonth = info.view.currentStart.getMonth();
 
-                    // Style the boxes based on the attendance data
                     attendanceData.forEach(function(attendance) {
                         var dateElement = document.querySelector(`[data-date="${attendance.date}"]`);
                         if (dateElement) {
-                            if (attendance.status === 'present') {
-                                dateElement.classList.add('present-day');
-                                // Check if the attendance date is within the current month view
-                                var attendanceDate = new Date(attendance.date);
-                                if (attendanceDate >= currentMonthStart && attendanceDate < currentMonthEnd) {
-                                    presentCount++; // Increment present count if in the current month
+                            var attendanceDate = new Date(attendance.date);
+                            if (attendanceDate.getMonth() === currentMonth) {
+                                if (attendance.status === 'present') {
+                                    dateElement.classList.add('present-day');
+                                    presentCount++;
+                                } else if (attendance.status === 'absent') {
+                                    dateElement.classList.add('absent-day');
                                 }
-                            } else if (attendance.status === 'absent') {
-                                dateElement.classList.add('absent-day');
                             }
                         }
                     });
 
-                    // Update the displayed count of present days
                     updatePresentCountDisplay(presentCount);
                 },
                 select: function (info) {

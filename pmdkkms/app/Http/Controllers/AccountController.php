@@ -371,11 +371,20 @@ class AccountController extends Controller
 
     public function manageMember()
     {
-        $members = DB::table('account') // Join the 'account' and 'membership' tables
-                    ->join('membership', 'account.account_id', '=', 'membership.account_id')
-                    ->select('account.*', 'membership.membership_id', 'membership.membership_status') // Fetch 'membership_status'
-                    ->get();
+        // Join the 'account' table with 'membership', 'coach_archer', and 'account' (for coach details)
+        $members = DB::table('account')
+            ->leftJoin('membership', 'account.account_id', '=', 'membership.account_id') // Join membership table
+            ->leftJoin('coach_archer', 'account.account_id', '=', 'coach_archer.archer_id') // Join coach_archer table to link archers with their coaches
+            ->leftJoin('account as coach', 'coach_archer.coach_id', '=', 'coach.account_id') // Join 'account' again to get coach details
+            ->select(
+                'account.*', // Select archer's account details
+                'membership.membership_id', // Select membership details
+                'membership.membership_status',
+                'coach.account_full_name as coach_name' // Select coach's name
+            )
+            ->get();
 
+        // Pass members data to the view
         return view('committee.member', ['members' => $members]);
     }
 

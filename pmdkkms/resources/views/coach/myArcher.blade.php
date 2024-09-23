@@ -174,12 +174,47 @@
                 margin-bottom: 10px;
             }
         }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px 40px 15px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 30px;
+            font-weight: bold;
+            color: #155724;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #0c3d20;
+        }
     </style>
 </head>
 <body>
     <header>
         @include('components.coachHeader')
     </header>
+
+    <!-- Popup message -->
+    @if(session('popupMessage'))
+        <div class="alert alert-success" id="success-message">
+            {{ session('popupMessage') }}
+            <button type="button" class="close" onclick="closeSuccessMessage()">&times;</button>
+        </div>
+    @endif
 
     <div class="container-wrapper">
         <div class="header-container">
@@ -257,10 +292,10 @@
                         </td>
                         <td>
                             <div class="btn-container">
-                            <form action="{{ route('coach.enrollArcher', $archer->account_id) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-enroll">Enroll</button>
-                            </form>
+                                <form action="{{ route('coach.enrollArcher', $archer->account_id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-enroll">Enroll</button>
+                                </form>
                                 <button class="btn btn-view">View Profile</button>
                             </div>
                         </td>
@@ -272,6 +307,10 @@
     </div>
 
     <script>
+        function closeSuccessMessage() {
+            document.getElementById('success-message').style.display = 'none';
+        }
+
         function searchByName() {
             const input = document.getElementById("search-input").value.toLowerCase();
             const rows = document.querySelectorAll('#archers-table tr');

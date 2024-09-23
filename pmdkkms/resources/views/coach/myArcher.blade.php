@@ -234,10 +234,10 @@
             <table>
                 <thead>
                     <tr>
-                        <th>No.</th>
-                        <th>Name</th>
-                        <th>MemberID</th>
-                        <th>Membership Status</th>
+                        <th onclick="sortTable(0)">No. <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(1)">Name <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(2)">MemberID <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(3)">Membership Status <i class="fas fa-sort"></i></th>
                         <th>Performance</th>
                         <th>Action</th>
                     </tr>
@@ -248,16 +248,12 @@
                     <tr data-name="{{ strtolower($archer->account_full_name) }}">
                         <td>{{ $key + 1 }}</td>
                         <td>{{ $archer->account_full_name }}</td>
-                        <!-- Format the member ID to 6 digits -->
                         <td>{{ str_pad($archer->membership_id, 6, '0', STR_PAD_LEFT) }}</td>
-                        <td>
-                            <!-- Display membership status -->
-                            {{ $archer->membership_status == 1 ? 'Active' : 'Inactive' }}
-                        </td>
+                        <td>{{ $archer->membership_status == 1 ? 'Active' : 'Inactive' }}</td>
                         <td>
                             <div class="btn-container">
                                 <button class="btn btn-view">View Training Score</button>
-                                <button class="btn btn-view">View Attendance Details</button>
+                                <a href="{{ route('coach.attendanceView', $archer->membership_id) }}" class="btn btn-view">View Attendance Details</a> 
                             </div>
                         </td>
                         <td>
@@ -276,18 +272,14 @@
                     @php $unenrollStart = count($enrolledArchers) + 1; @endphp
                     @foreach($unenrolledArchers as $key => $archer)
                     <tr data-name="{{ strtolower($archer->account_full_name) }}">
-                        <td>{{ $unenrollStart + $key }}</td> <!-- Continue numbering -->
+                        <td>{{ $unenrollStart + $key }}</td>
                         <td>{{ $archer->account_full_name }}</td>
-                        <!-- Format the member ID to 6 digits -->
                         <td>{{ str_pad($archer->membership_id, 6, '0', STR_PAD_LEFT) }}</td>
-                        <td>
-                            <!-- Display membership status -->
-                            {{ $archer->membership_status == 1 ? 'Active' : 'Inactive' }}
-                        </td>
+                        <td>{{ $archer->membership_status == 1 ? 'Active' : 'Inactive' }}</td>
                         <td>
                             <div class="btn-container">
                                 <button class="btn btn-view">View Training Score</button>
-                                <button class="btn btn-view">View Attendance Details</button>
+                                <a href="{{ route('coach.attendanceView', $archer->membership_id) }}" class="btn btn-view">View Attendance Details</a> 
                             </div>
                         </td>
                         <td>
@@ -323,6 +315,43 @@
                     row.style.display = 'none';
                 }
             });
+        }
+
+        function sortTable(n) {
+            let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.querySelector("table");
+            switching = true;
+            dir = "asc"; 
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    if (dir == "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
         }
     </script>
 </body>

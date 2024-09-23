@@ -266,7 +266,7 @@
                                     @csrf
                                     <button type="submit" class="btn btn-unenroll">Unenroll</button>
                                 </form>
-                                <button class="btn btn-view">View Profile</button>
+                                <a href="{{ route('coach.viewProfile', $archer->membership_id) }}" class="btn btn-view">View Profile</a>
                             </div>
                         </td>
                     </tr>
@@ -296,7 +296,7 @@
                                     @csrf
                                     <button type="submit" class="btn btn-enroll">Enroll</button>
                                 </form>
-                                <button class="btn btn-view">View Profile</button>
+                                <a href="{{ route('coach.viewProfile', $archer->membership_id) }}" class="btn btn-view">View Profile</a>
                             </div>
                         </td>
                     </tr>

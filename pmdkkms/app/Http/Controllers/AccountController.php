@@ -409,4 +409,21 @@ class AccountController extends Controller
         $member->delete();
         return redirect()->route('committee.member')->with('success', 'Member deleted successfully');
     }
+
+    public function viewArcherProfile($membership_id)
+    {
+        // Fetch archer details based on membership_id
+        $member = DB::table('account')
+                    ->join('membership', 'account.account_id', '=', 'membership.account_id')
+                    ->where('membership.membership_id', $membership_id)
+                    ->select('account.*', 'membership.membership_id', 'membership.membership_status', 'membership.membership_expiry')
+                    ->first();
+
+        if (!$member) {
+            return redirect()->route('coach.myArcher')->with('popupMessage', 'Archer not found.');
+        }
+
+        // Pass archer data to the view
+        return view('coach.viewProfile', compact('member'));
+    }
 }

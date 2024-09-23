@@ -119,10 +119,12 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
     //Route for viewing events in dashboard
     Route::get('/coach/dashboard', [EventController::class, 'showCoachDashboard'])->name('coach.dashboard');
 
-    // Move routes to CoachArcherController
+    // Routes to CoachArcherController
     Route::get('/coach/myArcher', [CoachArcherController::class, 'showMyArchers'])->name('coach.myArcher');
     Route::post('/coach/enroll-archer/{archer}', [CoachArcherController::class, 'enrollArcher'])->name('coach.enrollArcher');
     Route::post('/coach/unenroll-archer/{archer}', [CoachArcherController::class, 'unenrollArcher'])->name('coach.unenrollArcher');
+
+    Route::get('/coach/myArcher/profile/{membership_id}', [AccountController::class, 'viewArcherProfile'])->name('coach.viewProfile');
 });
 
 // Routes accessible to committee member only

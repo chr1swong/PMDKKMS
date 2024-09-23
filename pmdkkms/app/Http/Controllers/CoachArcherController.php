@@ -70,15 +70,17 @@ class CoachArcherController extends Controller
     }
 
     public function manageMember()
-{
-    // Get members and link the coach for archers
-    $members = DB::table('account')
-        ->leftJoin('membership', 'account.account_id', '=', 'membership.account_id')
-        ->leftJoin('coach_archer', 'account.account_id', '=', 'coach_archer.archer_id') // Join with coach_archer table
-        ->leftJoin('account as coach', 'coach_archer.coach_id', '=', 'coach.account_id') // Join again to get coach details
-        ->select('account.*', 'membership.membership_id', 'membership.membership_status', 'coach.account_full_name as coach_name')
-        ->get();
+    {
+        // Get members and link the coach for archers
+        $members = DB::table('account')
+            ->leftJoin('membership', 'account.account_id', '=', 'membership.account_id')
+            ->leftJoin('coach_archer', 'account.account_id', '=', 'coach_archer.archer_id') // Join with coach_archer table
+            ->leftJoin('account as coach', 'coach_archer.coach_id', '=', 'coach.account_id') // Join again to get coach details
+            ->select('account.*', 'membership.membership_id', 'membership.membership_status', 'coach.account_full_name as coach_name')
+            ->get();
 
-    return view('committee.member', ['members' => $members]);
-}
+        return view('committee.member', ['members' => $members]);
+    }
+
+    
 }

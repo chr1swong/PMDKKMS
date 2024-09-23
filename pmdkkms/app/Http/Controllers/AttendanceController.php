@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Attendance;
 use App\Models\Membership;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
-// Archer Section
 class AttendanceController extends Controller
 {
     // Show attendance form for the logged-in archer
@@ -59,7 +59,7 @@ class AttendanceController extends Controller
         return back()->with('success', 'Attendance recorded successfully.');
     }
 
-    // Optional: View attendance records for logged-in archer
+    // View attendance records for the logged-in archer
     public function viewAttendance()
     {
         $user = Auth::user(); // Get the logged-in user
@@ -75,16 +75,17 @@ class AttendanceController extends Controller
         ]);
     }
 
+    // View all attendance records for committee members
     public function viewAllAttendance(Request $request)
     {
         // Get the selected month from the request, default to January
         $filterMonth = $request->input('attendance-filter', 'January');
         
-        // Get the month number from the selected month (e.g., January = 1, February = 2, etc.)
+        // Get the month number from the selected month
         $monthNumber = date('m', strtotime($filterMonth));
 
         // Get the total number of days in the selected month
-        $year = date('Y'); // Use the current year or allow the user to select the year
+        $year = date('Y');
         $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $monthNumber, $year);
 
         // Query attendance records filtered by the selected month
@@ -109,6 +110,7 @@ class AttendanceController extends Controller
         ]);
     }
 
+    // View a specific archer's attendance for committee members
     public function viewArcherAttendance($membership_id)
     {
         // Get the membership details of the selected archer
@@ -130,5 +132,61 @@ class AttendanceController extends Controller
             'membership' => $membership,
             'attendanceData' => $attendanceData
         ]);
+    }
+
+    // **Coach Section**: View attendance details of an archer for the coach
+    public function viewCoachArcherAttendance($membership_id)
+    {
+        // Fetch the membership and related archer details from the account table
+        $membership = DB::table('membership')
+            ->join('account', 'membership.account_id', '=', 'account.account_id')
+            ->where('membership.membership_id', $membership_id)
+            ->select('membership.membership_id', 'account.account_full_name')
+            ->first();
+
+        if (!$membership) {
+            return redirect()->back()->with('error', 'Archer not found.');
+        }
+
+        // Fetch attendance records for this membership
+        $attendances = Attendance::where('membership_id', $membership_id)->get();
+
+        // Format attendance data for FullCalendar
+        $attendanceData = $attendances->map(function ($attendance) {
+            return [
+                'date' => $attendance->attendance_date,
+                'status' => $attendance->attendance_status,
+            ];
+        });
+
+        // Pass the membership and attendance data to the view
+        return view('coach.attendanceView', [
+            'membership' => $membership, // This now contains the archer's full name as well
+            'attendanceData' => $attendanceData,
+        ]);
+    }
+
+    // **Coach Section**: Update a specific archer's attendance by the coach
+    public function updateCoachArcherAttendance(Request $request, $membership_id)
+    {
+        // Validate the request inputs
+        $request->validate([
+            'attendance_date' => 'required|date',
+            'attendance_status' => 'required|in:present,absent',
+        ]);
+
+        // Create or update the attendance record for the specific date
+        Attendance::updateOrCreate(
+            [
+                'membership_id' => $membership_id,
+                'attendance_date' => $request->attendance_date,
+            ],
+            [
+                'attendance_status' => $request->attendance_status,
+            ]
+        );
+
+        // Redirect back with a success message
+        return back()->with('success', 'Attendance updated successfully.');
     }
 }

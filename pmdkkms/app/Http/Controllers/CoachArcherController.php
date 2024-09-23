@@ -50,7 +50,8 @@ class CoachArcherController extends Controller
             'updated_at' => now(),
         ]);
 
-        return redirect()->route('coach.myArcher')->with('success', 'Archer enrolled successfully.');
+        // Add flash message to the session
+        return redirect()->route('coach.myArcher')->with('popupMessage', 'Archer enrolled successfully.');
     }
 
     // Method to unenroll an archer
@@ -64,7 +65,8 @@ class CoachArcherController extends Controller
             ['archer_id', $archerId]
         ])->delete();
 
-        return redirect()->route('coach.myArcher')->with('success', 'Archer unenrolled successfully.');
+        // Add flash message to the session
+        return redirect()->route('coach.myArcher')->with('popupMessage', 'Archer unenrolled successfully.');
     }
 
     public function manageMember()

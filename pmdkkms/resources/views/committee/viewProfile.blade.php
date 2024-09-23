@@ -129,6 +129,23 @@
             position: relative;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
+        /* Back Button Styling */
+        .back-button button {
+            background-color: #5f4bb6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button button:hover {
+            background-color: #3b1f8b;
+        }
     </style>
 </head>
 
@@ -150,6 +167,11 @@
         <!-- Sidebar Section -->
         <div class="profile-sidebar">
             <img src="{{ $member->account_profile_picture_path ? asset('storage/' . $member->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile Picture">
+            
+            <!-- Back Button -->
+            <a href="{{ url()->previous() }}" class="back-button">
+                <button type="button">Back</button>
+            </a>
         </div>
 
         <!-- Profile Details Section -->

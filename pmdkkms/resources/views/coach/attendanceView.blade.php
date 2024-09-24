@@ -41,7 +41,7 @@
 
         .attendance-form {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr auto;
             gap: 20px;
             align-items: start;
         }
@@ -163,7 +163,6 @@
             transition: color 0.3s ease;
         }
 
-
         #calendar {
             margin-top: 20px;
             background-color: #fff;
@@ -182,6 +181,27 @@
             background-color: red !important;
             color: white !important;
         }
+
+        /* Back Button Styling */
+        .back-btn {
+            background-color: #5f4bb6;  /* Purple background to match the theme */
+            color: white;  /* White text */
+            padding: 10px 20px;  /* Padding for a larger, clickable area */
+            text-decoration: none;  /* Remove underline */
+            border-radius: 5px;  /* Rounded corners */
+            font-weight: 600;  /* Slightly bolder text */
+            transition: background-color 0.3s ease;  /* Smooth hover transition */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Subtle shadow for depth */
+            justify-self: end; /* Align button to the right in grid */
+        }
+
+        /* Back Button Hover Effect */
+        .back-btn:hover {
+            background-color: #4831a6;  /* Darker shade on hover */
+            text-decoration: none;  /* Keep text-decoration off during hover */
+            color: white;  /* Ensure white text on hover */
+        }
+
     </style>
 </head>
 
@@ -198,6 +218,7 @@
     @endif
 
     <div class="attendance-container">
+
         <div class="attendance-header">
             Record Archer Attendance
         </div>
@@ -209,6 +230,11 @@
                 <label for="membership_id">Archer Membership ID</label>
                 <input type="text" name="membership_id" id="membership_id" value="{{ $membership->membership_id }}" readonly>
             </div>
+
+            <!-- Back Button -->
+            <a href="{{ route('coach.myArcher') }}" class="btn btn-secondary back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
 
             <div class="full-width">
                 <label for="archer_name">Archer Name</label>

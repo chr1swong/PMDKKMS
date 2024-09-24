@@ -45,6 +45,13 @@
             margin-bottom: 5px;
         }
 
+        /* Flexbox layout to place Membership ID and Back button side by side */
+        .membership-id-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .attendance-header .input-box {
             background-color: #d3d3d3;
             border-radius: 10px;
@@ -96,6 +103,25 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
+        /* Back Button Styling */
+        .back-btn {
+            background-color: #5f4bb6;  /* Purple background to match the theme */
+            color: white;  /* White text */
+            padding: 10px 20px;  /* Padding for a larger, clickable area */
+            text-decoration: none;  /* Remove underline */
+            border-radius: 5px;  /* Rounded corners */
+            font-weight: 600;  /* Slightly bolder text */
+            transition: background-color 0.3s ease;  /* Smooth hover transition */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Subtle shadow for depth */
+        }
+
+        /* Back Button Hover Effect */
+        .back-btn:hover {
+            background-color: #4831a6;  /* Darker shade on hover */
+            text-decoration: none;  /* Keep text-decoration off during hover */
+            color: white;  /* Ensure white text on hover */
+        }
+
     </style>
 </head>
 
@@ -104,14 +130,27 @@
     <header>
         @include('components.committeeHeader')
     </header>
-
+    
     <!-- Attendance Form Section -->
     <div class="attendance-container">
+        
         <div class="attendance-header">
-            <div>
-                <label for="membership_id">Membership ID</label>
-                <div class="input-box">{{ $membership->membership_id }}</div>
+
+            <!-- Membership ID and Back Button in the same row -->
+            <div class="membership-id-row">
+                <div>
+                    <label for="membership_id">Membership ID</label>
+                    <div class="input-box">{{ $membership->membership_id }}</div>
+                </div>
+
+                <!-- Back Button -->
+                <div>
+                    <a href="{{ route('committee.attendanceList') }}" class="btn btn-secondary back-btn">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                </div>
             </div>
+
             <div>
                 <label for="archer_name">Name</label>
                 <div class="input-box">{{ $membership->account->account_full_name }}</div>

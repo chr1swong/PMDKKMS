@@ -193,7 +193,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="/archer/performance">Performance</a>
+                                <a href="/archer/scoring">Performance</a>
                             </li>
                         </ul>
                     </li>

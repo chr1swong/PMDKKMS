@@ -8,6 +8,7 @@ use App\Http\Middleware\RoleAccessMiddleware;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CoachArcherController;
+use App\Http\Controllers\ScoringController;
 
 // Public routes (no authentication required)
 Route::middleware([PreventAuthenticatedAccess::class])->group(function () {
@@ -90,6 +91,9 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function ()
 
     //Route for viewing events in dashboard
     Route::get('/archer/dashboard', [EventController::class, 'showArcherDashboard'])->name('archer.dashboard');
+
+    //Route for archer scoring 
+    Route::get('/archer/scoring', [ScoringController::class, 'scoring'])->name('archer.scoring');
 });
 
 // Routes accessible to coach only
@@ -131,6 +135,8 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
 
     // Route for coach to update the archer's attendance
     Route::post('/coach/attendance/{membership_id}/update', [AttendanceController::class, 'updateCoachArcherAttendance'])->name('coach.updateAttendance');
+
+    // Route for
 });
 
 // Routes accessible to committee member only

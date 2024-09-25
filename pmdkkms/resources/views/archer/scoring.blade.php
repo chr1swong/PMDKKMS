@@ -80,14 +80,13 @@
 
         /* View Scoring History Button */
         .view-history-btn {
-            background: linear-gradient(90deg, #fdd835, #fbc02d);
+            background-color: #fdd835;
             color: black;
         }
 
         .view-history-btn:hover {
-            background: linear-gradient(90deg, #fbc02d, #fdd835);
+            background-color: #fbc02d;
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-            transform: translateY(-2px);
         }
 
         .view-history-btn:focus {
@@ -97,15 +96,14 @@
 
         /* Submit Button */
         .add-btn {
-            background: linear-gradient(90deg, #3f51b5, #303f9f);
+            background-color: #3f51b5;
             color: white;
             width: auto;
         }
 
         .add-btn:hover {
-            background: linear-gradient(90deg, #303f9f, #3f51b5);
+            background-color: #303f9f;
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.25);
-            transform: translateY(-2px);
         }
 
         .add-btn:focus {

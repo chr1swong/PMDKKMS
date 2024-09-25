@@ -92,8 +92,11 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function ()
     //Route for viewing events in dashboard
     Route::get('/archer/dashboard', [EventController::class, 'showArcherDashboard'])->name('archer.dashboard');
 
-    //Route for archer scoring 
+    // Route to display the scoring form (GET request)
     Route::get('/archer/scoring', [ScoringController::class, 'scoring'])->name('archer.scoring');
+
+    // Route to store the score (POST request)
+    Route::post('/archer/scoring', [ScoringController::class, 'storeScore'])->name('archer.storeScore');
 });
 
 // Routes accessible to coach only

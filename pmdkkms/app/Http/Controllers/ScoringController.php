@@ -60,4 +60,53 @@ class ScoringController extends Controller
         // Pass the membership_id to the view
         return view('archer.scoring', ['membership_id' => $membership->membership_id]);
     }
+
+    public function showScoringHistoryArcher(Request $request)
+    {
+        // Get the authenticated user's membership ID
+        $membership_id = Auth::user()->membership->membership_id;
+
+        // Base query for scoring data
+        $query = Score::where('membership_id', $membership_id);
+
+        // Apply filters based on the request
+        switch ($request->input('filter')) {
+            case 'last1day':
+                $query->where('date', '>=', now()->subDay());
+                break;
+            case 'last3days':
+                $query->where('date', '>=', now()->subDays(3));
+                break;
+            case 'last7days':
+                $query->where('date', '>=', now()->subDays(7));
+                break;
+            case 'last30days':
+                $query->where('date', '>=', now()->subDays(30));
+                break;
+            case 'all':
+            default:
+                // Do not filter, show all records
+                break;
+        }
+
+        // Custom date range filter
+        if ($request->filled('start-date') && $request->filled('end-date')) {
+            $query->whereBetween('date', [$request->input('start-date'), $request->input('end-date')]);
+        }
+
+        // Paginate the results with 10 per page
+        $scoringData = $query->orderBy('date', 'desc')->paginate(10);
+
+        // Return the view with filtered data
+        return view('archer.scoringHistory', compact('scoringData', 'membership_id'));
+    }
+
+    public function showScoreDetails($id)
+    {
+        // Find the score record by ID
+        $score = Score::findOrFail($id);
+
+        // Pass the score data to the view
+        return view('archer.scoreDetails', compact('score'));
+    }
 }

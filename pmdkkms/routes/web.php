@@ -97,6 +97,12 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function ()
 
     // Route to store the score (POST request)
     Route::post('/archer/scoring', [ScoringController::class, 'storeScore'])->name('archer.storeScore');
+
+    // Route for showing the scoring history page
+    Route::get('/archer/scoring-history', [ScoringController::class, 'showScoringHistoryArcher'])->name('archer.scoringHistory');
+
+    // Route for showing scoring details
+    Route::get('/archer/scoring-details/{id}', [ScoringController::class, 'showScoreDetails'])->name('scoring.details');
 });
 
 // Routes accessible to coach only

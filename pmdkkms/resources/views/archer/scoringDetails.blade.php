@@ -74,7 +74,6 @@
             text-align: center;
             transition: all 0.3s ease;
             display: inline-block;
-            width: 100%;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
@@ -93,6 +92,17 @@
         .add-btn:focus {
             outline: none;
             box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.5);
+        }
+
+        .delete-btn {
+            background-color: red;
+            color: white;
+            width: auto;
+        }
+
+        .delete-btn:hover {
+            background-color: darkred;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.25);
         }
 
         .scoring-form-container {
@@ -206,6 +216,13 @@
         .scoring-table {
             max-width: 100%;
         }
+        
+        /* Flexbox to align buttons */
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
     </style>
 </head>
 
@@ -239,10 +256,6 @@
                 {{ Auth::user()->account_full_name }}
             </div>
         </div>
-
-        <form action="{{ route('archer.scoringHistory') }}" method="GET">
-            <button type="submit" class="btn view-history-btn">View Scoring History</button>
-        </form>
     </div>
 
     <!-- Main Form -->
@@ -316,8 +329,16 @@
                 <textarea name="notes" id="notes" placeholder="Add any notes here (optional)" style="font-weight: bold;">{{ $score->notes }}</textarea>
             </div>
 
-            <!-- Submit button -->
-            <div style="text-align: center; margin-top: 20px;">
+            <!-- Update and Delete buttons -->
+            <div class="button-group" style="margin-top: 20px;">
+                <!-- Delete Button -->
+                <form action="{{ route('scoring.delete', $score->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn delete-btn">Delete</button>
+                </form>
+
+                <!-- Update Button -->
                 <button type="submit" class="btn add-btn">Update</button>
             </div>
         </form>

@@ -107,6 +107,46 @@ class ScoringController extends Controller
         $score = Score::findOrFail($id);
 
         // Pass the score data to the view
-        return view('archer.scoreDetails', compact('score'));
+        return view('archer.scoringDetails', compact('score')); // Updated view name here
+    }
+
+    public function updateScore(Request $request, $id)
+    {
+        // Validate the score data
+        $request->validate([
+            'set' => 'required|integer|min:1',
+            'category' => 'required|string',
+            'distance' => 'required|integer|min:1',
+            'date' => 'required|date',
+            'score1' => 'required|integer|min:0|max:60',
+            'score2' => 'required|integer|min:0|max:60',
+            'score3' => 'required|integer|min:0|max:60',
+            'score4' => 'required|integer|min:0|max:60',
+            'score5' => 'required|integer|min:0|max:60',
+            'score6' => 'required|integer|min:0|max:60',
+            'notes' => 'nullable|string',
+        ]);
+
+        // Calculate total score
+        $total = $request->score1 + $request->score2 + $request->score3 + $request->score4 + $request->score5 + $request->score6;
+
+        // Find the existing score entry and update it
+        $score = Score::findOrFail($id);
+        $score->update([
+            'set' => $request->set,
+            'category' => $request->category,
+            'distance' => $request->distance,
+            'date' => $request->date,
+            'score1' => $request->score1,
+            'score2' => $request->score2,
+            'score3' => $request->score3,
+            'score4' => $request->score4,
+            'score5' => $request->score5,
+            'score6' => $request->score6,
+            'total' => $total,
+            'notes' => $request->notes,
+        ]);
+
+        return redirect()->route('archer.scoringHistory')->with('success', 'Score updated successfully.');
     }
 }

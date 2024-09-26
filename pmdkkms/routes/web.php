@@ -103,6 +103,9 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function ()
 
     // Route for showing scoring details
     Route::get('/archer/scoring-details/{id}', [ScoringController::class, 'showScoreDetails'])->name('scoring.details');
+
+    // Route for updating score
+    Route::put('/archer/scoring/{id}', [ScoringController::class, 'updateScore'])->name('scoring.update');
 });
 
 // Routes accessible to coach only

@@ -223,6 +223,46 @@
             justify-content: center;
             gap: 20px;
         }
+
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
+        }
+
+        .modal button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .confirm-delete {
+            background-color: #ff6b6b;
+            color: white;
+        }
+
+        .cancel-delete {
+            background-color: #ccc;
+            color: black;
+        }
     </style>
 </head>
 
@@ -332,16 +372,22 @@
             <!-- Update and Delete buttons -->
             <div class="button-group" style="margin-top: 20px;">
                 <!-- Delete Button -->
-                <form action="{{ route('scoring.delete', $score->id) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn delete-btn">Delete</button>
-                </form>
+                <button type="button" class="btn delete-btn" onclick="showDeleteModal()">Delete</button>
 
                 <!-- Update Button -->
                 <button type="submit" class="btn add-btn">Update</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <h3>Confirm Deletion</h3>
+        <p>Are you sure you want to delete this?</p>
+        <button class="confirm-delete" id="confirmDeleteButton">Confirm</button>
+        <button class="cancel-delete" onclick="closeDeleteModal()">Cancel</button>
     </div>
 </div>
 
@@ -358,6 +404,38 @@
             });
             totalInput.value = total;
         });
+    });
+
+    // Modal Delete Confirmation
+    let deleteUrl = '{{ route('scoring.delete', $score->id) }}';
+
+    function showDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'flex';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+    }
+
+    document.getElementById('confirmDeleteButton').addEventListener('click', function() {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = deleteUrl;
+
+        const tokenInput = document.createElement('input');
+        tokenInput.type = 'hidden';
+        tokenInput.name = '_token';
+        tokenInput.value = '{{ csrf_token() }}';
+
+        const methodInput = document.createElement('input');
+        methodInput.type = 'hidden';
+        methodInput.name = '_method';
+        methodInput.value = 'DELETE';
+
+        form.appendChild(tokenInput);
+        form.appendChild(methodInput);
+        document.body.appendChild(form);
+        form.submit();
     });
 </script>
 

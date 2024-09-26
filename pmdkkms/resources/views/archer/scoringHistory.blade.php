@@ -141,6 +141,34 @@
             background-color: #5a32a3;
         }
 
+        /* Success message styling */
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px 40px 15px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 30px;
+            font-weight: bold;
+            color: #155724;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #0c3d20;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .filter-container {
@@ -164,6 +192,13 @@
 <header>
     @include('components.archerHeader') 
 </header>
+
+@if (session('success'))
+    <div class="alert-success">
+        {{ session('success') }}
+        <button class="close" onclick="this.parentElement.style.display='none';">&times;</button>
+    </div>
+@endif
 
 <div class="scoring-history-container">
     <h1 class="scoring-history-header">Scoring History</h1>

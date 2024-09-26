@@ -149,4 +149,12 @@ class ScoringController extends Controller
 
         return redirect()->route('archer.scoringHistory')->with('success', 'Score updated successfully.');
     }
+
+    public function deleteScore($id)
+    {
+        $score = Score::findOrFail($id);
+        $score->delete();
+
+        return redirect()->route('archer.scoringHistory')->with('success', 'Score deleted successfully.');
+    }
 }

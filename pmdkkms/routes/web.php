@@ -106,6 +106,9 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function ()
 
     // Route for updating score
     Route::put('/archer/scoring/{id}', [ScoringController::class, 'updateScore'])->name('scoring.update');
+
+    // Route for score deletion
+    Route::delete('/archer/scoring/{id}', [ScoringController::class, 'deleteScore'])->name('scoring.delete');
 });
 
 // Routes accessible to coach only

@@ -319,7 +319,9 @@
             </div>
         </div>
 
-        <button class="btn view-history-btn">View Scoring History</button>
+        <form action="{{ route('archer.scoringHistory') }}" method="GET">
+            <button type="submit" class="btn view-history-btn">View Scoring History</button>
+        </form>
     </div>
 
     <!-- Main Form -->

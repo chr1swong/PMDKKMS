@@ -118,7 +118,7 @@
             line-height: 1.5;
             text-align: center;
             cursor: pointer;
-            width: 120px;
+            width: 140px;
         }
 
         .btn-view {
@@ -148,6 +148,7 @@
         .btn-container {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 10px;
         }
 
@@ -252,7 +253,7 @@
                         <td>{{ $archer->membership_status == 1 ? 'Active' : 'Inactive' }}</td>
                         <td>
                             <div class="btn-container">
-                                <button class="btn btn-view">View Training Score</button>
+                                <a href="{{ route('coach.scoringHistoryArcher', $archer->membership_id) }}" class="btn btn-view">View Training Score</a>
                                 <a href="{{ route('coach.attendanceView', $archer->membership_id) }}" class="btn btn-view">View Attendance Details</a> 
                             </div>
                         </td>
@@ -278,7 +279,7 @@
                         <td>{{ $archer->membership_status == 1 ? 'Active' : 'Inactive' }}</td>
                         <td>
                             <div class="btn-container">
-                                <button class="btn btn-view">View Training Score</button>
+                                <a href="{{ route('coach.scoringHistoryArcher', $archer->membership_id) }}" class="btn btn-view">View Training Score</a>
                                 <a href="{{ route('coach.attendanceView', $archer->membership_id) }}" class="btn btn-view">View Attendance Details</a> 
                             </div>
                         </td>

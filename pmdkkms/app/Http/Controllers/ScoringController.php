@@ -157,4 +157,42 @@ class ScoringController extends Controller
 
         return redirect()->route('archer.scoringHistory')->with('success', 'Score deleted successfully.');
     }
+
+    // Method for coaches to view the scoring history of their enrolled archers
+    public function showCoachArcherScoringHistory(Request $request, $membership_id)
+    {
+        // Base query to get scoring data for the specified archer by membership_id
+        $query = Score::where('membership_id', $membership_id);
+
+        // Apply filters based on the request
+        switch ($request->input('filter')) {
+            case 'last1day':
+                $query->where('date', '>=', now()->subDay());
+                break;
+            case 'last3days':
+                $query->where('date', '>=', now()->subDays(3));
+                break;
+            case 'last7days':
+                $query->where('date', '>=', now()->subDays(7));
+                break;
+            case 'last30days':
+                $query->where('date', '>=', now()->subDays(30));
+                break;
+            case 'all':
+            default:
+                // Do not filter, show all records
+                break;
+        }
+
+        // Custom date range filter
+        if ($request->filled('start-date') && $request->filled('end-date')) {
+            $query->whereBetween('date', [$request->input('start-date'), $request->input('end-date')]);
+        }
+
+        // Paginate the results with 10 per page
+        $scoringData = $query->orderBy('date', 'desc')->paginate(10);
+
+        // Return the view with filtered data
+        return view('coach.scoringHistory', compact('scoringData', 'membership_id'));
+    }
 }

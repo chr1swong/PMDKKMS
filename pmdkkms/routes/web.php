@@ -151,7 +151,8 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
     // Route for coach to update the archer's attendance
     Route::post('/coach/attendance/{membership_id}/update', [AttendanceController::class, 'updateCoachArcherAttendance'])->name('coach.updateAttendance');
 
-    // Route for
+    // Route for coach's scoring history view of a specific archer
+    Route::get('/coach/scoring-history/{membership_id}', [ScoringController::class, 'showCoachArcherScoringHistory'])->name('coach.scoringHistoryArcher');
 });
 
 // Routes accessible to committee member only

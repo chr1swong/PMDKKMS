@@ -103,22 +103,14 @@
             vertical-align: middle;
         }
 
-        .btn {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: bold;
-            display: inline-block;
-            line-height: 1.5;
-            text-align: center;
-            cursor: pointer;
-            width: 120px;
-        }
-
         .btn-view {
             background-color: #5f4bb6;
             color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         .btn-view:hover {
@@ -190,7 +182,7 @@
 <body>
 
 <header>
-    @include('components.archerHeader') 
+    @include('components.coachHeader') 
 </header>
 
 @if (session('success'))
@@ -201,7 +193,7 @@
 @endif
 
 <div class="scoring-history-container">
-    <h1 class="scoring-history-header">Scoring History</h1>
+    <h1 class="scoring-history-header">Scoring History of {{ $archerName }}</h1>
 
     <!-- Membership ID and Filter -->
     <div class="filter-container">
@@ -213,9 +205,9 @@
         </div>
 
         <div>
-            <form action="{{ route('archer.scoringHistory') }}" method="GET">
-                <input type="date" name="start-date" id="start-date" value="{{ request('start-date') }}">
-                <input type="date" name="end-date" id="end-date" value="{{ request('end-date') }}">
+            <form action="{{ route('coach.scoringHistoryArcher', $membership_id) }}" method="GET">
+                <input type="date" name="start-date" value="{{ request('start-date') }}">
+                <input type="date" name="end-date" value="{{ request('end-date') }}">
                 <button type="submit">Filter</button>
             </form>
         </div>
@@ -235,7 +227,7 @@
                     <th>Performance</th>
                 </tr>
             </thead>
-            <tbody id="scoring-table">
+            <tbody>
                 @forelse($scoringData as $index => $score)
                     <tr>
                         <td>{{ $index + 1 }}</td>
@@ -245,7 +237,7 @@
                         <td>{{ $score->distance }}M</td>
                         <td>{{ $score->total }}/360</td>
                         <td>
-                            <a href="{{ route('scoring.details', $score->id) }}" class="btn btn-view">View Scoring Details</a>
+                            <a href="{{ route('scoring.details', $score->id) }}" class="btn-view">View Details</a>
                         </td>
                     </tr>
                 @empty
@@ -261,7 +253,7 @@
     {{ $scoringData->links() }}
 
     <!-- Back Button -->
-    <a href="{{ route('archer.dashboard') }}" class="back-btn">
+    <a href="{{ route('coach.myArcher') }}" class="back-btn">
         <i class="fas fa-arrow-left"></i> Back
     </a>
 </div>

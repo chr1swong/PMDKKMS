@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class ScoringController extends Controller
 {
-    // Store the scoring data
+    // Store the scoring data for an archer
     public function storeScore(Request $request)
     {
         // Validate the score data
@@ -52,6 +52,7 @@ class ScoringController extends Controller
         return back()->with('success', 'Score recorded successfully.');
     }
 
+    // Show scoring input page for archer
     public function scoring()
     {
         $membership = DB::table('membership')->where('account_id', Auth::id())->first();
@@ -60,6 +61,7 @@ class ScoringController extends Controller
         return view('archer.scoring', ['membership_id' => $membership->membership_id]);
     }
 
+    // Show scoring history for an archer
     public function showScoringHistoryArcher(Request $request)
     {
         // Get the authenticated user's membership ID
@@ -100,15 +102,17 @@ class ScoringController extends Controller
         return view('archer.scoringHistory', compact('scoringData', 'membership_id'));
     }
 
+    // Show scoring details for an archer
     public function showScoreDetails($id)
     {
         // Find the score record by ID
         $score = Score::findOrFail($id);
 
         // Pass the score data to the view
-        return view('archer.scoringDetails', compact('score')); // Updated view name here
+        return view('archer.scoringDetails', compact('score'));
     }
 
+    // Update an existing score for archer
     public function updateScore(Request $request, $id)
     {
         // Validate the score data
@@ -149,6 +153,7 @@ class ScoringController extends Controller
         return redirect()->route('archer.scoringHistory')->with('success', 'Score updated successfully.');
     }
 
+    // Delete a score entry
     public function deleteScore($id)
     {
         $score = Score::findOrFail($id);
@@ -203,5 +208,25 @@ class ScoringController extends Controller
 
         // Return the view with filtered data, passing the archerName
         return view('coach.scoringHistory', compact('scoringData', 'membership_id', 'archerName'));
+    }
+
+    // Show scoring details for coach's view of archer
+    public function showCoachArcherScoringDetails($id)
+    {
+        // Find the score record by ID
+        $score = Score::findOrFail($id);
+
+        // Retrieve the archer's full name from the account table based on membership ID
+        $archer = DB::table('membership')
+            ->join('account', 'membership.account_id', '=', 'account.account_id')
+            ->where('membership.membership_id', $score->membership_id)
+            ->select('account.account_full_name') // Select the archer's full name
+            ->first();
+
+        // If no archer is found, set a default name
+        $archerName = $archer->account_full_name ?? 'Unknown Archer';
+
+        // Pass the score and archer name to the view
+        return view('coach.scoringDetails', compact('score', 'archerName'));
     }
 }

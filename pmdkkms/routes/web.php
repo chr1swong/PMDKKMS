@@ -121,19 +121,19 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
     Route::get('/coach/profile', [AccountController::class, 'coachProfile'])->name('coach.profile');
 
     // Route for viewing the edit profile form (GET)
-    Route::get('/coach/editProfile', [AccountController::class, 'coachEditProfile'])->name('coach.editProfile'); // Ensure this is present
+    Route::get('/coach/editProfile', [AccountController::class, 'coachEditProfile'])->name('coach.editProfile'); 
 
     // Route for handling profile update (POST)
     Route::post('/coach/updateProfile', [AccountController::class, 'updateCoachProfile'])->name('coach.updateProfile');
 
-    // Route for handling changing password
-    Route::post('/coach/changePassword', [PasswordResetController::class, 'changePassword'])->name('coach.changePassword');
+    // Route for handling password change
+    Route::post('/coach/changePassword', [PasswordResetController::class, 'changeCoachPassword'])->name('coach.changePassword');
 
     // Route for updating profile picture
     Route::put('/coach/updateProfilePicture', [AccountController::class, 'updateCoachProfilePicture'])->name('coach.updateProfilePicture');
 
     // Route for viewing events
-    Route::get('/coach/events', [EventController::class, 'viewEvents'])->name('coach.events');
+    Route::get('/coach/events', [EventController::class, 'viewCoachEvents'])->name('coach.events');
 
     //Route for viewing events in dashboard
     Route::get('/coach/dashboard', [EventController::class, 'showCoachDashboard'])->name('coach.dashboard');
@@ -143,7 +143,7 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
     Route::post('/coach/enroll-archer/{archer}', [CoachArcherController::class, 'enrollArcher'])->name('coach.enrollArcher');
     Route::post('/coach/unenroll-archer/{archer}', [CoachArcherController::class, 'unenrollArcher'])->name('coach.unenrollArcher');
 
-    Route::get('/coach/archer/profile/{membership_id}', [AccountController::class, 'viewArcherProfile'])->name('coach.viewProfile');
+    Route::get('/coach/archer/profile/{membership_id}', [AccountController::class, 'viewCoachArcherProfile'])->name('coach.viewProfile');
 
     // Route for coach to view a specific archer's attendance
     Route::get('/coach/attendance/{membership_id}', [AttendanceController::class, 'viewCoachArcherAttendance'])->name('coach.attendanceView');
@@ -153,6 +153,9 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
 
     // Route for coach's scoring history view of a specific archer
     Route::get('/coach/scoring-history/{membership_id}', [ScoringController::class, 'showCoachArcherScoringHistory'])->name('coach.scoringHistoryArcher');
+
+    // Route for coach to view scoring details of a specific archer
+    Route::get('/coach/scoring-details/{id}', [ScoringController::class, 'showCoachArcherScoringDetails'])->name('coach.scoringDetails');
 });
 
 // Routes accessible to committee member only

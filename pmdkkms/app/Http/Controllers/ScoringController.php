@@ -161,7 +161,14 @@ class ScoringController extends Controller
     // Method for coaches to view the scoring history of their enrolled archers
     public function showCoachArcherScoringHistory(Request $request, $membership_id)
     {
-        // Base query to get scoring data for the specified archer by membership_id
+        // Fetch the archer's name using the membership_id
+        $archer = DB::table('membership')
+            ->join('account', 'membership.account_id', '=', 'account.account_id')
+            ->where('membership.membership_id', $membership_id)
+            ->select('account.account_full_name')
+            ->first();
+
+        // Base query to get scoring data for the archer
         $query = Score::where('membership_id', $membership_id);
 
         // Apply filters based on the request
@@ -180,7 +187,7 @@ class ScoringController extends Controller
                 break;
             case 'all':
             default:
-                // Do not filter, show all records
+                // Show all records
                 break;
         }
 
@@ -192,7 +199,11 @@ class ScoringController extends Controller
         // Paginate the results with 10 per page
         $scoringData = $query->orderBy('date', 'desc')->paginate(10);
 
-        // Return the view with filtered data
-        return view('coach.scoringHistory', compact('scoringData', 'membership_id'));
+        // Pass the scoring data and archer name to the view
+        return view('coach.scoringHistory', [
+            'scoringData' => $scoringData,
+            'membership_id' => $membership_id,
+            'archerName' => $archer->account_full_name // Pass the archer's name to the view
+        ]);
     }
 }

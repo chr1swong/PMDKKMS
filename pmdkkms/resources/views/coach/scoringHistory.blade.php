@@ -32,6 +32,14 @@
             margin-bottom: 20px;
         }
 
+        .membership-id {
+            background-color: #E0E0E0;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 18px;
+            max-width: 150px;
+        }
+
         .filter-container {
             display: flex;
             justify-content: space-between;
@@ -64,7 +72,7 @@
         .table-container {
             width: 100%;
             margin: 20px auto;
-            max-height: 505px;
+            max-height: 505px; /* Adjust based on row height to fit 8 rows */
             overflow-y: auto;
         }
 
@@ -124,6 +132,51 @@
         .back-btn:hover {
             background-color: #5a32a3;
         }
+
+        /* Success message styling */
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px 40px 15px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 30px;
+            font-weight: bold;
+            color: #155724;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #0c3d20;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .filter-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .table-container {
+                max-height: 300px; /* Adjust for smaller screens */
+            }
+        }
     </style>
 </head>
 <body>
@@ -132,29 +185,45 @@
     @include('components.coachHeader') 
 </header>
 
-<div class="scoring-history-container">
-    <h1 class="scoring-history-header">Scoring History of Your Archer</h1>
+@if (session('success'))
+    <div class="alert-success">
+        {{ session('success') }}
+        <button class="close" onclick="this.parentElement.style.display='none';">&times;</button>
+    </div>
+@endif
 
-    <!-- Filter Form -->
+<div class="scoring-history-container">
+    <h1 class="scoring-history-header">Scoring History of {{ $archerName }}</h1>
+
+    <!-- Membership ID and Filter -->
     <div class="filter-container">
-        <form action="{{ route('coach.scoringHistoryArcher', $membership_id) }}" method="GET">
-            <input type="date" name="start-date" value="{{ request('start-date') }}">
-            <input type="date" name="end-date" value="{{ request('end-date') }}">
-            <button type="submit">Filter</button>
-        </form>
+        <div>
+            <label for="membership-id">Membership ID</label>
+            <div class="membership-id">
+                {{ $membership_id }}
+            </div>
+        </div>
+
+        <div>
+            <form action="{{ route('coach.scoringHistoryArcher', $membership_id) }}" method="GET">
+                <input type="date" name="start-date" value="{{ request('start-date') }}">
+                <input type="date" name="end-date" value="{{ request('end-date') }}">
+                <button type="submit">Filter</button>
+            </form>
+        </div>
     </div>
 
     <!-- Scoring History Table -->
     <div class="table-container">
-        <table>
+        <table id="scoringTable">
             <thead>
                 <tr>
-                    <th>No.</th>
-                    <th>Date</th>
-                    <th>Category</th>
-                    <th>Set</th>
-                    <th>Distance</th>
-                    <th>Total Score</th>
+                    <th onclick="sortTable(0)">No. <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(1)">Date <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(2)">Category <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(3)">Set <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(4)">Distance <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(5)">Total Score <i class="fas fa-sort"></i></th>
                     <th>Performance</th>
                 </tr>
             </thead>
@@ -188,6 +257,58 @@
         <i class="fas fa-arrow-left"></i> Back
     </a>
 </div>
+
+<script>
+    // Sorting function for the table
+    function sortTable(n) {
+        const table = document.getElementById("scoringTable");
+        let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        switching = true;
+        dir = "asc"; // Set the sorting direction to ascending by default
+
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+
+                // For dates, convert them to a comparable format
+                if (n == 1) { // Column index 1 is for the Date
+                    const xDate = new Date(x.innerHTML);
+                    const yDate = new Date(y.innerHTML);
+                    if (dir == "asc" && xDate > yDate) {
+                        shouldSwitch = true;
+                        break;
+                    } else if (dir == "desc" && xDate < yDate) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else {
+                    // For other columns, use string comparison
+                    if (dir == "asc" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    } else if (dir == "desc" && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount++;
+            } else {
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
+</script>
 
 </body>
 </html>

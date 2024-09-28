@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -161,14 +160,7 @@ class ScoringController extends Controller
     // Method for coaches to view the scoring history of their enrolled archers
     public function showCoachArcherScoringHistory(Request $request, $membership_id)
     {
-        // Fetch the archer's name using the membership_id
-        $archer = DB::table('membership')
-            ->join('account', 'membership.account_id', '=', 'account.account_id')
-            ->where('membership.membership_id', $membership_id)
-            ->select('account.account_full_name')
-            ->first();
-
-        // Base query to get scoring data for the archer
+        // Base query to get scoring data for the specified archer by membership_id
         $query = Score::where('membership_id', $membership_id);
 
         // Apply filters based on the request
@@ -187,7 +179,7 @@ class ScoringController extends Controller
                 break;
             case 'all':
             default:
-                // Show all records
+                // Do not filter, show all records
                 break;
         }
 
@@ -196,14 +188,20 @@ class ScoringController extends Controller
             $query->whereBetween('date', [$request->input('start-date'), $request->input('end-date')]);
         }
 
+        // Retrieve the archer's full name from the account table based on membership
+        $archer = DB::table('membership')
+            ->join('account', 'membership.account_id', '=', 'account.account_id')
+            ->where('membership.membership_id', $membership_id)
+            ->select('account.account_full_name') // Select the archer's full name
+            ->first();
+
+        // If no archer is found, set a default name
+        $archerName = $archer->account_full_name ?? 'Unknown Archer';
+
         // Paginate the results with 10 per page
         $scoringData = $query->orderBy('date', 'desc')->paginate(10);
 
-        // Pass the scoring data and archer name to the view
-        return view('coach.scoringHistory', [
-            'scoringData' => $scoringData,
-            'membership_id' => $membership_id,
-            'archerName' => $archer->account_full_name // Pass the archer's name to the view
-        ]);
+        // Return the view with filtered data, passing the archerName
+        return view('coach.scoringHistory', compact('scoringData', 'membership_id', 'archerName'));
     }
 }

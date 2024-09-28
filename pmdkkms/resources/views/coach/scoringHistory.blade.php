@@ -72,7 +72,7 @@
         .table-container {
             width: 100%;
             margin: 20px auto;
-            max-height: 505px; /* Adjust based on row height to fit 8 rows */
+            max-height: 505px;
             overflow-y: auto;
         }
 
@@ -103,14 +103,22 @@
             vertical-align: middle;
         }
 
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            line-height: 1.5;
+            text-align: center;
+            cursor: pointer;
+            width: 120px;
+        }
+
         .btn-view {
             background-color: #5f4bb6;
             color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
         .btn-view:hover {
@@ -174,7 +182,7 @@
             }
 
             .table-container {
-                max-height: 300px; /* Adjust for smaller screens */
+                max-height: 300px;
             }
         }
     </style>
@@ -206,8 +214,8 @@
 
         <div>
             <form action="{{ route('coach.scoringHistoryArcher', $membership_id) }}" method="GET">
-                <input type="date" name="start-date" value="{{ request('start-date') }}">
-                <input type="date" name="end-date" value="{{ request('end-date') }}">
+                <input type="date" name="start-date" id="start-date" value="{{ request('start-date') }}">
+                <input type="date" name="end-date" id="end-date" value="{{ request('end-date') }}">
                 <button type="submit">Filter</button>
             </form>
         </div>
@@ -227,7 +235,7 @@
                     <th>Performance</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="scoring-table">
                 @forelse($scoringData as $index => $score)
                     <tr>
                         <td>{{ $index + 1 }}</td>
@@ -237,7 +245,7 @@
                         <td>{{ $score->distance }}M</td>
                         <td>{{ $score->total }}/360</td>
                         <td>
-                            <a href="{{ route('scoring.details', $score->id) }}" class="btn-view">View Details</a>
+                            <a href="{{ route('scoring.details', $score->id) }}" class="btn btn-view">View Scoring Details</a>
                         </td>
                     </tr>
                 @empty
@@ -265,7 +273,6 @@
         let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
         switching = true;
         dir = "asc"; // Set the sorting direction to ascending by default
-
         while (switching) {
             switching = false;
             rows = table.rows;
@@ -273,7 +280,6 @@
                 shouldSwitch = false;
                 x = rows[i].getElementsByTagName("TD")[n];
                 y = rows[i + 1].getElementsByTagName("TD")[n];
-
                 // For dates, convert them to a comparable format
                 if (n == 1) { // Column index 1 is for the Date
                     const xDate = new Date(x.innerHTML);

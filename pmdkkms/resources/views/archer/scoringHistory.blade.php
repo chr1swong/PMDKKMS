@@ -15,7 +15,6 @@
             margin: 0;
             padding: 20px;
         }
-
         .scoring-history-container {
             max-width: 1200px;
             margin: 40px auto;
@@ -24,14 +23,12 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-
         .scoring-history-header {
             text-align: left;
             font-size: 28px;
             font-weight: bold;
             margin-bottom: 20px;
         }
-
         .membership-id {
             background-color: #E0E0E0;
             padding: 10px;
@@ -39,14 +36,12 @@
             font-size: 18px;
             max-width: 150px;
         }
-
         .filter-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
         }
-
         .filter-container input {
             padding: 10px;
             border-radius: 8px;
@@ -54,7 +49,6 @@
             font-size: 16px;
             margin-left: 10px;
         }
-
         .filter-container button {
             background-color: #555;
             color: white;
@@ -64,18 +58,15 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         .filter-container button:hover {
             background-color: #333;
         }
-
         .table-container {
             width: 100%;
             margin: 20px auto;
             max-height: 505px; /* Adjust based on row height to fit 8 rows */
             overflow-y: auto;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -85,38 +76,39 @@
             border-radius: 10px;
             overflow: hidden;
         }
-
         table th, table td {
             padding: 12px;
             text-align: center;
             border: 1px solid #e1e1e1;
         }
-
         table th {
             background-color: #333;
             color: white;
             cursor: pointer;
         }
-
         table td {
             background-color: #f9f9f9;
             vertical-align: middle;
         }
-
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            line-height: 1.5;
+            text-align: center;
+            cursor: pointer;
+            width: 120px;
+        }
         .btn-view {
             background-color: #5f4bb6;
             color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
         }
-
         .btn-view:hover {
             background-color: #3b1f8b;
         }
-
         .back-btn {
             background-color: #6f42c1;
             color: white;
@@ -128,11 +120,9 @@
             display: inline-block;
             margin-top: 20px;
         }
-
         .back-btn:hover {
             background-color: #5a32a3;
         }
-
         /* Success message styling */
         .alert-success {
             background-color: #d4edda;
@@ -143,7 +133,6 @@
             position: relative;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-
         .close {
             position: absolute;
             top: 10px;
@@ -156,23 +145,19 @@
             cursor: pointer;
             transition: color 0.3s ease;
         }
-
         .close:hover {
             color: #0c3d20;
         }
-
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .filter-container {
                 flex-direction: column;
                 align-items: flex-start;
             }
-
             .btn {
                 width: 100%;
                 margin-bottom: 10px;
             }
-
             .table-container {
                 max-height: 300px; /* Adjust for smaller screens */
             }
@@ -182,7 +167,7 @@
 <body>
 
 <header>
-    @include('components.coachHeader') 
+    @include('components.archerHeader') 
 </header>
 
 @if (session('success'))
@@ -191,9 +176,8 @@
         <button class="close" onclick="this.parentElement.style.display='none';">&times;</button>
     </div>
 @endif
-
 <div class="scoring-history-container">
-    <h1 class="scoring-history-header">Scoring History of {{ $archerName }}</h1>
+    <h1 class="scoring-history-header">Scoring History</h1>
 
     <!-- Membership ID and Filter -->
     <div class="filter-container">
@@ -205,9 +189,9 @@
         </div>
 
         <div>
-            <form action="{{ route('coach.scoringHistoryArcher', $membership_id) }}" method="GET">
-                <input type="date" name="start-date" value="{{ request('start-date') }}">
-                <input type="date" name="end-date" value="{{ request('end-date') }}">
+            <form action="{{ route('archer.scoringHistory') }}" method="GET">
+                <input type="date" name="start-date" id="start-date" value="{{ request('start-date') }}">
+                <input type="date" name="end-date" id="end-date" value="{{ request('end-date') }}">
                 <button type="submit">Filter</button>
             </form>
         </div>
@@ -227,7 +211,7 @@
                     <th>Performance</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="scoring-table">
                 @forelse($scoringData as $index => $score)
                     <tr>
                         <td>{{ $index + 1 }}</td>
@@ -237,7 +221,7 @@
                         <td>{{ $score->distance }}M</td>
                         <td>{{ $score->total }}/360</td>
                         <td>
-                            <a href="{{ route('scoring.details', $score->id) }}" class="btn-view">View Details</a>
+                            <a href="{{ route('scoring.details', $score->id) }}" class="btn btn-view">View Scoring Details</a>
                         </td>
                     </tr>
                 @empty
@@ -253,7 +237,7 @@
     {{ $scoringData->links() }}
 
     <!-- Back Button -->
-    <a href="{{ route('coach.myArcher') }}" class="back-btn">
+    <a href="{{ route('archer.dashboard') }}" class="back-btn">
         <i class="fas fa-arrow-left"></i> Back
     </a>
 </div>
@@ -265,7 +249,6 @@
         let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
         switching = true;
         dir = "asc"; // Set the sorting direction to ascending by default
-
         while (switching) {
             switching = false;
             rows = table.rows;
@@ -273,7 +256,6 @@
                 shouldSwitch = false;
                 x = rows[i].getElementsByTagName("TD")[n];
                 y = rows[i + 1].getElementsByTagName("TD")[n];
-
                 // For dates, convert them to a comparable format
                 if (n == 1) { // Column index 1 is for the Date
                     const xDate = new Date(x.innerHTML);

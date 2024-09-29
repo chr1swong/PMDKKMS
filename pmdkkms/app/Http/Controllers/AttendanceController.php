@@ -89,8 +89,18 @@ class AttendanceController extends Controller
         $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $monthNumber, $year);
 
         // Query attendance records filtered by the selected month
-        $attendances = Attendance::with('membership', 'membership.account')
+        $attendances = Attendance::with(['membership', 'membership.account'])
+            ->leftJoin('membership', 'attendance.membership_id', '=', 'membership.membership_id')
+            ->leftJoin('account', 'membership.account_id', '=', 'account.account_id')
+            ->leftJoin('coach_archer', 'account.account_id', '=', 'coach_archer.archer_id') // Join coach_archer table to link archers with their coaches
+            ->leftJoin('account as coach', 'coach_archer.coach_id', '=', 'coach.account_id') // Join again to get coach details
             ->whereMonth('attendance_date', $monthNumber)
+            ->select(
+                'attendance.*', // Select attendance details
+                'account.account_full_name as archer_name', // Select archer's name
+                'membership.membership_id',
+                'coach.account_full_name as coach_name' // Select coach's name
+            )
             ->get();
 
         // Group attendance records by membership_id and calculate attendance count for the month
@@ -99,7 +109,8 @@ class AttendanceController extends Controller
             return [
                 'membership' => $attendanceRecords->first()->membership,
                 'presentCount' => $presentCount,
-                'daysInMonth' => $daysInMonth
+                'daysInMonth' => $daysInMonth,
+                'coach_name' => $attendanceRecords->first()->coach_name // Get coach name
             ];
         });
 

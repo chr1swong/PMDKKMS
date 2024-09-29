@@ -25,6 +25,12 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        .hr-divider {
+            border: none;
+            border-top: 2px solid #e0e0e0; /* Customize the color and thickness */
+            margin: 10px 0; /* Adjust spacing */
+        }
+
         .scoring-history-header {
             text-align: left;
             font-size: 28px;
@@ -36,7 +42,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-top: 40px;
+            margin-bottom: 5px;
         }
 
         .filter-container input {
@@ -186,6 +193,7 @@
 
 <div class="scoring-history-container">
     <h1 class="scoring-history-header">Scoring History of All Archers</h1>
+    <hr class="hr-divider">
 
     <!-- Search Bar and Filter -->
     <div class="filter-container">

@@ -12,57 +12,40 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: #f4f4f4;
-            color: #333;
+            margin: 0;
+            padding: 20px;
         }
 
-        .container {
-            width: 90%;
+        .attendance-list-container {
+            max-width: 1200px;
             margin: 40px auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        h1 {
+        .attendance-list-header {
             text-align: left;
-            margin-bottom: 10px;
+            font-size: 28px;
             font-weight: bold;
-            color: #333;
+            margin-bottom: 20px;
         }
 
         .filter-search-container {
             display: flex;
-            justify-content: flex-start;
-            align-items: flex-end;
-            gap: 20px;
-            margin-top: 10px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
         }
 
-        .filter-container {
-            display: inline-block;
-            padding-left: 60px;
-        }
-
-        .filter-container label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .filter-container select {
+        .filter-container select,
+        .search-wrapper input {
             padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
+            border-radius: 8px;
             border: 1px solid #ccc;
-            width: 200px;
-        }
-
-        .search-container input {
-            padding: 10px;
             font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            width: 200px;
         }
 
         .search-wrapper {
@@ -79,15 +62,14 @@
 
         .search-wrapper input {
             padding: 10px 10px 10px 35px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
             width: 200px;
         }
 
         .table-container {
-            width: 90%;
+            width: 100%;
             margin: 20px auto;
+            max-height: 505px;
+            overflow-y: auto;
         }
 
         table {
@@ -117,31 +99,21 @@
             vertical-align: middle;
         }
 
-        .btn {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: bold;
-            display: inline-block;
-            line-height: 1.5;
-            text-align: center;
-            cursor: pointer;
-            width: 120px;
+        table th.sortable:hover {
+            background-color: #555;
         }
 
         .btn-view {
             background-color: #5f4bb6;
             color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
         .btn-view:hover {
             background-color: #3b1f8b;
-        }
-
-        .attendance-summary {
-            color: #333;
-            font-weight: bold;
         }
 
         .btn-container {
@@ -149,136 +121,164 @@
             justify-content: center;
         }
 
-        /* Adjust for mobile responsiveness */
+        /* Responsive adjustments */
         @media (max-width: 768px) {
             .filter-search-container {
                 flex-direction: column;
                 align-items: flex-start;
             }
 
-            .btn-container {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-                margin-bottom: 10px;
+            .table-container {
+                max-height: 300px;
             }
         }
     </style>
 </head>
 <body>
-    <header>
-        @include('components.committeeHeader')
-    </header>
-    
-    <div class="container">
-        <h1>Archer Attendance for {{ $filterMonth }}</h1>
-        
-        <div class="filter-search-container">
-            <div class="filter-container">
-                <label for="attendance-filter">Filter by Month</label>
-                <form method="GET" action="{{ route('committee.attendanceList') }}">
-                    <select id="attendance-filter" name="attendance-filter" onchange="this.form.submit()">
-                        <option value="January" {{ request('attendance-filter') == 'January' ? 'selected' : '' }}>January</option>
-                        <option value="February" {{ request('attendance-filter') == 'February' ? 'selected' : '' }}>February</option>
-                        <option value="March" {{ request('attendance-filter') == 'March' ? 'selected' : '' }}>March</option>
-                        <option value="April" {{ request('attendance-filter') == 'April' ? 'selected' : '' }}>April</option>
-                        <option value="May" {{ request('attendance-filter') == 'May' ? 'selected' : '' }}>May</option>
-                        <option value="June" {{ request('attendance-filter') == 'June' ? 'selected' : '' }}>June</option>
-                        <option value="July" {{ request('attendance-filter') == 'July' ? 'selected' : '' }}>July</option>
-                        <option value="August" {{ request('attendance-filter') == 'August' ? 'selected' : '' }}>August</option>
-                        <option value="September" {{ request('attendance-filter') == 'September' ? 'selected' : '' }}>September</option>
-                        <option value="October" {{ request('attendance-filter') == 'October' ? 'selected' : '' }}>October</option>
-                        <option value="November" {{ request('attendance-filter') == 'November' ? 'selected' : '' }}>November</option>
-                        <option value="December" {{ request('attendance-filter') == 'December' ? 'selected' : '' }}>December</option>
-                    </select>
-                </form>
-            </div>
 
-            <div class="search-container">
-                <div class="search-wrapper">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="search-input" onkeyup="searchByName()" placeholder="Search by name..">
-                </div>
-            </div>
+<header>
+    @include('components.committeeHeader')
+</header>
+
+<div class="attendance-list-container">
+    <h1 class="attendance-list-header">Archer Attendance for {{ $filterMonth }}</h1>
+
+    <!-- Filter and Search -->
+    <div class="filter-search-container">
+        <div class="filter-container">
+            <form method="GET" action="{{ route('committee.attendanceList') }}">
+                <select id="attendance-filter" name="attendance-filter" onchange="this.form.submit()">
+                    <option value="January" {{ request('attendance-filter') == 'January' ? 'selected' : '' }}>January</option>
+                    <option value="February" {{ request('attendance-filter') == 'February' ? 'selected' : '' }}>February</option>
+                    <option value="March" {{ request('attendance-filter') == 'March' ? 'selected' : '' }}>March</option>
+                    <option value="April" {{ request('attendance-filter') == 'April' ? 'selected' : '' }}>April</option>
+                    <option value="May" {{ request('attendance-filter') == 'May' ? 'selected' : '' }}>May</option>
+                    <option value="June" {{ request('attendance-filter') == 'June' ? 'selected' : '' }}>June</option>
+                    <option value="July" {{ request('attendance-filter') == 'July' ? 'selected' : '' }}>July</option>
+                    <option value="August" {{ request('attendance-filter') == 'August' ? 'selected' : '' }}>August</option>
+                    <option value="September" {{ request('attendance-filter') == 'September' ? 'selected' : '' }}>September</option>
+                    <option value="October" {{ request('attendance-filter') == 'October' ? 'selected' : '' }}>October</option>
+                    <option value="November" {{ request('attendance-filter') == 'November' ? 'selected' : '' }}>November</option>
+                    <option value="December" {{ request('attendance-filter') == 'December' ? 'selected' : '' }}>December</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="search-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="search-input" onkeyup="searchByName()" placeholder="Search by name..">
         </div>
     </div>
 
+    <!-- Attendance Table -->
     <div class="table-container">
-        <table>
+        <table id="attendanceTable">
             <thead>
                 <tr>
-                    <th onclick="sortTable(0, 'num')">No. <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(1, 'alpha')">Name <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(2, 'num')">MemberID <i class="fas fa-sort"></i></th>
-                    <th>Coach</th>
-                    <th onclick="sortTable(4, 'attendance')">Attendance <i class="fas fa-sort"></i></th>
+                    <th class="sortable" onclick="sortTable(0, 'num')">No. <i class="fas fa-sort"></i></th>
+                    <th class="sortable" onclick="sortTable(1, 'alpha')">Name <i class="fas fa-sort"></i></th>
+                    <th class="sortable" onclick="sortTable(2, 'num')">MemberID <i class="fas fa-sort"></i></th>
+                    <th class="sortable" onclick="sortTable(3, 'alpha')">Coach <i class="fas fa-sort"></i></th>
+                    <th class="sortable" onclick="sortTable(4, 'attendance')">Attendance <i class="fas fa-sort"></i></th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody id="attendance-table">
-                @foreach($attendanceSummary as $key => $summary)
-                <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $summary['membership']->account->account_full_name }}</td>
-                    <td>{{ $summary['membership']->membership_id }}</td>
-                    <td>{{ $summary['membership']->coach_name ?? 'N/A' }}</td>
-                    <td><span class="attendance-summary">{{ $summary['presentCount'] }}/{{ $summary['daysInMonth'] }}</span></td>
-                    <td>
-                        <div class="btn-container">
-                            <a href="{{ route('committee.attendanceView', ['membership_id' => $summary['membership']->membership_id]) }}" class="btn btn-view">View Attendance Details</a>
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
+                @if($attendanceSummary->isEmpty())
+                    <tr>
+                        <td colspan="6">No attendance records found.</td>
+                    </tr>
+                @else
+                    @foreach($attendanceSummary as $key => $summary)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $summary['membership']->account->account_full_name }}</td>
+                        <td>{{ $summary['membership']->membership_id }}</td>
+                        <td>{{ $summary['coach_name'] ?? 'N/A' }}</td> <!-- Display coach's name -->
+                        <td><span class="attendance-summary">{{ $summary['presentCount'] }}/{{ $summary['daysInMonth'] }}</span></td>
+                        <td>
+                            <div class="btn-container">
+                                <a href="{{ route('committee.attendanceView', ['membership_id' => $summary['membership']->membership_id]) }}" class="btn btn-view">View Attendance Details</a>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
     </div>
 
-    <script>
-        function searchByName() {
-            const input = document.getElementById("search-input").value.toLowerCase();
-            const rows = document.querySelectorAll('#attendance-table tr');
+</div>
 
-            rows.forEach(function (row) {
-                const name = row.querySelector('td:nth-child(2)').innerText.toLowerCase();
-                // Check if the name includes the input value
-                if (name.indexOf(input) > -1) {
-                    row.style.display = '';  // Show the row if it matches
-                } else {
-                    row.style.display = 'none';  // Hide the row if it doesn't match
+<script>
+    function searchByName() {
+        const input = document.getElementById("search-input").value.toLowerCase();
+        const rows = document.querySelectorAll('#attendance-table tr');
+
+        rows.forEach(function (row) {
+            const name = row.querySelector('td:nth-child(2)').innerText.toLowerCase();
+            if (name.indexOf(input) > -1) {
+                row.style.display = '';  // Show the row if it matches
+            } else {
+                row.style.display = 'none';  // Hide the row if it doesn't match
+            }
+        });
+    }
+
+    // Function to sort the table based on different column types
+    function sortTable(columnIndex, type) {
+        const table = document.getElementById("attendanceTable");
+        let rows = Array.from(table.querySelectorAll("tbody tr")); // Get rows
+        let switching = true;
+        let direction = "asc"; // Set the sorting direction to ascending by default
+
+        while (switching) {
+            switching = false;
+            let shouldSwitch;
+
+            for (let i = 0; i < rows.length - 1; i++) {
+                shouldSwitch = false;
+                let x = rows[i].getElementsByTagName("TD")[columnIndex];
+                let y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
+
+                if (type === 'num') {
+                    const xValue = parseFloat(x.innerText);
+                    const yValue = parseFloat(y.innerText);
+
+                    if (direction === "asc" && xValue > yValue) {
+                        shouldSwitch = true;
+                        break;
+                    } else if (direction === "desc" && xValue < yValue) {
+                        shouldSwitch = true;
+                        break;
+                    }
+
+                } else if (type === 'alpha' || type === 'attendance') {
+                    const xText = x.innerText.toLowerCase();
+                    const yText = y.innerText.toLowerCase();
+
+                    if (direction === "asc" && xText > yText) {
+                        shouldSwitch = true;
+                        break;
+                    } else if (direction === "desc" && xText < yText) {
+                        shouldSwitch = true;
+                        break;
+                    }
                 }
-            });
-        }
+            }
 
-        // Function to sort the table
-        function sortTable(n, type) {
-            const table = document.querySelector("table");
-            let rows = Array.from(table.rows).slice(1); // Get all rows except the header row
-            let dir = table.getAttribute("data-sort-dir") || "asc"; // Get current sort direction, default to asc
-
-            rows.sort((rowA, rowB) => {
-                let x = rowA.getElementsByTagName("TD")[n].innerText.toLowerCase();
-                let y = rowB.getElementsByTagName("TD")[n].innerText.toLowerCase();
-                
-                if (type === 'alpha') {
-                    if (x < y) return dir === "asc" ? -1 : 1;
-                    if (x > y) return dir === "asc" ? 1 : -1;
-                } else if (type === 'num' || type === 'attendance') {
-                    x = parseInt(x);
-                    y = parseInt(y);
-                    return dir === "asc" ? x - y : y - x;
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            } else {
+                if (direction === "asc") {
+                    direction = "desc";
+                    switching = true;
                 }
-                return 0;
-            });
-
-            // Toggle sort direction
-            table.setAttribute("data-sort-dir", dir === "asc" ? "desc" : "asc");
-
-            // Append sorted rows back to the table
-            rows.forEach(row => table.appendChild(row));
+            }
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>

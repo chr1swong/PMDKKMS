@@ -133,7 +133,7 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
     Route::put('/coach/updateProfilePicture', [AccountController::class, 'updateCoachProfilePicture'])->name('coach.updateProfilePicture');
 
     // Route for viewing events
-    Route::get('/coach/events', [EventController::class, 'viewCoachEvents'])->name('coach.events');
+    Route::get('/coach/events', [EventController::class, 'viewEvents'])->name('coach.events');
 
     //Route for viewing events in dashboard
     Route::get('/coach/dashboard', [EventController::class, 'showCoachDashboard'])->name('coach.dashboard');

@@ -33,11 +33,18 @@
             margin-bottom: 20px;
         }
 
+        .hr-divider {
+            border: none;
+            border-top: 2px solid #e0e0e0; /* Customize the color and thickness */
+            margin: 10px 0; /* Adjust spacing */
+        }
+
         .filter-search-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 5px;
+            margin-top: 40px;
         }
 
         .filter-container select,
@@ -142,6 +149,7 @@
 
 <div class="attendance-list-container">
     <h1 class="attendance-list-header">Archer Attendance for {{ $filterMonth }}</h1>
+    <hr class="hr-divider">
 
     <!-- Filter and Search -->
     <div class="filter-search-container">
@@ -175,11 +183,11 @@
         <table id="attendanceTable">
             <thead>
                 <tr>
-                    <th class="sortable" onclick="sortTable(0, 'num')">No. <i class="fas fa-sort"></i></th>
-                    <th class="sortable" onclick="sortTable(1, 'alpha')">Name <i class="fas fa-sort"></i></th>
-                    <th class="sortable" onclick="sortTable(2, 'num')">MemberID <i class="fas fa-sort"></i></th>
-                    <th class="sortable" onclick="sortTable(3, 'alpha')">Coach <i class="fas fa-sort"></i></th>
-                    <th class="sortable" onclick="sortTable(4, 'attendance')">Attendance <i class="fas fa-sort"></i></th>
+                    <th class="sortable" data-type="num">No. <i class="fas fa-sort"></i></th>
+                    <th class="sortable" data-type="alpha">Name <i class="fas fa-sort"></i></th>
+                    <th class="sortable" data-type="num">MemberID <i class="fas fa-sort"></i></th>
+                    <th class="sortable" data-type="alpha">Coach <i class="fas fa-sort"></i></th>
+                    <th class="sortable" data-type="attendance">Attendance <i class="fas fa-sort"></i></th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -211,13 +219,14 @@
 </div>
 
 <script>
+    // Function to search rows by name
     function searchByName() {
         const input = document.getElementById("search-input").value.toLowerCase();
         const rows = document.querySelectorAll('#attendance-table tr');
 
         rows.forEach(function (row) {
             const name = row.querySelector('td:nth-child(2)').innerText.toLowerCase();
-            if (name.indexOf(input) > -1) {
+            if (name.includes(input)) {
                 row.style.display = '';  // Show the row if it matches
             } else {
                 row.style.display = 'none';  // Hide the row if it doesn't match
@@ -225,59 +234,31 @@
         });
     }
 
-    // Function to sort the table based on different column types
-    function sortTable(columnIndex, type) {
-        const table = document.getElementById("attendanceTable");
-        let rows = Array.from(table.querySelectorAll("tbody tr")); // Get rows
-        let switching = true;
-        let direction = "asc"; // Set the sorting direction to ascending by default
+    // Function to sort the table
+    document.querySelectorAll('.sortable').forEach(header => {
+        header.addEventListener('click', () => {
+            const table = document.getElementById('attendanceTable');
+            const rows = Array.from(table.querySelectorAll('tbody tr'));
+            const type = header.getAttribute('data-type');
+            const index = Array.from(header.parentNode.children).indexOf(header);
+            let direction = header.dataset.sortDirection || 'asc';
+            direction = direction === 'asc' ? 'desc' : 'asc';
+            header.dataset.sortDirection = direction;
 
-        while (switching) {
-            switching = false;
-            let shouldSwitch;
-
-            for (let i = 0; i < rows.length - 1; i++) {
-                shouldSwitch = false;
-                let x = rows[i].getElementsByTagName("TD")[columnIndex];
-                let y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
+            rows.sort((a, b) => {
+                const aValue = a.querySelectorAll('td')[index].innerText;
+                const bValue = b.querySelectorAll('td')[index].innerText;
 
                 if (type === 'num') {
-                    const xValue = parseFloat(x.innerText);
-                    const yValue = parseFloat(y.innerText);
-
-                    if (direction === "asc" && xValue > yValue) {
-                        shouldSwitch = true;
-                        break;
-                    } else if (direction === "desc" && xValue < yValue) {
-                        shouldSwitch = true;
-                        break;
-                    }
-
-                } else if (type === 'alpha' || type === 'attendance') {
-                    const xText = x.innerText.toLowerCase();
-                    const yText = y.innerText.toLowerCase();
-
-                    if (direction === "asc" && xText > yText) {
-                        shouldSwitch = true;
-                        break;
-                    } else if (direction === "desc" && xText < yText) {
-                        shouldSwitch = true;
-                        break;
-                    }
+                    return direction === 'asc' ? aValue - bValue : bValue - aValue;
+                } else {
+                    return direction === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
                 }
-            }
+            });
 
-            if (shouldSwitch) {
-                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
-            } else {
-                if (direction === "asc") {
-                    direction = "desc";
-                    switching = true;
-                }
-            }
-        }
-    }
+            rows.forEach(row => table.querySelector('tbody').appendChild(row));
+        });
+    });
 </script>
 
 </body>

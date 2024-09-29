@@ -197,4 +197,10 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
 
     // Route for updating profile picture
     Route::put('/committee/updateProfilePicture', [AccountController::class, 'updateCommitteeProfilePicture'])->name('committee.updateProfilePicture');
+
+    // Route for committee to view scoring history of all archers
+    Route::get('/committee/scoringHistory', [ScoringController::class, 'showCommitteeScoringHistory'])->name('committee.scoringHistory');
+
+    // Route for committee to view specific scoring details
+    Route::get('/committee/scoring-details/{id}', [ScoringController::class, 'showCommitteeScoringDetails'])->name('committee.scoringDetails');
 });

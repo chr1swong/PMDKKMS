@@ -201,7 +201,7 @@
                                 <a href="/committee/attendanceList">Attendance</a>
                             </li>
                             <li>
-                                <a href="/committee/viewPerformance">Performance</a>
+                                <a href="{{ route('committee.scoringHistory') }}">Performance</a>
                             </li>
                         </ul>
                     </li>

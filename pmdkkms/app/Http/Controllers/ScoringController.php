@@ -229,4 +229,64 @@ class ScoringController extends Controller
         // Pass the score and archer name to the view
         return view('coach.scoringDetails', compact('score', 'archerName'));
     }
+
+    // Method for committee to view scoring history for all archers
+    public function showCommitteeScoringHistory(Request $request)
+    {
+        // Correct the table name from 'score' to 'scores'
+        $query = Score::join('membership', 'scores.membership_id', '=', 'membership.membership_id')
+                ->join('account', 'membership.account_id', '=', 'account.account_id')
+                ->select('scores.*', 'account.account_full_name as archer_name');
+
+        // Apply filters based on the request if any
+        switch ($request->input('filter')) {
+            case 'last1day':
+                $query->where('scores.date', '>=', now()->subDay());
+                break;
+            case 'last3days':
+                $query->where('scores.date', '>=', now()->subDays(3));
+                break;
+            case 'last7days':
+                $query->where('scores.date', '>=', now()->subDays(7));
+                break;
+            case 'last30days':
+                $query->where('scores.date', '>=', now()->subDays(30));
+                break;
+            case 'all':
+            default:
+                // Do not filter, show all records
+                break;
+        }
+
+        // Custom date range filter
+        if ($request->filled('start-date') && $request->filled('end-date')) {
+            $query->whereBetween('scores.date', [$request->input('start-date'), $request->input('end-date')]);
+        }
+
+        // Paginate the results with 10 per page
+        $scoringData = $query->orderBy('scores.date', 'desc')->paginate(10);
+
+        // Return the view with filtered data
+        return view('committee.scoringHistory', compact('scoringData'));
+    }
+
+    // Show scoring details for committee's view
+    public function showCommitteeScoringDetails($id)
+    {
+        // Find the score record by ID
+        $score = Score::findOrFail($id);
+
+        // Retrieve the archer's full name based on membership_id
+        $archer = DB::table('membership')
+                    ->join('account', 'membership.account_id', '=', 'account.account_id')
+                    ->where('membership.membership_id', $score->membership_id)
+                    ->select('account.account_full_name')
+                    ->first();
+
+        // If no archer is found, set a default name
+        $archerName = $archer->account_full_name ?? 'Unknown Archer';
+
+        // Pass the score and archer name to the view
+        return view('committee.scoringDetails', compact('score', 'archerName'));
+    }
 }

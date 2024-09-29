@@ -148,13 +148,14 @@
 </header>
 
 <div class="attendance-list-container">
-    <h1 class="attendance-list-header">Archer Attendance for {{ $filterMonth }}</h1>
+    <h1 class="attendance-list-header">Archer Attendance for {{ $filterMonth }} {{ $filterYear }}</h1> <!-- Display both month and year -->
     <hr class="hr-divider">
 
     <!-- Filter and Search -->
     <div class="filter-search-container">
         <div class="filter-container">
             <form method="GET" action="{{ route('committee.attendanceList') }}">
+                <!-- Month Filter -->
                 <select id="attendance-filter" name="attendance-filter" onchange="this.form.submit()">
                     <option value="January" {{ request('attendance-filter') == 'January' ? 'selected' : '' }}>January</option>
                     <option value="February" {{ request('attendance-filter') == 'February' ? 'selected' : '' }}>February</option>
@@ -168,6 +169,13 @@
                     <option value="October" {{ request('attendance-filter') == 'October' ? 'selected' : '' }}>October</option>
                     <option value="November" {{ request('attendance-filter') == 'November' ? 'selected' : '' }}>November</option>
                     <option value="December" {{ request('attendance-filter') == 'December' ? 'selected' : '' }}>December</option>
+                </select>
+
+                <!-- Year Filter -->
+                <select id="year-filter" name="year-filter" onchange="this.form.submit()">
+                    @for ($year = now()->year; $year >= 2000; $year--)
+                        <option value="{{ $year }}" {{ request('year-filter') == $year ? 'selected' : '' }}>{{ $year }}</option>
+                    @endfor
                 </select>
             </form>
         </div>

@@ -78,23 +78,24 @@ class AttendanceController extends Controller
     // View all attendance records for committee members
     public function viewAllAttendance(Request $request)
     {
-        // Get the selected month from the request, default to January
+        // Get the selected month and year from the request, default to January and the current year
         $filterMonth = $request->input('attendance-filter', 'January');
-        
+        $filterYear = $request->input('year-filter', date('Y'));
+
         // Get the month number from the selected month
         $monthNumber = date('m', strtotime($filterMonth));
 
         // Get the total number of days in the selected month
-        $year = date('Y');
-        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $monthNumber, $year);
+        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $monthNumber, $filterYear);
 
-        // Query attendance records filtered by the selected month
+        // Query attendance records filtered by the selected month and year
         $attendances = Attendance::with(['membership', 'membership.account'])
             ->leftJoin('membership', 'attendance.membership_id', '=', 'membership.membership_id')
             ->leftJoin('account', 'membership.account_id', '=', 'account.account_id')
             ->leftJoin('coach_archer', 'account.account_id', '=', 'coach_archer.archer_id') // Join coach_archer table to link archers with their coaches
             ->leftJoin('account as coach', 'coach_archer.coach_id', '=', 'coach.account_id') // Join again to get coach details
             ->whereMonth('attendance_date', $monthNumber)
+            ->whereYear('attendance_date', $filterYear)
             ->select(
                 'attendance.*', // Select attendance details
                 'account.account_full_name as archer_name', // Select archer's name
@@ -114,10 +115,11 @@ class AttendanceController extends Controller
             ];
         });
 
-        // Pass the attendance summary and month data to the view
+        // Pass the attendance summary and both month and year data to the view
         return view('committee.attendanceList', [
             'attendanceSummary' => $attendanceSummary,
-            'filterMonth' => $filterMonth
+            'filterMonth' => $filterMonth,
+            'filterYear' => $filterYear
         ]);
     }
 

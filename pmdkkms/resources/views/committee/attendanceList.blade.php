@@ -75,8 +75,8 @@
         .table-container {
             width: 100%;
             margin: 20px auto;
-            max-height: 505px;
-            overflow-y: auto;
+            max-height: 420px; 
+            overflow-y: auto; /* Enable scrolling if there are more than 5 rows */
         }
 
         table {

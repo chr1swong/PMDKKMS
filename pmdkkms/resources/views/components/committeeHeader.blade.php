@@ -105,6 +105,7 @@
             border-radius: 4px;
             padding: 0;
             z-index: 100;
+            list-style: none; /* Remove bullet points from dropdown */
         }
 
         .dropdown-menu li {

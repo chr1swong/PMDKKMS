@@ -253,11 +253,6 @@
 
     <!-- Pagination -->
     {{ $scoringData->links() }}
-
-    <!-- Back Button -->
-    <a href="{{ route('committee.dashboard') }}" class="back-btn">
-        <i class="fas fa-arrow-left"></i> Back
-    </a>
 </div>
 
 <script>

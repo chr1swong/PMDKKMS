@@ -46,42 +46,123 @@
             background-color: rgba(0,0,0,0.5);
             justify-content: center;
             align-items: center;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
         }
 
         .modal-content {
             background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
+            padding: 30px;
+            border-radius: 12px;
             width: 80%;
             max-width: 600px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             position: relative;
+            text-align: left;
+            animation: fadeInModal 0.3s ease-in-out;
+        }
+
+        @keyframes fadeInModal {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .close {
             position: absolute;
             top: 10px;
             right: 15px;
-            font-size: 24px; /* Increase the size */
-            color: #aaa;
+            font-size: 28px; /* Increased size */
+            color: #ff5b5b;
             cursor: pointer;
             transition: color 0.3s ease;
         }
 
         .close:hover,
         .close:focus {
-            color: #555;
+            color: #ff0000;
             text-decoration: none;
         }
 
         .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+            color: #333;
         }
 
         .modal-body p {
             margin: 10px 0;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .modal-body p strong {
+            color: #333;
+        }
+
+        .modal-body p span {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Button styling for close or action buttons */
+        .modal-footer {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .modal-footer button {
+            background-color: #ff5b5b; /* Match with the top close button */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .modal-footer button:hover {
+            background-color: #ff0000;
+            transform: scale(1.05);
+        }
+
+        .modal-footer button:active {
+            transform: scale(1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .modal-content {
+                width: 90%;
+            }
+
+            .modal-header h2 {
+                font-size: 1.5em;
+            }
+
+            .modal-footer button {
+                width: 100%;
+                margin-top: 15px;
+            }
         }
     </style>
 </head>
@@ -114,6 +195,9 @@
                 <p><strong>End Time:</strong> <span id="modalEndTime"></span></p>
                 <p><strong>Location:</strong> <span id="modalLocation"></span></p>
             </div>
+            <div class="modal-footer">
+                <button class="close-modal">Close</button>
+            </div>
         </div>
     </div>
 
@@ -126,6 +210,7 @@
         var calendarEl = document.getElementById('calendar');
         var modal = document.getElementById("eventModal");
         var closeModal = document.getElementsByClassName("close")[0];
+        var closeFooterButton = document.querySelector(".close-modal");
 
         // FullCalendar initialization (view-only)
         var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -150,7 +235,7 @@
                 document.getElementById('modalLocation').innerText = info.event.extendedProps.location;
 
                 // Show the modal
-                modal.style.display = "flex";
+                modal.classList.add("show");
             }
         });
 
@@ -158,13 +243,18 @@
 
         // Close the modal when the close button is clicked
         closeModal.onclick = function() {
-            modal.style.display = "none";
+            modal.classList.remove("show");
+        }
+
+        // Close modal with footer button
+        closeFooterButton.onclick = function() {
+            modal.classList.remove("show");
         }
 
         // Close the modal when clicking outside of the modal content
         window.onclick = function(event) {
             if (event.target == modal) {
-                modal.style.display = "none";
+                modal.classList.remove("show");
             }
         }
     });

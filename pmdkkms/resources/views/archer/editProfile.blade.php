@@ -198,6 +198,13 @@
         .close:hover {
             color: #0c3d20; /* Darker green on hover */
         }
+
+        /* Styling for file name display */
+        #file-name {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+        }
     </style>
 </head>
 
@@ -237,10 +244,13 @@
                 @method('PUT')
                 
                 <!-- Hidden file input -->
-                <input type="file" id="profile-picture-input" name="profile_picture" accept="image/*" style="display: none;">
+                <input type="file" id="profile-picture-input" name="profile_picture" accept="image/*" style="display: none;" onchange="displayFileName()">
                 
                 <!-- Button to trigger file input -->
                 <button type="button" onclick="document.getElementById('profile-picture-input').click();">Browse file</button>
+
+                <!-- Display selected file name -->
+                <p id="file-name">No file selected</p>
                 
                 <!-- Submit button -->
                 <button type="submit" class="btn-update">Upload Picture</button>
@@ -308,6 +318,17 @@
     <script>
         function closeSuccessMessage() {
             document.getElementById('success-message').style.display = 'none';
+        }
+
+        function displayFileName() {
+            const input = document.getElementById('profile-picture-input');
+            const fileNameDisplay = document.getElementById('file-name');
+
+            if (input.files && input.files[0]) {
+                fileNameDisplay.textContent = input.files[0].name;
+            } else {
+                fileNameDisplay.textContent = 'No file selected';
+            }
         }
     </script>
 </body>

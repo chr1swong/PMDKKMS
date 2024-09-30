@@ -382,7 +382,7 @@ class AccountController extends Controller
                 'membership.membership_status',
                 'coach.account_full_name as coach_name' // Select coach's name
             )
-            ->get();
+            ->paginate(10); // Add pagination (10 records per page)
 
         // Pass members data to the view
         return view('committee.member', ['members' => $members]);

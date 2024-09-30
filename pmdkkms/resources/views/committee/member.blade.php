@@ -234,6 +234,35 @@
                 max-height: 300px;
             }
         }
+
+        /* Success or Error Message */
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px 40px 15px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Close Button Styling */
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 30px;
+            font-weight: bold;
+            color: #155724;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #0c3d20;
+        }
     </style>
 </head>
 <body>
@@ -241,6 +270,14 @@
 <header>
     @include('components.committeeHeader') 
 </header>
+
+<!-- Success Message -->
+@if (session('success'))
+    <div class="alert alert-success" id="success-message">
+        {{ session('success') }}
+        <button type="button" class="close" onclick="closeSuccessMessage()">&times;</button>
+    </div>
+@endif
 
 <div class="member-management-container">
     <h1 class="member-management-header">Manage Members</h1>
@@ -419,6 +456,10 @@
                 }
             }
         }
+    }
+
+    function closeSuccessMessage() {
+        document.getElementById('success-message').style.display = 'none';
     }
 </script>
 

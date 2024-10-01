@@ -42,6 +42,13 @@
             color: white;
             position: relative;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
 
         .card i {
@@ -155,21 +162,30 @@
 
         <!-- Cards Section -->
         <div class="cards">
-            <div class="card archers">
-                <i class="fas fa-bullseye"></i>
-                <h3>Archers</h3>
-                <span>{{ $archerCount }}</span> <!-- Dynamic count of archers -->
-            </div>
-            <div class="card coaches">
-                <i class="fas fa-user-tie"></i>
-                <h3>Coaches</h3>
-                <span>{{ $coachCount }}</span> <!-- Dynamic count of coaches -->
-            </div>
-            <div class="card committee">
-                <i class="fas fa-users"></i>
-                <h3>Committee</h3>
-                <span>{{ $committeeCount }}</span> <!-- Dynamic count of committee members -->
-            </div>
+            <a href="{{ route('committee.member', ['role' => 'archer']) }}" class="card-link">
+                <div class="card archers">
+                    <i class="fas fa-bullseye"></i>
+                    <h3>Archers</h3>
+                    <span>{{ $archerCount }}</span> <!-- Dynamic count of archers -->
+                </div>
+            </a>
+
+            <a href="{{ route('committee.member', ['role' => 'coach']) }}" class="card-link">
+                <div class="card coaches">
+                    <i class="fas fa-user-tie"></i>
+                    <h3>Coaches</h3>
+                    <span>{{ $coachCount }}</span> <!-- Dynamic count of coaches -->
+                </div>
+            </a>
+
+            <a href="{{ route('committee.member', ['role' => 'committee']) }}" class="card-link">
+                <div class="card committee">
+                    <i class="fas fa-users"></i>
+                    <h3>Committee</h3>
+                    <span>{{ $committeeCount }}</span> <!-- Dynamic count of committee members -->
+                </div>
+            </a>
+
             <div class="card payments">
                 <i class="fas fa-money-bill-wave"></i>
                 <h3>Payments</h3>
@@ -178,7 +194,7 @@
 
         <!-- Upcoming Events Section -->
         <div class="upcoming-events">
-        <h3>Upcoming Events</h3>
+            <h3>Upcoming Events</h3>
             @if($upcomingEvents->isEmpty())
                 <p>No upcoming events available.</p>
             @else
@@ -212,7 +228,6 @@
             
             editButtons.forEach(function (button) {
                 button.addEventListener('click', function () {
-                    // Pass the event data to FullCalendar
                     var eventId = this.getAttribute('data-event-id');
                     var eventTitle = this.getAttribute('data-event-title');
                     var eventDate = this.getAttribute('data-event-date');
@@ -221,7 +236,6 @@
                     var location = this.getAttribute('data-event-location');
                     var color = this.getAttribute('data-event-color');
 
-                    // Use window.postMessage to send the event data to committee/events.blade.php
                     window.postMessage({
                         type: 'openModal',
                         eventId: eventId,

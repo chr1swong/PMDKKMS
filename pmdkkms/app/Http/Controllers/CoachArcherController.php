@@ -82,5 +82,24 @@ class CoachArcherController extends Controller
         return view('committee.member', ['members' => $members]);
     }
 
+    // Method to display the coach dashboard
+    public function showCoachDashboard()
+    {
+        $user = Auth::user(); // Get current coach
+
+        // Count enrolled archers
+        $enrolledArcherCount = DB::table('coach_archer')
+            ->where('coach_id', $user->account_id)
+            ->count();
+
+        // Fetch upcoming events (assuming you have this logic elsewhere)
+        $upcomingEvents = DB::table('events') // Replace with your events table
+            ->where('event_date', '>=', now())
+            ->orderBy('event_date', 'asc')
+            ->get();
+
+        // Pass the enrolledArcherCount and upcomingEvents to the view
+        return view('coach.dashboard', compact('enrolledArcherCount', 'upcomingEvents'));
+    }
     
 }

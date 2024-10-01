@@ -135,7 +135,7 @@
             <div class="card archers">
                 <i class="fas fa-bullseye"></i>
                 <h3>Archers</h3>
-                <span>2</span>
+                <span>{{ $enrolledArcherCount }}</span> <!-- Dynamic count of archer -->
             </div>
             <div class="card attendance">
                 <i class="fas fa-users"></i>

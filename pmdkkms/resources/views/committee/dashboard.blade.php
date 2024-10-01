@@ -206,15 +206,8 @@
                             <p><i class="fas fa-map-marker-alt"></i> {{ $event->location }}</p>
                         </div>
                         <div class="event-action">
-                            <a href="javascript:void(0);" class="edit-btn" onclick="sendEventToCalendar(
-                                '{{ $event->id }}', 
-                                '{{ $event->title }}', 
-                                '{{ $event->event_date }}', 
-                                '{{ $event->start_time }}', 
-                                '{{ $event->end_time }}', 
-                                '{{ $event->location }}', 
-                                '{{ $event->color }}'
-                            )">Edit</a>
+                            <!-- Link to the events.index route -->
+                            <a href="{{ route('events.index', ['event_id' => $event->id]) }}" class="edit-btn">Edit</a>
                         </div>
                     </div>
                 @endforeach

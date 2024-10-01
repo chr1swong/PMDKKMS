@@ -41,6 +41,13 @@
             color: white;
             position: relative;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s ease; /* Add hover effect here */
+        }
+
+        .card:hover {
+            transform: translateY(-5px); /* Same hover effect as committee */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Same shadow effect */
         }
 
         .card i {
@@ -171,3 +178,4 @@
     </div>
 </body>
 </html>
+s

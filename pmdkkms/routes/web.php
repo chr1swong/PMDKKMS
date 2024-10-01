@@ -172,6 +172,8 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
     Route::post('/events/{id}/update-duration', [EventController::class, 'updateDuration'])->name('events.update-duration'); // Update event duration when resized
     Route::post('/events/{id}/update', [EventController::class, 'update'])->name('events.update'); // Update event details
     Route::get('/committee/dashboard', [EventController::class, 'showDashboard'])->name('committee.dashboard');
+    Route::get('/committee/dashboard', [AccountController::class, 'dashboard'])->name('committee.dashboard');
+
 
     //Route for Member Management
     Route::get('/committee/member', [AccountController::class, 'manageMember'])->name('committee.member');

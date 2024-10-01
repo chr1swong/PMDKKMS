@@ -158,17 +158,17 @@
             <div class="card archers">
                 <i class="fas fa-bullseye"></i>
                 <h3>Archers</h3>
-                <span>32</span>
+                <span>{{ $archerCount }}</span> <!-- Dynamic count of archers -->
             </div>
             <div class="card coaches">
                 <i class="fas fa-user-tie"></i>
                 <h3>Coaches</h3>
-                <span>5</span>
+                <span>{{ $coachCount }}</span> <!-- Dynamic count of coaches -->
             </div>
             <div class="card committee">
                 <i class="fas fa-users"></i>
                 <h3>Committee</h3>
-                <span>8</span>
+                <span>{{ $committeeCount }}</span> <!-- Dynamic count of committee members -->
             </div>
             <div class="card payments">
                 <i class="fas fa-money-bill-wave"></i>

@@ -426,4 +426,18 @@ class AccountController extends Controller
         // Pass archer data to the view
         return view('coach.viewProfile', compact('member'));
     }
+
+    public function dashboard()
+    {
+        // Fetch the count of archers, coaches, and committee members from the 'account' table
+        $archerCount = Account::where('account_role', 1)->count(); // 1 corresponds to 'Archer'
+        $coachCount = Account::where('account_role', 2)->count();  // 2 corresponds to 'Coach'
+        $committeeCount = Account::where('account_role', 3)->count();  // 3 corresponds to 'Committee Member'
+        
+        // Retrieve upcoming events if you have an Event model or just remove it if not used
+        $upcomingEvents = DB::table('events')->whereDate('event_date', '>=', now())->get();
+        
+        // Pass these variables to the view
+        return view('committee.dashboard', compact('archerCount', 'coachCount', 'committeeCount', 'upcomingEvents'));
+    }
 }

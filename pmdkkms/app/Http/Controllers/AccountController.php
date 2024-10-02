@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB; 
@@ -434,10 +435,13 @@ class AccountController extends Controller
         $coachCount = Account::where('account_role', 2)->count();  // 2 corresponds to 'Coach'
         $committeeCount = Account::where('account_role', 3)->count();  // 3 corresponds to 'Committee Member'
         
-        // Retrieve upcoming events if you have an Event model or just remove it if not used
+        // Retrieve upcoming events
         $upcomingEvents = DB::table('events')->whereDate('event_date', '>=', now())->get();
         
-        // Pass these variables to the view
-        return view('committee.dashboard', compact('archerCount', 'coachCount', 'committeeCount', 'upcomingEvents'));
+        // Fetch announcements
+        $announcements = Announcement::all(); // Make sure you have the Announcement model
+
+        // Pass all these variables to the view
+        return view('committee.dashboard', compact('archerCount', 'coachCount', 'committeeCount', 'upcomingEvents', 'announcements'));
     }
 }

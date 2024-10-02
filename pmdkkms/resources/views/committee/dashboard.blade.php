@@ -111,6 +111,8 @@
         .event-details,
         .announcement-details {
             font-size: 16px;
+            text-align: justify; /* Justified content */
+            margin-right: 30px; /* Increased margin to create space between content and delete button */
         }
 
         .event-details i,
@@ -188,6 +190,14 @@
 
         .add-btn:hover {
             background-color: #434190;
+        }
+
+        /* Updated Announcement Card */
+        .announcement-details h4 {
+            font-size: 22px; /* Increased font size */
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
         }
 
         /* Modal styling for add announcement */

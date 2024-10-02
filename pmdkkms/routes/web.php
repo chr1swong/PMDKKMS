@@ -9,6 +9,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CoachArcherController;
 use App\Http\Controllers\ScoringController;
+use App\Http\Controllers\AnnouncementController;
 
 // Public routes (no authentication required)
 Route::middleware([PreventAuthenticatedAccess::class])->group(function () {
@@ -208,4 +209,9 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
 
     // Route for committee to view specific scoring details
     Route::get('/committee/scoring-details/{id}', [ScoringController::class, 'showCommitteeScoringDetails'])->name('committee.scoringDetails');
+
+    // Routes for Announcements
+    Route::get('/committee/announcements', [AnnouncementController::class, 'index'])->name('committee.announcements'); // View announcements
+    Route::post('/committee/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');    // Create new announcement
+    Route::delete('/committee/announcements/{id}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy'); // Delete announcement
 });

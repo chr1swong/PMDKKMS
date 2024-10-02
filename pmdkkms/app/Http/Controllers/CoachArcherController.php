@@ -101,5 +101,23 @@ class CoachArcherController extends Controller
         // Pass the enrolledArcherCount and upcomingEvents to the view
         return view('coach.dashboard', compact('enrolledArcherCount', 'upcomingEvents'));
     }
+
+    public function viewCoachArcherProfile($membership_id)
+    {
+        // Fetch archer's profile details using the membership ID
+        $member = DB::table('account')
+            ->join('membership', 'account.account_id', '=', 'membership.account_id')
+            ->where('membership.membership_id', $membership_id)
+            ->select('account.*', 'membership.membership_id', 'membership.membership_status', 'membership.membership_expiry')
+            ->first();
+
+        // Check if the member exists
+        if (!$member) {
+            abort(404, 'Archer not found');
+        }
+
+        // Return the view with the member's details
+        return view('coach.viewProfile', compact('member'));
+    }
     
 }

@@ -144,7 +144,7 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
     Route::post('/coach/enroll-archer/{archer}', [CoachArcherController::class, 'enrollArcher'])->name('coach.enrollArcher');
     Route::post('/coach/unenroll-archer/{archer}', [CoachArcherController::class, 'unenrollArcher'])->name('coach.unenrollArcher');
 
-    Route::get('/coach/archer/profile/{membership_id}', [AccountController::class, 'viewCoachArcherProfile'])->name('coach.viewProfile');
+    Route::get('/coach/archer/profile/{membership_id}', [CoachArcherController::class, 'viewCoachArcherProfile'])->name('coach.viewProfile');
 
     // Route for coach to view a specific archer's attendance
     Route::get('/coach/attendance/{membership_id}', [AttendanceController::class, 'viewCoachArcherAttendance'])->name('coach.attendanceView');

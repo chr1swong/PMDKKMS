@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
@@ -166,14 +167,16 @@ class EventController extends Controller
 
     public function showArcherDashboard()
     {
-        // Fetch upcoming events for archers (view-only)
-        $upcomingEvents = Event::where('event_date', '>=', now())
-                            ->orderBy('event_date', 'asc')
-                            ->take(5) // Adjust the limit as needed
-                            ->get(); // Get the collection of upcoming events
+        // Fetch all announcements
+        $announcements = DB::table('announcements')->get();
 
-        // Pass the events to the archer dashboard view
-        return view('archer.dashboard', compact('upcomingEvents'));
+        // Fetch upcoming events or other data needed
+        $upcomingEvents = DB::table('events')
+            ->where('event_date', '>=', now())
+            ->orderBy('event_date', 'asc')
+            ->get();
+
+        return view('archer.dashboard', compact('announcements', 'upcomingEvents'));
     }
 
     public function showCoachDashboard()

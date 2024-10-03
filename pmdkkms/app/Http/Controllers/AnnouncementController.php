@@ -30,6 +30,23 @@ class AnnouncementController extends Controller
         return redirect()->back()->with('success', 'Announcement added successfully!');
     }
 
+    public function update(Request $request, $id)
+    {
+        // Validate and update the announcement
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        $announcement = Announcement::findOrFail($id);
+        $announcement->update([
+            'title' => $request->title,
+            'content' => $request->content,
+        ]);
+
+        return redirect()->back()->with('success', 'Announcement updated successfully!');
+    }
+
     public function destroy($id)
     {
         // Find and delete the announcement

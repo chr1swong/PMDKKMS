@@ -100,6 +100,7 @@
             align-items: center;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .event-card:hover,
@@ -111,8 +112,8 @@
         .event-details,
         .announcement-details {
             font-size: 16px;
-            text-align: justify; /* Justified content */
-            margin-right: 30px; /* Increased margin to create space between content and delete button */
+            text-align: justify;
+            margin-right: 30px;
         }
 
         .event-details i,
@@ -132,7 +133,7 @@
             border-radius: 6px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 16px; /* Ensure both buttons have the same font size */
+            font-size: 16px;
             transition: background-color 0.3s ease;
             display: inline-flex;
             align-items: center;
@@ -192,15 +193,14 @@
             background-color: #434190;
         }
 
-        /* Updated Announcement Card */
         .announcement-details h4 {
-            font-size: 22px; /* Increased font size */
+            font-size: 22px;
             font-weight: bold;
             color: #333;
             margin-bottom: 10px;
         }
 
-        /* Modal styling for add announcement */
+        /* Modal styling for add/edit announcement */
         .modal {
             display: none;
             position: fixed;
@@ -250,12 +250,11 @@
         }
 
         .form-group textarea {
-            resize: vertical; /* Allow vertical resizing only */
+            resize: vertical;
         }
 
-        /* Centering the submit button */
         .submit-btn {
-            background-color: #2f855a; /* Darker green */
+            background-color: #2f855a;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -266,7 +265,7 @@
         }
 
         .submit-btn:hover {
-            background-color: #276749; /* Even darker on hover */
+            background-color: #276749;
         }
 
         /* Modal styling for delete confirmation */
@@ -309,7 +308,6 @@
             color: black;
         }
 
-        /* Media Queries for Responsiveness */
         @media (max-width: 768px) {
             .cards {
                 flex-direction: column;
@@ -348,7 +346,7 @@
                 <div class="card archers">
                     <i class="fas fa-bullseye"></i>
                     <h3>Archers</h3>
-                    <span>{{ $archerCount }}</span> <!-- Dynamic count of archers -->
+                    <span>{{ $archerCount }}</span>
                 </div>
             </a>
 
@@ -356,7 +354,7 @@
                 <div class="card coaches">
                     <i class="fas fa-user-tie"></i>
                     <h3>Coaches</h3>
-                    <span>{{ $coachCount }}</span> <!-- Dynamic count of coaches -->
+                    <span>{{ $coachCount }}</span>
                 </div>
             </a>
 
@@ -364,7 +362,7 @@
                 <div class="card committee">
                     <i class="fas fa-users"></i>
                     <h3>Committee</h3>
-                    <span>{{ $committeeCount }}</span> <!-- Dynamic count of committee members -->
+                    <span>{{ $committeeCount }}</span>
                 </div>
             </a>
 
@@ -389,13 +387,13 @@
                 </div>
             @else
                 @foreach($announcements as $announcement)
-                    <div class="announcement-card">
+                    <div class="announcement-card" data-id="{{ $announcement->id }}" data-title="{{ $announcement->title }}" data-content="{{ $announcement->content }}">
                         <div class="announcement-details">
                             <h4>{{ $announcement->title }}</h4>
                             <p>{{ $announcement->content }}</p>
                         </div>
                         <div class="announcement-action">
-                            <button class="action-btn delete-btn" onclick="showDeleteModal('{{ route('announcements.destroy', $announcement->id) }}')"><i class="fas fa-trash"></i> Delete</button>
+                            <button class="action-btn delete-btn" onclick="event.stopPropagation(); showDeleteModal('{{ route('announcements.destroy', $announcement->id) }}')"><i class="fas fa-trash"></i> Delete</button>
                         </div>
                     </div>
                 @endforeach
@@ -418,6 +416,27 @@
                         <textarea id="content" name="content" rows="5" required></textarea>
                     </div>
                     <button type="submit" class="submit-btn">Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal for Editing Announcement -->
+        <div id="editAnnouncementModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Edit Announcement</h2>
+                <form id="editAnnouncementForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="form-group">
+                        <label for="editTitle">Title</label>
+                        <input type="text" id="editTitle" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editContent">Content</label>
+                        <textarea id="editContent" name="content" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Update</button>
                 </form>
             </div>
         </div>
@@ -446,7 +465,6 @@
                             <p><i class="fas fa-map-marker-alt"></i> {{ $event->location }}</p>
                         </div>
                         <div class="event-action">
-                            <!-- Link to the events.index route -->
                             <a href="{{ route('events.index', ['event_id' => $event->id]) }}" class="action-btn edit-btn"><i class="fas fa-edit"></i> Edit</a>
                         </div>
                     </div>
@@ -457,31 +475,65 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var modal = document.getElementById('announcementModal');
+            var addModal = document.getElementById('announcementModal');
+            var editModal = document.getElementById('editAnnouncementModal');
             var addBtn = document.getElementById('addAnnouncementBtn');
-            var closeBtn = document.getElementsByClassName('close')[0];
+            var closeBtns = document.getElementsByClassName('close');
 
-            // When the user clicks the button, open the modal
+            // Open Add Modal
             addBtn.onclick = function () {
-                modal.style.display = 'block';
+                addModal.style.display = 'block';
             }
 
-            // When the user clicks on the close button, close the modal
-            closeBtn.onclick = function () {
-                modal.style.display = 'none';
-            }
-
-            // When the user clicks anywhere outside of the modal, close it
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    modal.style.display = 'none';
+            // Close modal when clicking on close button
+            for (var i = 0; i < closeBtns.length; i++) {
+                closeBtns[i].onclick = function () {
+                    addModal.style.display = 'none';
+                    editModal.style.display = 'none';
                 }
             }
+
+            // Close modal when clicking outside of the modal
+            window.onclick = function (event) {
+                if (event.target == addModal || event.target == editModal) {
+                    addModal.style.display = 'none';
+                    editModal.style.display = 'none';
+                }
+            }
+
+            // Click event for announcements
+            var announcementCards = document.querySelectorAll('.announcement-card');
+            announcementCards.forEach(function(card) {
+                card.addEventListener('click', function() {
+                    var id = this.getAttribute('data-id');
+                    var title = this.getAttribute('data-title');
+                    var content = this.getAttribute('data-content');
+                    openEditModal(id, title, content);
+                });
+            });
         });
+
+        // Open Edit Modal and pre-fill with announcement data
+        function openEditModal(id, title, content) {
+            var editModal = document.getElementById('editAnnouncementModal');
+            var form = document.getElementById('editAnnouncementForm');
+            var editTitle = document.getElementById('editTitle');
+            var editContent = document.getElementById('editContent');
+
+            // Set the form action to the correct update route
+            form.action = '/committee/announcements/' + id;
+
+            // Pre-fill the form inputs with the announcement data
+            editTitle.value = title;
+            editContent.value = content;
+
+            // Open the modal
+            editModal.style.display = 'block';
+        }
 
         // Function to open delete confirmation modal
         function showDeleteModal(deleteUrl) {
-            document.getElementById('deleteModal').style.display = 'flex';
+            var deleteModal = document.getElementById('deleteModal');
             document.getElementById('confirmDeleteButton').onclick = function() {
                 const form = document.createElement('form');
                 form.method = 'POST';
@@ -502,6 +554,7 @@
                 document.body.appendChild(form);
                 form.submit();
             }
+            deleteModal.style.display = 'flex';
         }
 
         function closeDeleteModal() {

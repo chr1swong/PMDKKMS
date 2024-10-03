@@ -213,5 +213,6 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
     // Routes for Announcements
     Route::get('/committee/announcements', [AnnouncementController::class, 'index'])->name('committee.announcements'); // View announcements
     Route::post('/committee/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');    // Create new announcement
+    Route::put('/committee/announcements/{id}', [AnnouncementController::class, 'update'])->name('announcements.update'); // Update existing announcement (Edit announcement)
     Route::delete('/committee/announcements/{id}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy'); // Delete announcement
 });

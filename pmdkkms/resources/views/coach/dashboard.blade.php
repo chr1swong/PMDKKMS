@@ -42,12 +42,12 @@
             position: relative;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s ease; /* Add hover effect here */
+            transition: transform 0.3s, box-shadow 0.3s ease;
         }
 
         .card:hover {
-            transform: translateY(-5px); /* Same hover effect as committee */
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Same shadow effect */
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
 
         .card i {
@@ -81,6 +81,68 @@
             background-color: #ED8936;
         }
 
+        .announcements-container {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .announcement-card {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .announcement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .announcement-details h4 {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .announcement-details p {
+            margin-top: 10px;
+        }
+
+        .announcement-details hr {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 40px;
+            border-radius: 8px;
+            width: 60%;
+            max-width: 800px;
+        }
+
+        /* Upcoming Events Section */
         .upcoming-events {
             margin-top: 30px;
         }
@@ -104,24 +166,16 @@
             margin-right: 8px;
         }
 
-        .event-action {
-            text-align: right;
-        }
-
         /* Media Queries for Responsiveness */
         @media (max-width: 768px) {
             .cards {
                 flex-direction: column;
             }
 
-            .event-card {
+            .event-card,
+            .announcement-card {
                 flex-direction: column;
                 align-items: flex-start;
-            }
-
-            .event-action {
-                margin-top: 10px;
-                text-align: left;
             }
         }
     </style>
@@ -156,6 +210,26 @@
                 <i class="fas fa-money-bill-wave"></i>
                 <h3>Payment History</h3>
             </div>
+        </div>
+
+        <!-- Announcements Section -->
+        <div class="announcements-container">
+            <h3>Announcements</h3>
+            @if($announcements->isEmpty())
+                <div class="announcement-card">
+                    <p>No announcements available.</p>
+                </div>
+            @else
+                @foreach($announcements as $announcement)
+                    <div class="announcement-card">
+                        <div class="announcement-details">
+                            <h4>{{ $announcement->title }}</h4>
+                            <hr>
+                            <p>{{ $announcement->content }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
         </div>
 
         <!-- Upcoming Events Section -->

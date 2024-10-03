@@ -92,14 +92,17 @@ class CoachArcherController extends Controller
             ->where('coach_id', $user->account_id)
             ->count();
 
-        // Fetch upcoming events (assuming you have this logic elsewhere)
-        $upcomingEvents = DB::table('events') // Replace with your events table
+        // Fetch upcoming events
+        $upcomingEvents = DB::table('events')
             ->where('event_date', '>=', now())
             ->orderBy('event_date', 'asc')
             ->get();
 
-        // Pass the enrolledArcherCount and upcomingEvents to the view
-        return view('coach.dashboard', compact('enrolledArcherCount', 'upcomingEvents'));
+        // Fetch all announcements (you can filter by target audience if needed)
+        $announcements = DB::table('announcements')->get();
+
+        // Pass enrolledArcherCount, upcomingEvents, and announcements to the view
+        return view('coach.dashboard', compact('enrolledArcherCount', 'upcomingEvents', 'announcements'));
     }
 
     public function viewCoachArcherProfile($membership_id)

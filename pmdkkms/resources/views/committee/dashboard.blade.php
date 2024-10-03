@@ -200,6 +200,11 @@
             margin-bottom: 10px;
         }
 
+        .announcement-details hr {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+        }
+
         /* Modal styling for add/edit announcement */
         .modal {
             display: none;
@@ -390,6 +395,7 @@
                     <div class="announcement-card" data-id="{{ $announcement->id }}" data-title="{{ $announcement->title }}" data-content="{{ $announcement->content }}">
                         <div class="announcement-details">
                             <h4>{{ $announcement->title }}</h4>
+                            <hr>
                             <p>{{ $announcement->content }}</p>
                         </div>
                         <div class="announcement-action">

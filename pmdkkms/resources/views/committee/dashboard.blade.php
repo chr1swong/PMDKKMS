@@ -205,6 +205,18 @@
             margin: 15px 0;
         }
 
+        .event-details h4 {
+            font-size: 22px;  /* Increase the font size */
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .event-details hr {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+        }
+
         /* Modal styling for add/edit announcement */
         .modal {
             display: none;
@@ -466,6 +478,8 @@
                 @foreach($upcomingEvents as $event)
                     <div class="event-card">
                         <div class="event-details">
+                            <h4>{{ $event->title }}</h4> <!-- Event title with larger font size -->
+                            <hr> <!-- Horizontal line after the title -->
                             <p><i class="fas fa-calendar-alt"></i> {{ \Carbon\Carbon::parse($event->event_date)->format('d M Y') }}</p>
                             <p><i class="fas fa-clock"></i> {{ \Carbon\Carbon::parse($event->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }}</p>
                             <p><i class="fas fa-map-marker-alt"></i> {{ $event->location }}</p>

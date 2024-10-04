@@ -202,4 +202,46 @@ class AttendanceController extends Controller
         // Redirect back with a success message
         return back()->with('success', 'Attendance updated successfully.');
     }
+
+    public function viewAllAttendanceForCoach(Request $request)
+    {
+        // Get the current logged-in coach
+        $coachId = Auth::user()->account_id;
+        
+        // Get the selected month and year from the request, or default to current month and year
+        $filterMonth = $request->input('attendance-filter', date('F')); // Default to current month
+        $filterYear = $request->input('year-filter', date('Y'));        // Default to current year
+
+        // Convert month name to number format (January -> 01, etc.)
+        $monthNumber = date('m', strtotime($filterMonth));
+
+        // Get the number of days in the selected month
+        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $monthNumber, $filterYear);
+
+        // Ensure we are retrieving attendance for archers under this coach, filtered by the month and year
+        $attendances = Attendance::with('membership.account')
+            ->join('membership', 'attendance.membership_id', '=', 'membership.membership_id')
+            ->join('coach_archer', 'membership.account_id', '=', 'coach_archer.archer_id')
+            ->where('coach_archer.coach_id', $coachId) // Only fetch archers under this coach
+            ->whereMonth('attendance_date', $monthNumber) // Filter by month
+            ->whereYear('attendance_date', $filterYear)   // Filter by year
+            ->select('attendance.*', 'membership.membership_id')
+            ->get();
+
+        // Group attendance records by membership_id
+        $attendanceSummary = $attendances->groupBy('membership_id')->map(function ($attendanceRecords) use ($daysInMonth) {
+            // Calculate number of 'present' days for each archer
+            $presentCount = $attendanceRecords->where('attendance_status', 'present')->count();
+
+            // Return structured data for the view
+            return [
+                'membership' => $attendanceRecords->first()->membership,
+                'presentCount' => $presentCount,
+                'daysInMonth' => $daysInMonth,
+            ];
+        });
+
+        // Ensure we pass the correct month and year to the view, even when no records exist
+        return view('coach.attendanceList', compact('attendanceSummary', 'filterMonth', 'filterYear'));
+    }
 }

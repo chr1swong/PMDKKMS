@@ -138,7 +138,7 @@
         }
 
         .event-details h4 {
-            font-size: 22px;  /* Increase the font size */
+            font-size: 22px;
             font-weight: bold;
             color: #333;
             margin-bottom: 10px;
@@ -189,10 +189,14 @@
                 <h3>Archers</h3>
                 <span>{{ $enrolledArcherCount }}</span> <!-- Dynamic count of archer -->
             </div>
+            
             <div class="card attendance">
-                <i class="fas fa-users"></i>
-                <h3>Attendance</h3>
+                <a href="{{ route('coach.attendanceList') }}" style="text-decoration: none; color: white; display: block; width: 100%; height: 100%;">
+                    <i class="fas fa-users"></i>
+                    <h3>Attendance</h3>
+                </a>
             </div>
+            
             <div class="card scoring">
                 <i class="fas fa-chart-line"></i>
                 <h3>Scoring History</h3>

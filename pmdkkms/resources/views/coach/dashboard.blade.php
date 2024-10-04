@@ -121,27 +121,6 @@
             margin: 15px 0;
         }
 
-        /* Modal styling */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 10% auto;
-            padding: 40px;
-            border-radius: 8px;
-            width: 60%;
-            max-width: 800px;
-        }
-
         /* Upcoming Events Section */
         .upcoming-events {
             margin-top: 30px;
@@ -158,7 +137,19 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .event-details {
+        .event-details h4 {
+            font-size: 22px;  /* Increase the font size */
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .event-details hr {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+        }
+
+        .event-details p {
             font-size: 16px;
         }
 
@@ -241,6 +232,8 @@
                 @foreach($upcomingEvents as $event)
                     <div class="event-card">
                         <div class="event-details">
+                            <h4>{{ $event->title }}</h4> <!-- Event title with larger font size -->
+                            <hr> <!-- Horizontal line after the title -->
                             <p><i class="fas fa-calendar-alt"></i> {{ \Carbon\Carbon::parse($event->event_date)->format('d M Y') }}</p>
                             <p><i class="fas fa-clock"></i> {{ \Carbon\Carbon::parse($event->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }}</p>
                             <p><i class="fas fa-map-marker-alt"></i> {{ $event->location }}</p>

@@ -25,22 +25,22 @@
 
         .cards {
             display: flex;
-            flex-wrap: wrap; /* Enable wrapping for responsiveness */
+            flex-wrap: wrap;
             justify-content: space-between;
-            gap: 30px; /* Increase gap between the cards */
+            gap: 30px;
             margin-bottom: 20px;
         }
 
         .card {
             flex: 1;
-            min-width: 220px; /* Minimum width for small screens */
+            min-width: 220px;
             background-color: #f1f1f1;
             border-radius: 10px;
             padding: 20px;
             text-align: center;
             color: white;
             position: relative;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Adding shadow for a card effect */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s ease;
         }
@@ -138,7 +138,19 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .event-details {
+        .event-details h4 {
+            font-size: 22px;  /* Increase the font size */
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .event-details hr {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+        }
+
+        .event-details p {
             font-size: 16px;
         }
 
@@ -149,7 +161,7 @@
         /* Media Queries for Responsiveness */
         @media (max-width: 768px) {
             .cards {
-                flex-direction: column; /* Stack cards vertically on smaller screens */
+                flex-direction: column;
             }
 
             .event-card,
@@ -178,19 +190,31 @@
 
         <!-- Cards Section -->
         <div class="cards">
-            <div class="card archers">
-                <i class="fas fa-bullseye"></i>
-                <h3>Archers</h3>
-                <span>2</span>
-            </div>
-            <div class="card attendance">
-                <i class="fas fa-users"></i>
-                <h3>Attendance</h3>
-            </div>
-            <div class="card scoring">
-                <i class="fas fa-chart-line"></i>
-                <h3>Scoring History</h3>
-            </div>
+            <!-- Event Card -->
+            <a href="{{ route('archer.events') }}" class="card-link">
+                <div class="card archers">
+                    <i class="fas fa-calendar-alt"></i> <!-- Changed icon to a calendar -->
+                    <h3>Events</h3>
+                </div>
+            </a>
+
+            <!-- Attendance Card -->
+            <a href="{{ route('archer.attendance') }}" class="card-link">
+                <div class="card attendance">
+                    <i class="fas fa-users"></i>
+                    <h3>Attendance</h3>
+                </div>
+            </a>
+
+            <!-- Scoring Card -->
+            <a href="{{ route('archer.scoring') }}" class="card-link">
+                <div class="card scoring">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Scoring</h3>
+                </div>
+            </a>
+
+            <!-- Payment Card -->
             <div class="card payment">
                 <i class="fas fa-money-bill-wave"></i>
                 <h3>Payment History</h3>
@@ -227,6 +251,8 @@
                 @foreach($upcomingEvents as $event)
                     <div class="event-card">
                         <div class="event-details">
+                            <h4>{{ $event->title }}</h4> <!-- Event title with larger font size -->
+                            <hr> <!-- Horizontal line after the title -->
                             <p><i class="fas fa-calendar-alt"></i> {{ \Carbon\Carbon::parse($event->event_date)->format('d M Y') }}</p>
                             <p><i class="fas fa-clock"></i> {{ \Carbon\Carbon::parse($event->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }}</p>
                             <p><i class="fas fa-map-marker-alt"></i> {{ $event->location }}</p>

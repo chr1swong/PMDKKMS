@@ -232,7 +232,8 @@
             </div>
 
             <!-- Back Button -->
-            <a href="{{ route('coach.myArcher') }}" class="btn btn-secondary back-btn">
+            <?php $referrer = request()->query('referrer', 'myArcher'); // Default to 'myArcher' if not provided ?>
+            <a href="{{ route('coach.' . $referrer) }}" class="btn btn-secondary back-btn">
                 <i class="fas fa-arrow-left"></i> Back
             </a>
 

@@ -285,7 +285,7 @@
                     <td>
                         <div class="btn-container">
                             <a href="{{ route('coach.scoringHistoryArcher', $archer->membership_id) }}" class="btn btn-view">View Training Score</a>
-                            <a href="{{ route('coach.attendanceView', $archer->membership_id) }}" class="btn btn-view">View Attendance</a>
+                            <a href="{{ route('coach.attendanceView', ['membership_id' => $archer->membership_id, 'referrer' => 'myArcher']) }}" class="btn btn-view">View Attendance</a>
                         </div>
                     </td>
                     <td>

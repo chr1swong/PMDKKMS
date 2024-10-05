@@ -185,9 +185,11 @@
         <!-- Cards Section -->
         <div class="cards">
             <div class="card archers">
-                <i class="fas fa-bullseye"></i>
-                <h3>Archers</h3>
-                <span>{{ $enrolledArcherCount }}</span> <!-- Dynamic count of archer -->
+                <a href="{{ route('coach.myArcher') }}" style="text-decoration: none; color: white; display: block; width: 100%; height: 100%;">
+                    <i class="fas fa-bullseye"></i>
+                    <h3>Archers</h3>
+                    <span>{{ $enrolledArcherCount }}</span> <!-- Dynamic count of archer -->
+                </a>
             </div>
             
             <div class="card attendance">

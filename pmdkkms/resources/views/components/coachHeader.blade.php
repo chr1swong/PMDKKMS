@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Archery Association</title>
+    <!-- Font Awesome for dropdown arrow icon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
         /* General Styles */
         body {
@@ -90,6 +92,68 @@
             align-items: center; /* Aligns icon and text */
         }
 
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+        }
+
+        /* Initial state of the dropdown: hidden and moved upwards */
+        .dropdown-menu {
+            display: block;
+            position: absolute;
+            background-color: #0056b3;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            padding: 0;
+            z-index: 100;
+            list-style: none; /* Remove bullet points from dropdown */
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none; /* Prevent interaction when hidden */
+        }
+
+        .dropdown-menu li {
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .dropdown-menu li:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            text-transform: none;
+            font-size: 16px;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        /* Hover Effects for Attendance and Scoring */
+        .dropdown-menu a:hover {
+            background-color: #1a73e8;
+        }
+
+        /* Dropdown opens when hovering, fade in and translate effect */
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto; /* Enable interaction when shown */
+        }
+
+        /* Dropdown arrow styling */
+        .dropdown > a i {
+            margin-left: 2px;
+            color: white; /* Make the arrow white */
+            transition: transform 0.3s ease;
+        }
+
+        /* Rotate the dropdown icon on hover */
+        .dropdown:hover > a i {
+            transform: rotate(180deg);
+        }
+
         /* Login Button Styles */
         .login-container {
             margin-left: auto; /* Pushes the login button to the right */
@@ -130,8 +194,20 @@
                     <li>
                         <a href="/coach/events" class="{{ request()->is('coach.events') ? 'active' : '' }}">Events</a>
                     </li>
-                    <li>
-                        <a href="/coach/myArcher" class="{{ request()->is('coach.myArcher') ? 'active' : '' }}">MyArcher</a>
+                    <!-- Dropdown for MyArcher with Attendance and Scoring -->
+                    <li class="dropdown">
+                        <a href="#" class="{{ request()->is('coach.myArcher') ? 'active' : '' }}">
+                            MyArcher
+                            <i class="fas fa-chevron-down"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{{ route('coach.attendanceList') }}">Attendance</a>
+                            </li>
+                            <li>
+                                <a href="">Scoring</a>
+                            </li>
+                        </ul>
                     </li>
                     <li>
                         <a href="/coach/profile" class="{{ request()->is('coach.profile') ? 'active' : '' }}">Profile</a>

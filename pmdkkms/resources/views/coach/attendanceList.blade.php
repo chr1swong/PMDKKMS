@@ -147,13 +147,13 @@
 </header>
 
 <div class="attendance-list-container">
-    <h1 class="attendance-list-header">Archer Attendance for {{ $filterMonth }} {{ $filterYear }}</h1> <!-- Display both month and year -->
+    <h1 class="attendance-list-header">Archer Attendance for {{ $filterMonth }} {{ $filterYear }}</h1>
     <hr class="hr-divider">
 
     <!-- Filter and Search -->
     <div class="filter-search-container">
         <div class="filter-container">
-            <form method="GET" action="{{ route('coach.attendanceList') }}"> <!-- Update route for coach -->
+            <form method="GET" action="{{ route('coach.attendanceList') }}">
                 <!-- Month Filter -->
                 <select id="attendance-filter" name="attendance-filter" onchange="this.form.submit()">
                     <option value="January" {{ request('attendance-filter', $filterMonth) == 'January' ? 'selected' : '' }}>January</option>
@@ -211,7 +211,8 @@
                     <td><span class="attendance-summary">{{ $summary['presentCount'] }}/{{ $summary['daysInMonth'] }}</span></td>
                     <td>
                         <div class="btn-container">
-                            <a href="{{ route('coach.attendanceView', ['membership_id' => $summary['membership']->membership_id]) }}" class="btn btn-view">View Attendance Details</a>
+                            <!-- Pass the referrer parameter -->
+                            <a href="{{ route('coach.attendanceView', ['membership_id' => $summary['membership']->membership_id, 'referrer' => 'attendanceList']) }}" class="btn btn-view">View Attendance Details</a>
                         </div>
                     </td>
                 </tr>

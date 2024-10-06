@@ -77,6 +77,24 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
+        .back-btn {
+            background-color: #6f42c1;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .back-btn:hover {
+            background-color: #5a32a3;
+        }
+
         /* Submit Button */
         .add-btn {
             background-color: #3f51b5;
@@ -295,6 +313,9 @@
             <div class="input-box">
                 {{ Auth::user()->account_full_name }}
             </div>
+
+            <!-- Back button below Archer Name -->
+            <a href="{{ route('archer.scoringHistory') }}" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Scoring History</a>
         </div>
     </div>
 

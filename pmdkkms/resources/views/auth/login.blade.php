@@ -59,6 +59,7 @@
             align-items: flex-start;
             width: 40%;
             position: relative;
+            min-height: 100vh; /* Ensure the blue panel covers the top */
         }
 
         .left-panel h2 {
@@ -71,6 +72,7 @@
             color: black;
         }
 
+        /* Ensure image is visible */
         .left-panel img {
             max-width: 80%;
             height: auto;
@@ -79,6 +81,7 @@
             bottom: 20px;
             left: 20px;
             transition: transform 0.3s ease;
+            display: block; /* Ensure visibility */
         }
 
         .left-panel img:hover {
@@ -310,19 +313,81 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            .authentication-card {
+                flex-direction: column;
+            }
+
+            .left-panel, .right-panel {
+                width: 100%;
+            }
+
+            .left-panel {
+                padding: 2rem 1rem;
+                text-align: center;
+                align-items: center;
+                min-height: 30vh; /* Smaller height on mobile */
+                justify-content: center;
+            }
+
+            .left-panel h2 {
+                font-size: 2rem;
+            }
+
+            .left-panel img {
+                max-width: 50%; /* Adjust image size for smaller screens */
+                position: relative; /* Ensure proper positioning */
+                bottom: 0;
+                left: 0;
+                margin: 0 auto;
+                display: block; /* Ensure it's visible */
+            }
+
+            .right-panel {
+                padding: 2rem 1rem;
+            }
+
+            .right-panel img {
+                max-width: 20%;
+            }
+
             .popup-message {
                 width: 90%;
                 max-width: 90%;
             }
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 576px) {
+            .authentication-card {
+                padding: 1rem;
+            }
+
+            .left-panel h2 {
+                font-size: 2rem;
+            }
+
             .popup-message h2 {
                 font-size: 1.5rem;
             }
 
             .popup-message p {
                 font-size: 0.875rem;
+            }
+
+            .block input {
+                font-size: 0.9rem;
+            }
+
+            .login-button {
+                padding: 1rem 0.75rem;
+                font-size: 1rem;
+            }
+
+            .left-panel img {
+                max-width: 40%; /* Adjust image size for very small screens */
+            }
+
+            .right-panel img {
+                max-width: 25%;
             }
         }
 

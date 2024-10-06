@@ -205,6 +205,67 @@
     .text-center .link:hover {
         color: #483a99;
     }
+
+    /* Media Queries for Responsiveness */
+
+    /* General mobile-friendly styles */
+    @media (max-width: 768px) {
+        .authentication-card {
+            flex-direction: column;
+            min-height: unset; /* Remove fixed height for better adaptability */
+        }
+
+        .left-panel, .right-panel {
+            width: 100%;
+            padding: 2rem 1rem;
+        }
+
+        .left-panel {
+            text-align: center;
+            align-items: center; /* Center content horizontally */
+        }
+
+        .left-panel h2 {
+            font-size: 2.5rem; /* Reduce heading size for smaller screens */
+        }
+
+        .right-panel {
+            padding: 2rem 1rem;
+        }
+
+        .block input {
+            padding: 0.5rem; /* Adjust input padding */
+        }
+
+        .register-button {
+            font-size: 1rem; /* Adjust button font size */
+        }
+    }
+
+    /* Smaller screens (phones) */
+    @media (max-width: 576px) {
+        .authentication-card {
+            padding: 1rem;
+        }
+
+        .left-panel h2 {
+            font-size: 2rem;
+        }
+
+        .block input {
+            font-size: 0.9rem; /* Adjust input font size */
+        }
+
+        .register-button {
+            padding: 0.75rem 0.5rem; /* Adjust button padding */
+            font-size: 0.9rem; /* Adjust button font size */
+        }
+
+        .radio-group {
+            flex-direction: column; /* Stack radio buttons vertically */
+            gap: 1rem;
+        }
+    }
 </style>
 </head>
 <header>

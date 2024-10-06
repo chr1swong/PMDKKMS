@@ -27,6 +27,7 @@
             padding: 0;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             position: relative;
+            margin-bottom: 0; /* Ensure header margin matches the coachHeader */
         }
 
         /* Container for the entire nav section */
@@ -34,8 +35,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            width: 100%;
             margin: 0;
-            padding: 0; /* Remove any padding here */
+            padding: 10px; /* Updated padding to match the coachHeader */
         }
 
         /* Navigation container for logo and links */
@@ -124,11 +126,12 @@
             transition: background-color 0.3s;
         }
 
-        /* Hover Effects for Attendance and Performance */
-        .dropdown-menu a[href="/archer/attendance"]:hover {
+        /* Hover Effects for Attendance and Scoring */
+        .dropdown-menu a:hover {
             background-color: #1a73e8;
         }
 
+        /* Dropdown opens on hover */
         .dropdown:hover .dropdown-menu {
             display: block;
         }
@@ -170,8 +173,8 @@
             width: 100%;
             background-color: #0b1647;
             z-index: 999;
-            padding: 15px 0;
-            margin: 0; /* Remove margin to eliminate white gap */
+            padding: 0;
+            margin: 0;
         }
 
         .nav-links-mobile li {
@@ -305,6 +308,15 @@
                 mobileMenu.classList.add('show-menu');
             }
         }
+
+        // Automatically close the mobile menu when the window is resized above 768px
+        window.addEventListener('resize', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (window.innerWidth > 768) {
+                mobileMenu.style.display = 'none'; // Ensure the menu is hidden
+                mobileMenu.classList.remove('show-menu'); // Remove the show-menu class
+            }
+        });
     </script>
 </body>
 </html>

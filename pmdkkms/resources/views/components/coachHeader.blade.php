@@ -27,17 +27,17 @@
             padding: 0;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             position: relative;
-            margin-bottom: 0; /* Ensure no margin below the header */
+            margin-bottom: 0;
         }
 
         /* Container for the entire nav section */
         .container {
             display: flex;
-            justify-content: space-between; /* Space between logo/nav links and login button */
+            justify-content: space-between;
             align-items: center;
             width: 100%;
             margin: 0;
-            padding: 10px; /* Smaller padding for a smaller header */
+            padding: 10px;
         }
 
         /* Navigation container for logo and links */
@@ -168,13 +168,13 @@
             display: none;
             flex-direction: column;
             position: absolute;
-            top: 100%; /* Align just below the header */
+            top: 100%;
             left: 0;
             width: 100%;
             background-color: #0b1647;
             z-index: 999;
-            padding: 0; /* Ensure no padding around the mobile menu */
-            margin: 0; /* Remove any margin */
+            padding: 0;
+            margin: 0;
         }
 
         .nav-links-mobile li {
@@ -309,6 +309,15 @@
                 mobileMenu.classList.add('show-menu');
             }
         }
+
+        // Automatically close the mobile menu when the window is resized above 768px
+        window.addEventListener('resize', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (window.innerWidth > 768) {
+                mobileMenu.style.display = 'none'; // Ensure the menu is hidden
+                mobileMenu.classList.remove('show-menu'); // Remove the show-menu class
+            }
+        });
     </script>
 </body>
 </html>

@@ -26,6 +26,7 @@
             background-color: #0b1647;
             padding: 0;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
         /* Container for the entire nav section */
@@ -33,9 +34,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: auto;
+            width: 100%;
             margin: 0;
-            padding: 10px 10px;
+            padding: 10px;
         }
 
         /* Navigation container for logo and links */
@@ -105,7 +106,6 @@
             border-radius: 4px;
             padding: 0;
             z-index: 100;
-            list-style: none; /* Remove bullet points from dropdown */
         }
 
         .dropdown-menu li {
@@ -125,55 +125,111 @@
             transition: background-color 0.3s;
         }
 
-        /* Hover Effects for Attendance and Performance */
-        .dropdown-menu a[href="/committee/member/attendance"]:hover {
+        .dropdown-menu a:hover {
             background-color: #1a73e8;
         }
 
-        .dropdown-menu a[href="/committee/member/performance"]:hover {
-            background-color: #34a853;
-        }
-
-        /* Dropdown menu opens when hovering over the link or icon */
         .dropdown:hover .dropdown-menu {
             display: block;
         }
 
-        /* Dropdown arrow styling */
         .dropdown > a i {
             margin-left: 2px;
-            color: white; /* Make the arrow white */
+            color: white;
             transition: transform 0.3s ease;
         }
 
-        /* Rotate the dropdown icon on hover */
         .dropdown:hover > a i {
             transform: rotate(180deg);
         }
 
-        /* Login Button Styles */
-        .login-container {
-            margin-left: auto;
+        /* Hamburger Menu Styles */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
         }
 
-        .login-button {
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile Menu Styles */
+        .nav-links-mobile {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 100%; /* Align directly below the header */
+            left: 0;
+            width: 100%;
+            background-color: #0b1647;
+            z-index: 999;
+            padding: 0; /* Remove padding */
+            margin: 0; /* Remove any margin */
+        }
+
+        .nav-links-mobile li {
+            margin: 0;
+            padding: 12px 0;
+        }
+
+        .nav-links-mobile li a {
+            font-size: 18px;
+            display: block;
             color: white;
-            background-color: #072AC8;
-            padding: 8px 15px;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .nav-links-mobile li a:hover {
+            background-color: #0056b3;
             border-radius: 4px;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: background-color 0.3s;
-            align-items: center;
         }
 
-        .login-button i {
-            margin-right: 8px;
-            font-size: 16px;
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .login-container {
+                margin-right: 10px;
+            }
         }
 
-        .login-button:hover {
-            background-color: #003f7f;
+        @media (max-width: 480px) {
+            .headerLogo {
+                height: 60px;
+            }
+
+            .header-login-button {
+                font-size: 16px;
+            }
+        }
+
+        /* Slide down animation */
+        .show-menu {
+            display: flex;
+            animation: slideDown 0.3s ease-in-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -184,31 +240,35 @@
                 <a href="/" class="logo-container">
                     <img src="{{ asset('images/pmdkkLogo.png') }}" alt="Logo" class="headerLogo">
                 </a>
+                <!-- Hamburger Icon for Mobile -->
+                <div class="hamburger" onclick="toggleMenu()">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <!-- Navigation Links for Desktop -->
                 <ul class="nav-links">
-                    <li>
-                        <a href="/committee/dashboard" class="{{ request()->is('coach.dashboard') ? 'active' : '' }}">Home</a>
-                    </li>
-                    <li>
-                        <a href="/committee/events" class="{{ request()->is('committee.events') ? 'active' : '' }}">Events</a>
-                    </li>
-                    <!-- Members Dropdown with Icon -->
+                    <li><a href="/committee/dashboard" class="{{ request()->is('committee.dashboard') ? 'active' : '' }}">Home</a></li>
+                    <li><a href="/committee/events" class="{{ request()->is('committee.events') ? 'active' : '' }}">Events</a></li>
+                    <!-- Dropdown for Members -->
                     <li class="dropdown">
-                        <a href="/committee/member" class="{{ request()->is('member.events') ? 'active' : '' }}">
-                            Members
-                            <i class="fas fa-chevron-down"></i> <!-- Dropdown arrow icon -->
+                        <a href="#" class="{{ request()->is('committee.member') ? 'active' : '' }}">
+                            Members <i class="fas fa-chevron-down"></i>
                         </a>
                         <ul class="dropdown-menu">
-                            <li>
-                                <a href="/committee/attendanceList">Attendance</a>
-                            </li>
-                            <li>
-                                <a href="{{ route('committee.scoringHistory') }}">Performance</a>
-                            </li>
+                            <li><a href="/committee/attendanceList">Attendance</a></li>
+                            <li><a href="{{ route('committee.scoringHistory') }}">Performance</a></li>
                         </ul>
                     </li>
-                    <li>
-                        <a href="/committee/profile" class="{{ request()->is('committee.profile') ? 'active' : '' }}">Profile</a>
-                    </li>
+                    <li><a href="/committee/profile" class="{{ request()->is('committee.profile') ? 'active' : '' }}">Profile</a></li>
+                </ul>
+                <!-- Navigation Links for Mobile -->
+                <ul class="nav-links-mobile" id="mobile-menu">
+                    <li><a href="/committee/dashboard">Home</a></li>
+                    <li><a href="/committee/events">Events</a></li>
+                    <li><a href="/committee/attendanceList">Attendance</a></li>
+                    <li><a href="{{ route('committee.scoringHistory') }}">Performance</a></li>
+                    <li><a href="/committee/profile">Profile</a></li>
                 </ul>
             </div>
 
@@ -216,8 +276,7 @@
                 @auth
                     <a href="{{ route('account.logout') }}" class="header-login-button"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
+                        <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
 
                     <form id="logout-form" action="{{ route('account.logout') }}" method="GET" style="display: none;">
@@ -225,12 +284,25 @@
                     </form>
                 @else
                     <a href="{{ route('login') }}" class="header-login-button">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Login
+                        <i class="fas fa-sign-in-alt"></i> Login
                     </a>
                 @endauth
             </div>
         </nav>
     </header>
+
+    <script>
+        // Toggle mobile menu
+        function toggleMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu.classList.contains('show-menu')) {
+                mobileMenu.style.display = 'none';
+                mobileMenu.classList.remove('show-menu');
+            } else {
+                mobileMenu.style.display = 'flex';
+                mobileMenu.classList.add('show-menu');
+            }
+        }
+    </script>
 </body>
 </html>

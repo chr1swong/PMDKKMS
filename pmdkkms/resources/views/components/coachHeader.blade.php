@@ -26,6 +26,8 @@
             background-color: #0b1647;
             padding: 0;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            margin-bottom: 0; /* Ensure no margin below the header */
         }
 
         /* Container for the entire nav section */
@@ -33,9 +35,9 @@
             display: flex;
             justify-content: space-between; /* Space between logo/nav links and login button */
             align-items: center;
-            width: auto;
+            width: 100%;
             margin: 0;
-            padding: 10px 10px; /* Smaller padding for a smaller header */
+            padding: 10px; /* Smaller padding for a smaller header */
         }
 
         /* Navigation container for logo and links */
@@ -46,13 +48,13 @@
 
         /* Style for the logo */
         .logo-container {
-            flex-shrink: 0; /* Prevents the logo from shrinking */
+            flex-shrink: 0;
         }
 
         .headerLogo {
-            height: 80px; /* Adjust the height to make the header smaller */
-            width: auto; /* Maintains aspect ratio */
-            margin-right: 30px; /* Adds space between logo and nav links */
+            height: 80px;
+            width: auto;
+            margin-right: 30px;
         }
 
         /* Navigation links */
@@ -64,21 +66,21 @@
         }
 
         .nav-links li {
-            margin-left: 0px; /* Space between links */
+            margin-left: 0px;
         }
 
         .nav-links li a {
-            color: white; /* Set the link color */
+            color: white;
             font-weight: bold;
             text-transform: uppercase;
             padding: 8px 15px;
             border-radius: 4px;
             transition: background-color 0.3s;
-            font-size: 20px; /* Increase the font size */
+            font-size: 20px;
         }
 
         .nav-links li a:hover, .nav-links li a.active {
-            background-color: #0056b3; /* Change background color on hover and active */
+            background-color: #0056b3;
         }
 
         .header-login-button {
@@ -89,7 +91,7 @@
             text-transform: uppercase;
             transition: background-color 0.3s;
             font-size: 20px;
-            align-items: center; /* Aligns icon and text */
+            align-items: center;
         }
 
         /* Dropdown Menu Styles */
@@ -97,20 +99,14 @@
             position: relative;
         }
 
-        /* Initial state of the dropdown: hidden and moved upwards */
         .dropdown-menu {
-            display: block;
+            display: none;
             position: absolute;
             background-color: #0056b3;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             border-radius: 4px;
             padding: 0;
             z-index: 100;
-            list-style: none; /* Remove bullet points from dropdown */
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            pointer-events: none; /* Prevent interaction when hidden */
         }
 
         .dropdown-menu li {
@@ -135,17 +131,15 @@
             background-color: #1a73e8;
         }
 
-        /* Dropdown opens when hovering, fade in and translate effect */
+        /* Dropdown opens on hover */
         .dropdown:hover .dropdown-menu {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto; /* Enable interaction when shown */
+            display: block;
         }
 
         /* Dropdown arrow styling */
         .dropdown > a i {
             margin-left: 2px;
-            color: white; /* Make the arrow white */
+            color: white;
             transition: transform 0.3s ease;
         }
 
@@ -154,29 +148,93 @@
             transform: rotate(180deg);
         }
 
-        /* Login Button Styles */
-        .login-container {
-            margin-left: auto; /* Pushes the login button to the right */
+        /* Hamburger Menu Styles */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
         }
 
-        .login-button {
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile Menu Styles */
+        .nav-links-mobile {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 100%; /* Align just below the header */
+            left: 0;
+            width: 100%;
+            background-color: #0b1647;
+            z-index: 999;
+            padding: 0; /* Ensure no padding around the mobile menu */
+            margin: 0; /* Remove any margin */
+        }
+
+        .nav-links-mobile li {
+            margin: 0;
+            padding: 12px 0;
+        }
+
+        .nav-links-mobile li a {
+            font-size: 18px;
+            display: block;
             color: white;
-            background-color: #072AC8;
-            padding: 8px 15px;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .nav-links-mobile li a:hover {
+            background-color: #0056b3;
             border-radius: 4px;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: background-color 0.3s;
-            align-items: center; /* Aligns icon and text */
         }
 
-        .login-button i {
-            margin-right: 8px; /* Space between icon and text */
-            font-size: 16px; /* Adjust icon size if needed */
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .login-container {
+                margin-right: 10px;
+            }
         }
 
-        .login-button:hover {
-            background-color: #003f7f;
+        @media (max-width: 480px) {
+            .headerLogo {
+                height: 60px;
+            }
+
+            .header-login-button {
+                font-size: 16px;
+            }
+        }
+
+        /* Slide down animation */
+        .show-menu {
+            display: flex;
+            animation: slideDown 0.3s ease-in-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -187,31 +245,35 @@
                 <a href="/" class="logo-container">
                     <img src="{{ asset('images/pmdkkLogo.png') }}" alt="Logo" class="headerLogo">
                 </a>
+                <!-- Hamburger Icon for Mobile -->
+                <div class="hamburger" onclick="toggleMenu()">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <!-- Navigation Links for Desktop -->
                 <ul class="nav-links">
-                    <li>
-                        <a href="/coach/dashboard" class="{{ request()->is('coach.dashboard') ? 'active' : '' }}">Home</a>
-                    </li>
-                    <li>
-                        <a href="/coach/events" class="{{ request()->is('coach.events') ? 'active' : '' }}">Events</a>
-                    </li>
-                    <!-- Dropdown for MyArcher with Attendance and Scoring -->
+                    <li><a href="/coach/dashboard" class="{{ request()->is('coach.dashboard') ? 'active' : '' }}">Home</a></li>
+                    <li><a href="/coach/events" class="{{ request()->is('coach.events') ? 'active' : '' }}">Events</a></li>
+                    <!-- Dropdown for MyArcher -->
                     <li class="dropdown">
                         <a href="#" class="{{ request()->is('coach.myArcher') ? 'active' : '' }}">
-                            MyArcher
-                            <i class="fas fa-chevron-down"></i>
+                            MyArcher <i class="fas fa-chevron-down"></i>
                         </a>
                         <ul class="dropdown-menu">
-                            <li>
-                                <a href="{{ route('coach.attendanceList') }}">Attendance</a>
-                            </li>
-                            <li>
-                                <a href="">Scoring</a>
-                            </li>
+                            <li><a href="{{ route('coach.attendanceList') }}">Attendance</a></li>
+                            <li><a href="">Scoring</a></li>
                         </ul>
                     </li>
-                    <li>
-                        <a href="/coach/profile" class="{{ request()->is('coach.profile') ? 'active' : '' }}">Profile</a>
-                    </li>
+                    <li><a href="/coach/profile" class="{{ request()->is('coach.profile') ? 'active' : '' }}">Profile</a></li>
+                </ul>
+                <!-- Navigation Links for Mobile -->
+                <ul class="nav-links-mobile" id="mobile-menu">
+                    <li><a href="/coach/dashboard">Home</a></li>
+                    <li><a href="/coach/events">Events</a></li>
+                    <li><a href="{{ route('coach.attendanceList') }}">Attendance</a></li>
+                    <li><a href="">Scoring</a></li>
+                    <li><a href="/coach/profile">Profile</a></li>
                 </ul>
             </div>
 
@@ -219,8 +281,7 @@
                 @auth
                     <a href="{{ route('account.logout') }}" class="header-login-button"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
+                        <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
 
                     <form id="logout-form" action="{{ route('account.logout') }}" method="GET" style="display: none;">
@@ -228,12 +289,26 @@
                     </form>
                 @else
                     <a href="{{ route('login') }}" class="header-login-button">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Login
+                        <i class="fas fa-sign-in-alt"></i> Login
                     </a>
                 @endauth
             </div>
         </nav>
     </header>
+
+    <script>
+        // Toggle mobile menu
+        function toggleMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            // Toggle between show-menu class and hidden
+            if (mobileMenu.classList.contains('show-menu')) {
+                mobileMenu.style.display = 'none'; // Hide
+                mobileMenu.classList.remove('show-menu');
+            } else {
+                mobileMenu.style.display = 'flex'; // Show
+                mobileMenu.classList.add('show-menu');
+            }
+        }
+    </script>
 </body>
 </html>

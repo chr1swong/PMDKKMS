@@ -303,6 +303,15 @@
                 mobileMenu.classList.add('show-menu');
             }
         }
+
+        // Automatically close the mobile menu when the window is resized above 768px
+        window.addEventListener('resize', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (window.innerWidth > 768) {
+                mobileMenu.style.display = 'none'; // Ensure the menu is hidden
+                mobileMenu.classList.remove('show-menu'); // Remove the show-menu class
+            }
+        });
     </script>
 </body>
 </html>

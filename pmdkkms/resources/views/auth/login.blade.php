@@ -26,7 +26,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: calc(85vh);
+            min-height: calc(70vh); /* Shorter height */
             background-color: #f4f4f4;
             animation: fadeIn 1s ease-in-out;
         }
@@ -36,16 +36,17 @@
             to { opacity: 1; }
         }
 
+        /* Authentication card (adjust height) */
         .authentication-card {
             width: 100%;
             max-width: 1200px;
             margin: auto;
-            padding: 0;
             background-color: #ffffff;
-            border-radius: 10px;
+            border-radius: 8px;
             display: flex;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
             overflow: hidden;
+            min-height: 450px; /* Shorter minimum height */
         }
 
         /* Left panel design */
@@ -55,33 +56,25 @@
             padding: 2rem;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start;
+            justify-content: center;
+            align-items: center;
             width: 40%;
-            position: relative;
-            min-height: 100vh; /* Ensure the blue panel covers the top */
+            min-height: 100%; /* Adjust this for panel height */
         }
 
         .left-panel h2 {
-            font-size: 3.5rem;
+            font-size: 2.5rem;
             font-weight: bold;
             margin-bottom: 2rem;
-            position: absolute;
-            top: 20px;
-            left: 20px;
             color: black;
         }
 
         /* Ensure image is visible */
         .left-panel img {
-            max-width: 80%;
+            max-width: 60%; /* Adjust image size */
             height: auto;
             margin-bottom: 2rem;
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
             transition: transform 0.3s ease;
-            display: block; /* Ensure visibility */
         }
 
         .left-panel img:hover {

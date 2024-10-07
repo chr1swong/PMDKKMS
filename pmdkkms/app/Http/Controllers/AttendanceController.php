@@ -78,11 +78,11 @@ class AttendanceController extends Controller
     // View all attendance records for committee members
     public function viewAllAttendance(Request $request)
     {
-        // Get the selected month and year from the request, default to January and the current year
-        $filterMonth = $request->input('attendance-filter', 'January');
-        $filterYear = $request->input('year-filter', date('Y'));
+        // Get the selected month and year from the request, default to the current month and year
+        $filterMonth = $request->input('attendance-filter', date('F')); // Default to current month name (e.g., 'October')
+        $filterYear = $request->input('year-filter', date('Y'));        // Default to current year (e.g., 2024)
 
-        // Get the month number from the selected month
+        // Convert the month name to a number (January = 01, February = 02, etc.)
         $monthNumber = date('m', strtotime($filterMonth));
 
         // Get the total number of days in the selected month
@@ -92,15 +92,15 @@ class AttendanceController extends Controller
         $attendances = Attendance::with(['membership', 'membership.account'])
             ->leftJoin('membership', 'attendance.membership_id', '=', 'membership.membership_id')
             ->leftJoin('account', 'membership.account_id', '=', 'account.account_id')
-            ->leftJoin('coach_archer', 'account.account_id', '=', 'coach_archer.archer_id') // Join coach_archer table to link archers with their coaches
-            ->leftJoin('account as coach', 'coach_archer.coach_id', '=', 'coach.account_id') // Join again to get coach details
+            ->leftJoin('coach_archer', 'account.account_id', '=', 'coach_archer.archer_id') // Join coach_archer to link archers with coaches
+            ->leftJoin('account as coach', 'coach_archer.coach_id', '=', 'coach.account_id') // Get coach details
             ->whereMonth('attendance_date', $monthNumber)
             ->whereYear('attendance_date', $filterYear)
             ->select(
-                'attendance.*', // Select attendance details
-                'account.account_full_name as archer_name', // Select archer's name
+                'attendance.*',
+                'account.account_full_name as archer_name',
                 'membership.membership_id',
-                'coach.account_full_name as coach_name' // Select coach's name
+                'coach.account_full_name as coach_name'
             )
             ->get();
 
@@ -111,7 +111,7 @@ class AttendanceController extends Controller
                 'membership' => $attendanceRecords->first()->membership,
                 'presentCount' => $presentCount,
                 'daysInMonth' => $daysInMonth,
-                'coach_name' => $attendanceRecords->first()->coach_name // Get coach name
+                'coach_name' => $attendanceRecords->first()->coach_name
             ];
         });
 

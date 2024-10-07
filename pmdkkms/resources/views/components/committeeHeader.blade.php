@@ -58,7 +58,7 @@
 
         /* Navigation links */
         .nav-links {
-            list-style: none;
+            list-style: none;  /* Removes bullet points */
             margin: 0;
             padding: 0;
             display: flex;
@@ -106,6 +106,7 @@
             border-radius: 4px;
             padding: 0;
             z-index: 100;
+            list-style: none;  /* Removes bullet points */
         }
 
         .dropdown-menu li {
@@ -143,6 +144,15 @@
             transform: rotate(180deg);
         }
 
+        /* Fix for unwanted bullet points or pseudo-elements */
+        .dropdown-menu li,
+        .dropdown-menu a::before, 
+        .dropdown-menu a::after {
+            content: none;  /* Ensure no pseudo-elements */
+            background: none;
+            border-radius: 0;
+        }
+
         /* Hamburger Menu Styles */
         .hamburger {
             display: none;
@@ -170,6 +180,7 @@
             z-index: 999;
             padding: 0; /* Remove padding */
             margin: 0; /* Remove any margin */
+            list-style: none; /* Removes bullet points */
         }
 
         .nav-links-mobile li {

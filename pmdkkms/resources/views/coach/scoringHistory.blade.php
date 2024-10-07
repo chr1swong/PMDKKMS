@@ -125,20 +125,23 @@
             background-color: #3b1f8b;
         }
 
+        /* Back Button Styling */
         .back-btn {
-            background-color: #6f42c1;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            display: inline-block;
-            margin-top: 20px;
+            background-color: #5f4bb6;  /* Purple background to match the theme */
+            color: white;  /* White text */
+            padding: 10px 20px;  /* Padding for a larger, clickable area */
+            text-decoration: none;  /* Remove underline */
+            border-radius: 5px;  /* Rounded corners */
+            font-weight: 600;  /* Slightly bolder text */
+            transition: background-color 0.3s ease;  /* Smooth hover transition */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Subtle shadow for depth */
         }
 
+        /* Back Button Hover Effect */
         .back-btn:hover {
-            background-color: #5a32a3;
+            background-color: #4831a6;  /* Darker shade on hover */
+            text-decoration: none;  /* Keep text-decoration off during hover */
+            color: white;  /* Ensure white text on hover */
         }
 
         /* Success message styling */

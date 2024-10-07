@@ -59,7 +59,7 @@
 
         /* Navigation links */
         .nav-links {
-            list-style: none;
+            list-style: none;  /* Removes bullet points */
             margin: 0;
             padding: 0;
             display: flex;
@@ -107,6 +107,7 @@
             border-radius: 4px;
             padding: 0;
             z-index: 100;
+            list-style: none;  /* Removes bullet points */
         }
 
         .dropdown-menu li {
@@ -141,11 +142,22 @@
             margin-left: 2px;
             color: white;
             transition: transform 0.3s ease;
+            background: none; /* Remove background */
+            border-radius: 0;  /* Remove border-radius */
         }
 
         /* Rotate the dropdown icon on hover */
         .dropdown:hover > a i {
             transform: rotate(180deg);
+        }
+
+        /* Fix for unwanted circle near dropdown */
+        .dropdown-menu li,
+        .dropdown-menu a::before, 
+        .dropdown-menu a::after {
+            content: none; /* Remove any unwanted pseudo-elements */
+            background: none; /* Ensure no background is applied */
+            border-radius: 0; /* Ensure no rounding */
         }
 
         /* Hamburger Menu Styles */
@@ -262,7 +274,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="{{ route('coach.attendanceList') }}">Attendance</a></li>
-                            <li><a href="">Scoring</a></li>
+                            <li><a href="{{ route('coach.scoringList') }}">Scoring</a></li>
                         </ul>
                     </li>
                     <li><a href="/coach/profile" class="{{ request()->is('coach.profile') ? 'active' : '' }}">Profile</a></li>
@@ -272,7 +284,7 @@
                     <li><a href="/coach/dashboard">Home</a></li>
                     <li><a href="/coach/events">Events</a></li>
                     <li><a href="{{ route('coach.attendanceList') }}">Attendance</a></li>
-                    <li><a href="">Scoring</a></li>
+                    <li><a href="{{ route('coach.scoringList') }}">Scoring</a></li>
                     <li><a href="/coach/profile">Profile</a></li>
                 </ul>
             </div>

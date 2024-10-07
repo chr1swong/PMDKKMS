@@ -289,4 +289,31 @@ class ScoringController extends Controller
         // Pass the score and archer name to the view
         return view('committee.scoringDetails', compact('score', 'archerName'));
     }
+
+    public function showAllEnrolledArcherScoringHistory(Request $request)
+    {
+        $user = Auth::user(); // Get the current coach
+
+        // Get the membership IDs of archers enrolled with this coach
+        $enrolledArcherIds = DB::table('coach_archer')
+            ->where('coach_id', $user->account_id)
+            ->pluck('archer_id');
+
+        // Get the scoring data for enrolled archers
+        $query = Score::whereIn('scores.membership_id', $enrolledArcherIds);
+
+        // Apply filters based on the request (similar to committee history)
+        if ($request->filled('start-date') && $request->filled('end-date')) {
+            $query->whereBetween('scores.date', [$request->input('start-date'), $request->input('end-date')]);
+        }
+
+        // Fetch archer names
+        $scoringData = $query->join('membership', 'scores.membership_id', '=', 'membership.membership_id')
+            ->join('account', 'membership.account_id', '=', 'account.account_id')
+            ->select('scores.*', 'account.account_full_name as archer_name')
+            ->orderBy('scores.date', 'desc')
+            ->paginate(10);
+
+        return view('coach.scoringList', compact('scoringData'));
+    }
 }

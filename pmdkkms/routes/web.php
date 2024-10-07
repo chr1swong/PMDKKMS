@@ -161,7 +161,11 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
     // Route for viewing coach dashboard
     Route::get('/coach/dashboard', [CoachArcherController::class, 'showCoachDashboard'])->name('coach.dashboard');
 
+    // Route to go to attendanceList
     Route::get('/coach/attendance-list', [AttendanceController::class, 'viewAllAttendanceForCoach'])->name('coach.attendanceList');
+
+    //Route to go to scoringList
+    Route::get('/coach/scoring-list', [ScoringController::class, 'showAllEnrolledArcherScoringHistory'])->name('coach.scoringList');
 });
 
 // Routes accessible to committee member only

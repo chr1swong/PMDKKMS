@@ -239,7 +239,7 @@
                         <td>{{ $score->distance }}M</td>
                         <td>{{ $score->total }}/360</td>
                         <td>
-                            <a href="{{ route('coach.scoringDetails', $score->id) }}" class="btn btn-view">View Scoring Details</a>
+                            <a href="{{ route('coach.scoringDetails', ['id' => $score->id, 'referrer' => 'scoringList']) }}" class="btn btn-view">View Scoring Details</a>
                         </td>
                     </tr>
                 @empty

@@ -156,7 +156,7 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
     Route::get('/coach/scoring-history/{membership_id}', [ScoringController::class, 'showCoachArcherScoringHistory'])->name('coach.scoringHistoryArcher');
 
     // Route for coach to view scoring details of a specific archer
-    Route::get('/coach/scoring-details/{id}', [ScoringController::class, 'showCoachArcherScoringDetails'])->name('coach.scoringDetails');
+    Route::get('/coach/scoring-details/{id}/{referrer?}', [ScoringController::class, 'showCoachArcherScoringDetails'])->name('coach.scoringDetails');
 
     // Route for viewing coach dashboard
     Route::get('/coach/dashboard', [CoachArcherController::class, 'showCoachDashboard'])->name('coach.dashboard');

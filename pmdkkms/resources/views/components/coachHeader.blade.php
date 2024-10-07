@@ -257,7 +257,7 @@
                     <li><a href="/coach/events" class="{{ request()->is('coach.events') ? 'active' : '' }}">Events</a></li>
                     <!-- Dropdown for MyArcher -->
                     <li class="dropdown">
-                        <a href="#" class="{{ request()->is('coach.myArcher') ? 'active' : '' }}">
+                        <a href="{{ route('coach.myArcher') }}" class="{{ request()->is('coach.myArcher') ? 'active' : '' }}">
                             MyArcher <i class="fas fa-chevron-down"></i>
                         </a>
                         <ul class="dropdown-menu">

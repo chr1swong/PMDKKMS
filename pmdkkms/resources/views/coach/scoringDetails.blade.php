@@ -152,24 +152,23 @@
             gap: 20px;
         }
 
-        /* Back button */
+        /* Back Button Styling */
         .back-btn {
-            background-color: #3f51b5;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            padding: 15px 30px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
+            background-color: #5f4bb6;  /* Purple background to match the theme */
+            color: white;  /* White text */
+            padding: 15px 30px;  /* Padding for a larger, clickable area */
+            border-radius: 8px;  /* Rounded corners */
+            font-weight: 600;  /* Slightly bolder text */
+            transition: background-color 0.3s ease;  /* Smooth hover transition */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Subtle shadow for depth */
             text-align: center;
-            transition: all 0.3s ease;
             display: inline-block;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
         }
 
+        /* Back Button Hover Effect */
         .back-btn:hover {
-            background-color: #303f9f;
+            background-color: #4831a6;  /* Darker shade on hover */
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.25);
         }
 

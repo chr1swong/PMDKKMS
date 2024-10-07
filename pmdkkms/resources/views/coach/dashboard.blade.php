@@ -200,9 +200,12 @@
             </div>
             
             <div class="card scoring">
-                <i class="fas fa-chart-line"></i>
-                <h3>Scoring History</h3>
+                    <a href="{{ route('coach.scoringList') }}" style="text-decoration: none; color: white; display: block; width: 100%; height: 100%;">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Scoring</h3>
+                </a>
             </div>
+
             <div class="card payment">
                 <i class="fas fa-money-bill-wave"></i>
                 <h3>Payment History</h3>

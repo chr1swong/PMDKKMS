@@ -157,24 +157,24 @@
             <form method="GET" action="{{ route('committee.attendanceList') }}">
                 <!-- Month Filter -->
                 <select id="attendance-filter" name="attendance-filter" onchange="this.form.submit()">
-                    <option value="January" {{ request('attendance-filter') == 'January' ? 'selected' : '' }}>January</option>
-                    <option value="February" {{ request('attendance-filter') == 'February' ? 'selected' : '' }}>February</option>
-                    <option value="March" {{ request('attendance-filter') == 'March' ? 'selected' : '' }}>March</option>
-                    <option value="April" {{ request('attendance-filter') == 'April' ? 'selected' : '' }}>April</option>
-                    <option value="May" {{ request('attendance-filter') == 'May' ? 'selected' : '' }}>May</option>
-                    <option value="June" {{ request('attendance-filter') == 'June' ? 'selected' : '' }}>June</option>
-                    <option value="July" {{ request('attendance-filter') == 'July' ? 'selected' : '' }}>July</option>
-                    <option value="August" {{ request('attendance-filter') == 'August' ? 'selected' : '' }}>August</option>
-                    <option value="September" {{ request('attendance-filter') == 'September' ? 'selected' : '' }}>September</option>
-                    <option value="October" {{ request('attendance-filter') == 'October' ? 'selected' : '' }}>October</option>
-                    <option value="November" {{ request('attendance-filter') == 'November' ? 'selected' : '' }}>November</option>
-                    <option value="December" {{ request('attendance-filter') == 'December' ? 'selected' : '' }}>December</option>
+                    <option value="January" {{ $filterMonth == 'January' ? 'selected' : '' }}>January</option>
+                    <option value="February" {{ $filterMonth == 'February' ? 'selected' : '' }}>February</option>
+                    <option value="March" {{ $filterMonth == 'March' ? 'selected' : '' }}>March</option>
+                    <option value="April" {{ $filterMonth == 'April' ? 'selected' : '' }}>April</option>
+                    <option value="May" {{ $filterMonth == 'May' ? 'selected' : '' }}>May</option>
+                    <option value="June" {{ $filterMonth == 'June' ? 'selected' : '' }}>June</option>
+                    <option value="July" {{ $filterMonth == 'July' ? 'selected' : '' }}>July</option>
+                    <option value="August" {{ $filterMonth == 'August' ? 'selected' : '' }}>August</option>
+                    <option value="September" {{ $filterMonth == 'September' ? 'selected' : '' }}>September</option>
+                    <option value="October" {{ $filterMonth == 'October' ? 'selected' : '' }}>October</option>
+                    <option value="November" {{ $filterMonth == 'November' ? 'selected' : '' }}>November</option>
+                    <option value="December" {{ $filterMonth == 'December' ? 'selected' : '' }}>December</option>
                 </select>
 
                 <!-- Year Filter -->
                 <select id="year-filter" name="year-filter" onchange="this.form.submit()">
                     @for ($year = now()->year; $year >= 2000; $year--)
-                        <option value="{{ $year }}" {{ request('year-filter') == $year ? 'selected' : '' }}>{{ $year }}</option>
+                        <option value="{{ $year }}" {{ $filterYear == $year ? 'selected' : '' }}>{{ $year }}</option>
                     @endfor
                 </select>
             </form>

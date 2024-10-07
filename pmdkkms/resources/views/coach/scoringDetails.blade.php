@@ -276,7 +276,9 @@
 
         <!-- Back button -->
         <div class="button-group" style="margin-top: 20px;">
-            <a href="{{ route('coach.scoringHistoryArcher', $score->membership_id) }}" class="back-btn">Back</a>
+            <a href="{{ $referrer === 'scoringList' ? route('coach.scoringList') : route('coach.scoringHistoryArcher', $score->membership_id) }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
         </div>
     </div>
 </div>

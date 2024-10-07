@@ -210,60 +210,63 @@ class ScoringController extends Controller
         return view('coach.scoringHistory', compact('scoringData', 'membership_id', 'archerName'));
     }
 
-    // Show scoring details for coach's view of archer
-    public function showCoachArcherScoringDetails($id)
+    public function showCoachArcherScoringDetails($id, $referrer = null)
     {
         // Find the score record by ID
         $score = Score::findOrFail($id);
 
-        // Retrieve the archer's full name from the account table based on membership ID
+        // Retrieve the archer's full name
         $archer = DB::table('membership')
             ->join('account', 'membership.account_id', '=', 'account.account_id')
             ->where('membership.membership_id', $score->membership_id)
-            ->select('account.account_full_name') // Select the archer's full name
+            ->select('account.account_full_name')
             ->first();
 
-        // If no archer is found, set a default name
         $archerName = $archer->account_full_name ?? 'Unknown Archer';
 
-        // Pass the score and archer name to the view
-        return view('coach.scoringDetails', compact('score', 'archerName'));
+        // Pass the score, archer name, and referrer to the view
+        return view('coach.scoringDetails', compact('score', 'archerName', 'referrer'));
     }
 
     // Method for committee to view scoring history for all archers
     public function showCommitteeScoringHistory(Request $request)
     {
-        // Correct the table name from 'score' to 'scores'
+        // Base query for scoring history with join on membership and account to fetch archer names
         $query = Score::join('membership', 'scores.membership_id', '=', 'membership.membership_id')
-                ->join('account', 'membership.account_id', '=', 'account.account_id')
-                ->select('scores.*', 'account.account_full_name as archer_name');
+            ->join('account', 'membership.account_id', '=', 'account.account_id')
+            ->select('scores.*', 'account.account_full_name as archer_name');
 
-        // Apply filters based on the request if any
-        switch ($request->input('filter')) {
-            case 'last1day':
-                $query->where('scores.date', '>=', now()->subDay());
-                break;
-            case 'last3days':
-                $query->where('scores.date', '>=', now()->subDays(3));
-                break;
-            case 'last7days':
-                $query->where('scores.date', '>=', now()->subDays(7));
-                break;
-            case 'last30days':
-                $query->where('scores.date', '>=', now()->subDays(30));
-                break;
-            case 'all':
-            default:
-                // Do not filter, show all records
-                break;
+        // Apply filters based on the 'filter' request input
+        if ($request->filled('filter')) {
+            switch ($request->input('filter')) {
+                case 'last1day':
+                    $query->where('scores.date', '>=', now()->subDay());
+                    break;
+                case 'last3days':
+                    $query->where('scores.date', '>=', now()->subDays(3));
+                    break;
+                case 'last7days':
+                    $query->where('scores.date', '>=', now()->subDays(7));
+                    break;
+                case 'last30days':
+                    $query->where('scores.date', '>=', now()->subDays(30));
+                    break;
+                case 'all':
+                default:
+                    // Do not apply any time filter if 'all' or invalid filter is provided
+                    break;
+            }
         }
 
-        // Custom date range filter
+        // Apply custom date range filter if both start-date and end-date are provided
         if ($request->filled('start-date') && $request->filled('end-date')) {
-            $query->whereBetween('scores.date', [$request->input('start-date'), $request->input('end-date')]);
+            $query->whereBetween('scores.date', [
+                $request->input('start-date'),
+                $request->input('end-date')
+            ]);
         }
 
-        // Paginate the results with 10 per page
+        // Paginate the results, ordered by date in descending order, 10 per page
         $scoringData = $query->orderBy('scores.date', 'desc')->paginate(10);
 
         // Return the view with filtered data

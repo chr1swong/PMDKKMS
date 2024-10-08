@@ -111,7 +111,8 @@ class AttendanceController extends Controller
                 'membership' => $attendanceRecords->first()->membership,
                 'presentCount' => $presentCount,
                 'daysInMonth' => $daysInMonth,
-                'coach_name' => $attendanceRecords->first()->coach_name
+                'coach_name' => $attendanceRecords->first()->coach_name,
+                'attendanceRecords' => $attendanceRecords // Include individual attendance records
             ];
         });
 

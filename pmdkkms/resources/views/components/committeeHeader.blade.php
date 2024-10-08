@@ -263,7 +263,7 @@
                     <li><a href="/committee/events" class="{{ request()->is('committee.events') ? 'active' : '' }}">Events</a></li>
                     <!-- Dropdown for Members -->
                     <li class="dropdown">
-                        <a href="#" class="{{ request()->is('committee.member') ? 'active' : '' }}">
+                        <a href="{{ route('committee.member') }}" class="{{ request()->is('committee/member') ? 'active' : '' }}">
                             Members <i class="fas fa-chevron-down"></i>
                         </a>
                         <ul class="dropdown-menu">

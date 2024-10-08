@@ -35,8 +35,8 @@
 
         .hr-divider {
             border: none;
-            border-top: 2px solid #e0e0e0; /* Customize the color and thickness */
-            margin: 10px 0; /* Adjust spacing */
+            border-top: 2px solid #e0e0e0;
+            margin: 10px 0;
         }
 
         .filter-search-container {
@@ -75,8 +75,8 @@
         .table-container {
             width: 100%;
             margin: 20px auto;
-            max-height: 420px; 
-            overflow-y: auto; /* Enable scrolling if there are more than 5 rows */
+            max-height: 420px;
+            overflow-y: auto;
         }
 
         table {
@@ -128,6 +128,20 @@
             justify-content: center;
         }
 
+        .btn-download {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn-download:hover {
+            background-color: #218838;
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .filter-search-container {
@@ -147,7 +161,7 @@
     @include('components.committeeHeader')
 </header>
 
-<div class="attendance-list-container">
+<div class="attendance-list-container" id="attendance-list">
     <h1 class="attendance-list-header">Archer Attendance for {{ $filterMonth }} {{ $filterYear }}</h1> <!-- Display both month and year -->
     <hr class="hr-divider">
 
@@ -224,7 +238,13 @@
         </table>
     </div>
 
+    <!-- PDF Download Button -->
+    <button id="generate-pdf" class="btn-download">Download PDF</button>
 </div>
+
+<!-- jsPDF and html2canvas libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
 
 <script>
     // Function to search rows by name
@@ -265,6 +285,43 @@
             });
 
             rows.forEach(row => table.querySelector('tbody').appendChild(row));
+        });
+    });
+
+    // Function to generate PDF
+    document.getElementById('generate-pdf').addEventListener('click', function () {
+        // Select the attendance list element
+        var element = document.getElementById('attendance-list');
+
+        // Use html2canvas to capture the HTML element as a canvas
+        html2canvas(element, { scale: 2 }).then(canvas => {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+
+            // Get image data from the canvas
+            var imgData = canvas.toDataURL('image/png');
+
+            // Calculate dimensions for the PDF
+            var imgWidth = 210; // A4 width in mm
+            var pageHeight = 295; // A4 height in mm
+            var imgHeight = canvas.height * imgWidth / canvas.width;
+            var heightLeft = imgHeight;
+            var position = 0;
+
+            // Add the image to the PDF
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            // If content exceeds one page, add more pages
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            // Save the PDF
+            pdf.save('attendance_list_{{ $filterMonth }}_{{ $filterYear }}.pdf');
         });
     });
 </script>

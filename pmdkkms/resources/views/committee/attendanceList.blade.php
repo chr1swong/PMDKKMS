@@ -242,9 +242,9 @@
     <button id="generate-pdf" class="btn-download">Download PDF</button>
 </div>
 
-<!-- jsPDF and html2canvas libraries -->
+<!-- jsPDF and autoTable libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
 
 <script>
     // Function to search rows by name
@@ -288,41 +288,55 @@
         });
     });
 
-    // Function to generate PDF
+    // Function to generate PDF with autoTable
     document.getElementById('generate-pdf').addEventListener('click', function () {
-        // Select the attendance list element
-        var element = document.getElementById('attendance-list');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
 
-        // Use html2canvas to capture the HTML element as a canvas
-        html2canvas(element, { scale: 2 }).then(canvas => {
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
+        // Table headers
+        const headers = [['No.', 'Name', 'MemberID', 'Coach', 'Attendance']];
 
-            // Get image data from the canvas
-            var imgData = canvas.toDataURL('image/png');
+        // Get table data
+        const tableRows = [];
+        const rows = document.querySelectorAll('#attendanceTable tbody tr');
 
-            // Calculate dimensions for the PDF
-            var imgWidth = 210; // A4 width in mm
-            var pageHeight = 295; // A4 height in mm
-            var imgHeight = canvas.height * imgWidth / canvas.width;
-            var heightLeft = imgHeight;
-            var position = 0;
-
-            // Add the image to the PDF
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-
-            // If content exceeds one page, add more pages
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-            }
-
-            // Save the PDF
-            pdf.save('attendance_list_{{ $filterMonth }}_{{ $filterYear }}.pdf');
+        rows.forEach((row, index) => {
+            const cells = row.querySelectorAll('td');
+            const rowData = [
+                cells[0].innerText, // No.
+                cells[1].innerText, // Name
+                cells[2].innerText, // MemberID
+                cells[3].innerText, // Coach
+                cells[4].innerText  // Attendance
+            ];
+            tableRows.push(rowData); // Push each row data into tableRows array
         });
+
+        // Add title to PDF
+        pdf.setFontSize(18);
+        pdf.text(`Archer Attendance for {{ $filterMonth }} {{ $filterYear }}`, 14, 20);
+
+        // Create table in the PDF
+        pdf.autoTable({
+            head: headers,
+            body: tableRows,
+            startY: 30, // Y position where the table starts
+            styles: {
+                fontSize: 10, // Font size for table
+                cellPadding: 3, // Cell padding
+                halign: 'center', // Text alignment inside cells
+                valign: 'middle', // Vertical alignment
+                lineColor: [44, 62, 80], // Line color for the table borders
+                lineWidth: 0.5 // Line width for the table borders
+            },
+            headStyles: {
+                fillColor: [33, 150, 243], // Header background color (blue)
+                textColor: [255, 255, 255], // Header text color (white)
+            }
+        });
+
+        // Save the generated PDF
+        pdf.save(`attendance_list_{{ $filterMonth }}_{{ $filterYear }}.pdf`);
     });
 </script>
 

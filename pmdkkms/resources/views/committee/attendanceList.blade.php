@@ -26,6 +26,13 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        /* Flex container for header and button */
+        .attendance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .attendance-list-header {
             text-align: left;
             font-size: 28px;
@@ -152,6 +159,15 @@
             .table-container {
                 max-height: 300px;
             }
+
+            .attendance-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn-download {
+                margin-top: 15px;
+            }
         }
     </style>
 </head>
@@ -162,7 +178,11 @@
 </header>
 
 <div class="attendance-list-container" id="attendance-list">
-    <h1 class="attendance-list-header">Archer Attendance for {{ $filterMonth }} {{ $filterYear }}</h1> <!-- Display both month and year -->
+    <div class="attendance-header">
+        <h1 class="attendance-list-header">Archer Attendance for {{ $filterMonth }} {{ $filterYear }}</h1> <!-- Display both month and year -->
+        <!-- PDF Download Button -->
+        <button id="generate-pdf" class="btn-download">Download PDF</button>
+    </div>
     <hr class="hr-divider">
 
     <!-- Filter and Search -->
@@ -238,8 +258,6 @@
         </table>
     </div>
 
-    <!-- PDF Download Button -->
-    <button id="generate-pdf" class="btn-download">Download PDF</button>
 </div>
 
 <!-- jsPDF and autoTable libraries -->

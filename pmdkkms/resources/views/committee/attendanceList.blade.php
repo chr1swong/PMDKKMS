@@ -225,7 +225,7 @@
         <table id="attendanceTable">
             <thead>
                 <tr>
-                    <th class="sortable" data-type="num">No. <i class="fas fa-sort"></i></th>
+                    <th>No.</th> <!-- Index column without sorter -->
                     <th class="sortable" data-type="alpha">Name <i class="fas fa-sort"></i></th>
                     <th class="sortable" data-type="num">MemberID <i class="fas fa-sort"></i></th>
                     <th class="sortable" data-type="alpha">Coach <i class="fas fa-sort"></i></th>
@@ -278,6 +278,7 @@
                 row.style.display = 'none';  // Hide the row if it doesn't match
             }
         });
+        updateIndex(); // Recalculate index numbers after filtering
     }
 
     // Function to sort the table
@@ -303,8 +304,17 @@
             });
 
             rows.forEach(row => table.querySelector('tbody').appendChild(row));
+            updateIndex(); // Recalculate index numbers after sorting
         });
     });
+
+    // Function to recalculate index numbers
+    function updateIndex() {
+        const rows = document.querySelectorAll('#attendance-table tr');
+        rows.forEach((row, index) => {
+            row.cells[0].innerHTML = index + 1; // Update index cell
+        });
+    }
 
     // Function to generate PDF with autoTable
     document.getElementById('generate-pdf').addEventListener('click', function () {
@@ -321,7 +331,7 @@
         rows.forEach((row, index) => {
             const cells = row.querySelectorAll('td');
             const rowData = [
-                cells[0].innerText, // No.
+                index + 1, // No.
                 cells[1].innerText, // Name
                 cells[2].innerText, // MemberID
                 cells[3].innerText, // Coach

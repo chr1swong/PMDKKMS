@@ -27,8 +27,15 @@
 
         .hr-divider {
             border: none;
-            border-top: 2px solid #e0e0e0; /* Customize the color and thickness */
-            margin: 10px 0; /* Adjust spacing */
+            border-top: 2px solid #e0e0e0;
+            margin: 10px 0;
+        }
+
+        /* Flex container for header and button */
+        .scoring-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .scoring-history-header {
@@ -144,6 +151,19 @@
             background-color: #3b1f8b;
         }
 
+        .btn-download {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-download:hover {
+            background-color: #218838;
+        }
+
         .back-btn {
             background-color: #6f42c1;
             color: white;
@@ -175,6 +195,15 @@
             .table-container {
                 max-height: 300px;
             }
+
+            .scoring-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn-download {
+                margin-top: 15px;
+            }
         }
     </style>
 </head>
@@ -192,7 +221,11 @@
 @endif
 
 <div class="scoring-history-container">
-    <h1 class="scoring-history-header">Scoring History of All Archers</h1>
+    <div class="scoring-header">
+        <h1 class="scoring-history-header">Scoring History of Archers</h1>
+        <!-- PDF Download Button -->
+        <button id="generate-pdf" class="btn-download">Download PDF</button>
+    </div>
     <hr class="hr-divider">
 
     <!-- Search Bar and Filter -->
@@ -218,13 +251,13 @@
         <table id="scoringTable">
             <thead>
                 <tr>
-                    <th onclick="sortTable(0)">No. <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(1)">Archer Name <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(2)">Date <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(3)">Category <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(4)">Set <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(5)">Distance <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(6)">Total Score <i class="fas fa-sort"></i></th>
+                    <th>No.</th> <!-- Index column without sorter -->
+                    <th onclick="sortTable(1, 'alpha')">Archer Name <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(2, 'date')">Date <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(3, 'alpha')">Category <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(4, 'num')">Set <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(5, 'num')">Distance <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(6, 'num')">Total Score <i class="fas fa-sort"></i></th>
                     <th>Performance</th>
                 </tr>
             </thead>
@@ -255,9 +288,13 @@
     {{ $scoringData->links() }}
 </div>
 
+<!-- jsPDF and autoTable libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+
 <script>
     // Sorting function for the table
-    function sortTable(n) {
+    function sortTable(n, type) {
         const table = document.getElementById("scoringTable");
         let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
         switching = true;
@@ -269,23 +306,31 @@
                 shouldSwitch = false;
                 x = rows[i].getElementsByTagName("TD")[n];
                 y = rows[i + 1].getElementsByTagName("TD")[n];
-                // For dates, convert them to a comparable format
-                if (n == 2) { // Column index 2 is for the Date
-                    const xDate = new Date(x.innerHTML);
-                    const yDate = new Date(y.innerHTML);
-                    if (dir == "asc" && xDate > yDate) {
+                if (type === 'num') { // Numeric sorting
+                    const xValue = parseFloat(x.innerHTML.replace('M', '').replace('/360', ''));
+                    const yValue = parseFloat(y.innerHTML.replace('M', '').replace('/360', ''));
+                    if (dir === "asc" && xValue > yValue) {
                         shouldSwitch = true;
                         break;
-                    } else if (dir == "desc" && xDate < yDate) {
+                    } else if (dir === "desc" && xValue < yValue) {
                         shouldSwitch = true;
                         break;
                     }
-                } else {
-                    // For other columns, use string comparison
-                    if (dir == "asc" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                } else if (type === 'date') { // Date sorting
+                    const xDate = new Date(x.innerHTML);
+                    const yDate = new Date(y.innerHTML);
+                    if (dir === "asc" && xDate > yDate) {
                         shouldSwitch = true;
                         break;
-                    } else if (dir == "desc" && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    } else if (dir === "desc" && xDate < yDate) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else { // Alphabetic sorting
+                    if (dir === "asc" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    } else if (dir === "desc" && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
                         shouldSwitch = true;
                         break;
                     }
@@ -296,12 +341,22 @@
                 switching = true;
                 switchcount++;
             } else {
-                if (switchcount == 0 && dir == "asc") {
+                if (switchcount === 0 && dir === "asc") {
                     dir = "desc";
                     switching = true;
                 }
             }
         }
+        // Recalculate index numbers after sorting
+        updateIndex();
+    }
+
+    // Function to recalculate index numbers
+    function updateIndex() {
+        const rows = document.querySelectorAll('#scoring-table tr');
+        rows.forEach((row, index) => {
+            row.cells[0].innerHTML = index + 1; // Update index cell
+        });
     }
 
     // Search function for archer names
@@ -317,7 +372,66 @@
                 row.style.display = 'none';
             }
         });
+        updateIndex(); // Recalculate index numbers after filtering
     }
+
+    // Function to generate PDF with autoTable
+    document.getElementById('generate-pdf').addEventListener('click', function () {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        // Table headers
+        const headers = [['No.', 'Archer Name', 'Date', 'Category', 'Set', 'Distance', 'Total Score']];
+
+        // Get table data
+        const tableRows = [];
+        const rows = document.querySelectorAll('#scoringTable tbody tr');
+
+        rows.forEach((row, index) => {
+            const cells = row.querySelectorAll('td');
+            const rowData = [
+                index + 1, // No.
+                cells[1].innerText, // Archer Name
+                cells[2].innerText, // Date
+                cells[3].innerText, // Category
+                cells[4].innerText, // Set
+                cells[5].innerText, // Distance
+                cells[6].innerText  // Total Score
+            ];
+            tableRows.push(rowData); // Push each row data into tableRows array
+        });
+
+        // Add title to PDF
+        pdf.setFontSize(18);
+        pdf.text(`Scoring History of All Archers`, 14, 20);
+
+        // Create table in the PDF
+        pdf.autoTable({
+            head: headers,
+            body: tableRows,
+            startY: 30, // Y position where the table starts
+            styles: {
+                fontSize: 10, // Font size for table
+                cellPadding: 3, // Cell padding
+                halign: 'center', // Text alignment inside cells
+                valign: 'middle', // Vertical alignment
+                lineColor: [44, 62, 80], // Line color for the table borders
+                lineWidth: 0.5 // Line width for the table borders
+            },
+            headStyles: {
+                fillColor: [33, 150, 243], // Header background color (blue)
+                textColor: [255, 255, 255], // Header text color (white)
+            }
+        });
+
+        // Get current date in YYYY-MM-DD format
+        const date = new Date();
+        const formattedDate = date.toISOString().split('T')[0];
+
+        // Save the generated PDF with the current date in the filename
+        pdf.save(`scoring_history_${formattedDate}.pdf`);
+    });
+
 </script>
 
 </body>

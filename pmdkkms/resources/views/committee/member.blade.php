@@ -31,11 +31,15 @@
             margin: 10px 0;
         }
 
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .member-management-header {
-            text-align: left;
             font-size: 28px;
             font-weight: bold;
-            margin-bottom: 20px;
         }
 
         .filter-container {
@@ -153,20 +157,17 @@
             background-color: #e04a4a;
         }
 
-        .back-btn {
-            background-color: #6f42c1;
+        .btn-download {
+            background-color: #28a745;
             color: white;
             padding: 10px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            display: inline-block;
-            margin-top: 20px;
         }
 
-        .back-btn:hover {
-            background-color: #5a32a3;
+        .btn-download:hover {
+            background-color: #218838;
         }
 
         /* Modal Styling */
@@ -218,23 +219,6 @@
             color: black;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .filter-container {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .btn {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-
-            .table-container {
-                max-height: 300px;
-            }
-        }
-
         /* Success or Error Message */
         .alert-success {
             background-color: #d4edda;
@@ -280,7 +264,10 @@
 @endif
 
 <div class="member-management-container">
-    <h1 class="member-management-header">Manage Members</h1>
+    <div class="header-row">
+        <h1 class="member-management-header">Manage Members</h1>
+        <button id="generate-pdf" class="btn-download">Download PDF</button>
+    </div>
     <hr class="hr-divider">
 
     <!-- Filter and Search -->
@@ -305,7 +292,7 @@
         <table id="memberTable">
             <thead>
                 <tr>
-                    <th onclick="sortTable(0)">No. <i class="fas fa-sort"></i></th>
+                    <th>No.</th> <!-- Index column without sorter -->
                     <th onclick="sortTable(1)">Name <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(2)">MemberID <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(3)">Role <i class="fas fa-sort"></i></th>
@@ -349,6 +336,10 @@
         <button class="cancel-delete" onclick="closeDeleteModal()">Cancel</button>
     </div>
 </div>
+
+<!-- jsPDF and autoTable libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
 
 <script>
     let memberToDelete = '';
@@ -405,6 +396,7 @@
                 row.style.display = 'none';
             }
         });
+        updateIndex(); // Recalculate index numbers after filtering
     }
 
     function searchByName() {
@@ -419,6 +411,7 @@
                 row.style.display = 'none';
             }
         });
+        updateIndex(); // Recalculate index numbers after searching
     }
 
     function sortTable(n) {
@@ -456,7 +449,72 @@
                 }
             }
         }
+        updateIndex(); // Recalculate index numbers after sorting
     }
+
+    // Function to recalculate index numbers
+    function updateIndex() {
+        const rows = document.querySelectorAll('#members-table tr');
+        rows.forEach((row, index) => {
+            row.cells[0].innerHTML = index + 1; // Update index cell
+        });
+    }
+
+    // Generate PDF
+    document.getElementById('generate-pdf').addEventListener('click', function () {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        // Table headers
+        const headers = [['No.', 'Name', 'MemberID', 'Role', 'Coach', 'Membership Status']];
+
+        // Get table data
+        const tableRows = [];
+        const rows = document.querySelectorAll('#memberTable tbody tr');
+
+        rows.forEach((row, index) => {
+            const cells = row.querySelectorAll('td');
+            const rowData = [
+                index + 1, // No.
+                cells[1].innerText, // Name
+                cells[2].innerText, // MemberID
+                cells[3].innerText, // Role
+                cells[4].innerText, // Coach
+                cells[5].innerText  // Membership Status
+            ];
+            tableRows.push(rowData); // Push each row data into tableRows array
+        });
+
+        // Add title to PDF
+        pdf.setFontSize(18);
+        pdf.text("Member List", 14, 20);
+
+        // Create table in the PDF
+        pdf.autoTable({
+            head: headers,
+            body: tableRows,
+            startY: 30, // Y position where the table starts
+            styles: {
+                fontSize: 10, // Font size for table
+                cellPadding: 3, // Cell padding
+                halign: 'center', // Text alignment inside cells
+                valign: 'middle', // Vertical alignment
+                lineColor: [44, 62, 80], // Line color for the table borders
+                lineWidth: 0.5 // Line width for the table borders
+            },
+            headStyles: {
+                fillColor: [33, 150, 243], // Header background color (blue)
+                textColor: [255, 255, 255], // Header text color (white)
+            }
+        });
+
+        // Get current date
+        const date = new Date();
+        const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+
+        // Save the generated PDF with the current date in the filename
+        pdf.save(`member_list_${formattedDate}.pdf`);
+    });
 
     function closeSuccessMessage() {
         document.getElementById('success-message').style.display = 'none';

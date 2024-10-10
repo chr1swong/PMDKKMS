@@ -26,6 +26,13 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        /* Flex container for header and button */
+        .attendance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .attendance-list-header {
             text-align: left;
             font-size: 28px;
@@ -69,6 +76,9 @@
 
         .search-wrapper input {
             padding: 10px 10px 10px 35px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
             width: 200px;
         }
 
@@ -128,6 +138,21 @@
             justify-content: center;
         }
 
+        .btn-download {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn-download:hover {
+            background-color: #218838;
+        }
+
+        /* Responsive adjustments */
         @media (max-width: 768px) {
             .filter-search-container {
                 flex-direction: column;
@@ -136,6 +161,15 @@
 
             .table-container {
                 max-height: 300px;
+            }
+
+            .attendance-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn-download {
+                margin-top: 15px;
             }
         }
     </style>
@@ -146,8 +180,12 @@
     @include('components.coachHeader')
 </header>
 
-<div class="attendance-list-container">
-    <h1 class="attendance-list-header">Archer Attendance for {{ $filterMonth }} {{ $filterYear }}</h1>
+<div class="attendance-list-container" id="attendance-list">
+    <div class="attendance-header">
+        <h1 class="attendance-list-header">Archer Attendance for {{ $filterMonth }} {{ $filterYear }}</h1>
+        <!-- PDF Download Button -->
+        <button id="generate-pdf" class="btn-download">Download PDF</button>
+    </div>
     <hr class="hr-divider">
 
     <!-- Filter and Search -->
@@ -190,10 +228,10 @@
         <table id="attendanceTable">
             <thead>
                 <tr>
-                    <th class="sortable" data-type="num">No. <i class="fas fa-sort"></i></th>
+                    <th>No.</th> <!-- Index column without sorter -->
                     <th class="sortable" data-type="alpha">Name <i class="fas fa-sort"></i></th>
                     <th class="sortable" data-type="num">MemberID <i class="fas fa-sort"></i></th>
-                    <th class="sortable" data-type="attendance">Attendance <i class="fas fa-sort"></i></th>
+                    <th class="sortable" data-type="alpha">Attendance <i class="fas fa-sort"></i></th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -224,6 +262,10 @@
 
 </div>
 
+<!-- jsPDF and autoTable libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+
 <script>
     // Function to search rows by name
     function searchByName() {
@@ -238,6 +280,7 @@
                 row.style.display = 'none';  // Hide the row if it doesn't match
             }
         });
+        updateIndex(); // Recalculate index numbers after filtering
     }
 
     // Function to sort the table
@@ -263,7 +306,66 @@
             });
 
             rows.forEach(row => table.querySelector('tbody').appendChild(row));
+            updateIndex(); // Recalculate index numbers after sorting
         });
+    });
+
+    // Function to recalculate index numbers
+    function updateIndex() {
+        const rows = document.querySelectorAll('#attendance-table tr');
+        rows.forEach((row, index) => {
+            row.cells[0].innerHTML = index + 1; // Update index cell
+        });
+    }
+
+    // Function to generate PDF with autoTable
+    document.getElementById('generate-pdf').addEventListener('click', function () {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        // Table headers
+        const headers = [['No.', 'Name', 'MemberID', 'Attendance']];
+
+        // Get table data
+        const tableRows = [];
+        const rows = document.querySelectorAll('#attendanceTable tbody tr');
+
+        rows.forEach((row, index) => {
+            const cells = row.querySelectorAll('td');
+            const rowData = [
+                index + 1, // No.
+                cells[1].innerText, // Name
+                cells[2].innerText, // MemberID
+                cells[3].innerText, // Attendance
+            ];
+            tableRows.push(rowData); // Push each row data into tableRows array
+        });
+
+        // Add title to PDF
+        pdf.setFontSize(18);
+        pdf.text(`Archer Attendance for {{ $filterMonth }} {{ $filterYear }}`, 14, 20);
+
+        // Create table in the PDF
+        pdf.autoTable({
+            head: headers,
+            body: tableRows,
+            startY: 30, // Y position where the table starts
+            styles: {
+                fontSize: 10, // Font size for table
+                cellPadding: 3, // Cell padding
+                halign: 'center', // Text alignment inside cells
+                valign: 'middle', // Vertical alignment
+                lineColor: [44, 62, 80], // Line color for the table borders
+                lineWidth: 0.5 // Line width for the table borders
+            },
+            headStyles: {
+                fillColor: [33, 150, 243], // Header background color (blue)
+                textColor: [255, 255, 255], // Header text color (white)
+            }
+        });
+
+        // Save the generated PDF
+        pdf.save(`attendance_list_{{ $filterMonth }}_{{ $filterYear }}.pdf`);
     });
 </script>
 

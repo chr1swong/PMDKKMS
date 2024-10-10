@@ -142,6 +142,9 @@ class EventController extends Controller
         return response()->json(['status' => 'Event updated successfully!']);
     }
 
+    /**
+     * Show the homepage with upcoming events.
+     */
     public function showHomePage()
     {
         // Fetch upcoming events from the database
@@ -153,43 +156,63 @@ class EventController extends Controller
         return view('home', compact('upcomingEvents'));
     }
 
+    /**
+     * Show the committee dashboard with upcoming events.
+     */
     public function showDashboard()
     {
         // Fetch upcoming events from the database
         $upcomingEvents = Event::where('event_date', '>=', now())
                             ->orderBy('event_date', 'asc')
-                            ->take(5) // Adjust the limit as needed
-                            ->get(); // Get the collection of upcoming events
+                            ->take(5) 
+                            ->get();
 
         // Pass the events to the view
-        return view('committee.dashboard', compact('upcomingEvents')); // Pass the variable to the view
+        return view('committee.dashboard', compact('upcomingEvents'));
     }
 
+    /**
+     * Show the archer dashboard with announcements and upcoming events.
+     */
     public function showArcherDashboard()
     {
         // Fetch all announcements
         $announcements = DB::table('announcements')->get();
 
-        // Fetch upcoming events or other data needed
+        // Fetch upcoming events
         $upcomingEvents = DB::table('events')
             ->where('event_date', '>=', now())
             ->orderBy('event_date', 'asc')
+            ->take(5) 
             ->get();
 
         return view('archer.dashboard', compact('announcements', 'upcomingEvents'));
     }
 
+    /**
+     * Show the coach dashboard with upcoming events.
+     */
     public function showCoachDashboard()
     {
         // Fetch upcoming events for coaches (view-only)
         $upcomingEvents = Event::where('event_date', '>=', now())
                             ->orderBy('event_date', 'asc')
                             ->take(5) // Adjust the limit as needed
-                            ->get(); // Get the collection of upcoming events
+                            ->get();
 
-        // Pass the events to the archer dashboard view
         return view('coach.dashboard', compact('upcomingEvents'));
     }
 
+    /**
+     * Fetch upcoming events for AJAX requests.
+     */
+    public function fetchUpcomingEvents()
+    {
+        $upcomingEvents = Event::where('event_date', '>=', now())
+                            ->orderBy('event_date', 'asc')
+                            ->take(5)
+                            ->get();
 
+        return response()->json($upcomingEvents);
+    }
 }

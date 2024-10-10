@@ -83,7 +83,7 @@
 
         .search-icon {
             position: absolute;
-            left: 15px;
+            left: 25px;
             color: #aaa;
         }
 

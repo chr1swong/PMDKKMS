@@ -76,6 +76,9 @@
 
         .search-wrapper input {
             padding: 10px 10px 10px 35px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
             width: 200px;
         }
 

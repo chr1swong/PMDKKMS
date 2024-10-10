@@ -361,10 +361,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to update event date via AJAX
     function updateEventDate(event) {
         var eventId = event.id;
-
-        // Adjust date for timezone before sending it
         var newDate = new Date(event.start.getTime() - (event.start.getTimezoneOffset() * 60000))
-                      .toISOString().split("T")[0];  // Get date part only
+                    .toISOString().split("T")[0];  // Get date part only
 
         $.ajax({
             url: "/events/" + eventId + "/update-date",
@@ -375,6 +373,9 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             success: function(response) {
                 alert(response.status);
+
+                // Reload the dashboard to ensure the correct event order
+                window.location.reload();  // Automatically reload the dashboard page
             },
             error: function() {
                 alert('Could not update event date.');
@@ -446,7 +447,12 @@ document.addEventListener('DOMContentLoaded', function() {
             data: formData,
             success: function(response) {
                 alert(response.status);
-                calendar.refetchEvents(); // Refresh calendar to reflect new event
+
+                // Reload the page to show the new event in the calendar
+                window.location.reload();  // Automatically reload the page after the event is added
+            },
+            error: function() {
+                alert('Could not add the event.');
             }
         });
     });

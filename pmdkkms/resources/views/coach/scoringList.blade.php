@@ -31,6 +31,13 @@
             margin: 10px 0;
         }
 
+        /* Flex container for header and button */
+        .scoring-header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .scoring-history-header {
             text-align: left;
             font-size: 28px;
@@ -76,7 +83,7 @@
 
         .search-icon {
             position: absolute;
-            left: 15px;
+            left: 25px;
             color: #aaa;
         }
 
@@ -144,6 +151,19 @@
             background-color: #3b1f8b;
         }
 
+        .btn-download {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-download:hover {
+            background-color: #218838;
+        }
+
         .back-btn {
             background-color: #6f42c1;
             color: white;
@@ -175,6 +195,15 @@
             .table-container {
                 max-height: 300px;
             }
+
+            .scoring-header-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn-download {
+                margin-top: 15px;
+            }
         }
     </style>
 </head>
@@ -192,7 +221,11 @@
 @endif
 
 <div class="scoring-history-container">
-    <h1 class="scoring-history-header">Scoring History of Enrolled Archers</h1>
+    <div class="scoring-header-container">
+        <h1 class="scoring-history-header">Scoring History of Enrolled Archers</h1>
+        <!-- PDF Download Button -->
+        <button id="generate-pdf" class="btn-download">Download PDF</button>
+    </div>
     <hr class="hr-divider">
 
     <!-- Search Bar and Filter -->
@@ -218,7 +251,7 @@
         <table id="scoringTable">
             <thead>
                 <tr>
-                    <th onclick="sortTable(0)">No. <i class="fas fa-sort"></i></th>
+                    <th>No.</th> <!-- Index without sorter -->
                     <th onclick="sortTable(1)">Archer Name <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(2)">Date <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(3)">Category <i class="fas fa-sort"></i></th>
@@ -255,6 +288,10 @@
     {{ $scoringData->links() }}
 </div>
 
+<!-- jsPDF and autoTable libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+
 <script>
     // Sorting function for the table
     function sortTable(n) {
@@ -279,6 +316,16 @@
                         shouldSwitch = true;
                         break;
                     }
+                } else if (n === 5 || n === 6) {
+                    const xValue = parseInt(x.innerHTML.replace(/[^\d]/g, ''), 10);
+                    const yValue = parseInt(y.innerHTML.replace(/[^\d]/g, ''), 10);
+                    if (dir == "asc" && xValue > yValue) {
+                        shouldSwitch = true;
+                        break;
+                    } else if (dir == "desc" && xValue < yValue) {
+                        shouldSwitch = true;
+                        break;
+                    }
                 } else {
                     if (dir == "asc" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
                         shouldSwitch = true;
@@ -300,6 +347,15 @@
                 }
             }
         }
+        updateIndex();
+    }
+
+    // Update the index after sorting
+    function updateIndex() {
+        const rows = document.querySelectorAll('#scoring-table tr');
+        rows.forEach((row, index) => {
+            row.cells[0].innerHTML = index + 1; // Update index cell
+        });
     }
 
     // Search function for archer names
@@ -315,7 +371,61 @@
                 row.style.display = 'none';
             }
         });
+        updateIndex(); // Recalculate index numbers after searching
     }
+
+    // Function to generate PDF with autoTable
+    document.getElementById('generate-pdf').addEventListener('click', function () {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        // Table headers
+        const headers = [['No.', 'Archer Name', 'Date', 'Category', 'Set', 'Distance', 'Total Score']];
+
+        // Get table data
+        const tableRows = [];
+        const rows = document.querySelectorAll('#scoringTable tbody tr');
+
+        rows.forEach((row, index) => {
+            const cells = row.querySelectorAll('td');
+            const rowData = [
+                index + 1, // No.
+                cells[1].innerText, // Archer Name
+                cells[2].innerText, // Date
+                cells[3].innerText, // Category
+                cells[4].innerText, // Set
+                cells[5].innerText, // Distance
+                cells[6].innerText  // Total Score
+            ];
+            tableRows.push(rowData); // Push each row data into tableRows array
+        });
+
+        // Add title to PDF
+        pdf.setFontSize(18);
+        pdf.text('Scoring History of Enrolled Archers', 14, 20);
+
+        // Create table in the PDF
+        pdf.autoTable({
+            head: headers,
+            body: tableRows,
+            startY: 30, // Y position where the table starts
+            styles: {
+                fontSize: 10, // Font size for table
+                cellPadding: 3, // Cell padding
+                halign: 'center', // Text alignment inside cells
+                valign: 'middle', // Vertical alignment
+                lineColor: [44, 62, 80], // Line color for the table borders
+                lineWidth: 0.5 // Line width for the table borders
+            },
+            headStyles: {
+                fillColor: [33, 150, 243], // Header background color (blue)
+                textColor: [255, 255, 255], // Header text color (white)
+            }
+        });
+
+        // Save the generated PDF
+        pdf.save('scoring_history.pdf');
+    });
 </script>
 
 </body>

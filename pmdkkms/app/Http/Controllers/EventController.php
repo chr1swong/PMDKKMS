@@ -163,13 +163,15 @@ class EventController extends Controller
     {
         // Fetch upcoming events from the database
         $upcomingEvents = Event::where('event_date', '>=', now())
-                            ->orderBy('event_date', 'asc')
+                            ->orderBy('event_date', 'asc')  
+                            ->orderBy('start_time', 'asc')  
                             ->take(5) 
                             ->get();
 
         // Pass the events to the view
         return view('committee.dashboard', compact('upcomingEvents'));
     }
+
 
     /**
      * Show the archer dashboard with announcements and upcoming events.

@@ -11,6 +11,7 @@ use App\Http\Controllers\CoachArcherController;
 use App\Http\Controllers\ScoringController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\AnalyticsController;
 
 // Public routes (no authentication required)
 Route::middleware([PreventAuthenticatedAccess::class])->group(function () {
@@ -111,6 +112,9 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function ()
 
     // Route for score deletion
     Route::delete('/archer/scoring/{id}', [ScoringController::class, 'deleteScore'])->name('scoring.delete');
+
+    // Route for performance analytics
+    Route::get('/archer/performance-analytics', [AnalyticsController::class, 'performanceAnalytics'])->name('archer.performanceAnalytics');
 });
 
 // Routes accessible to coach only

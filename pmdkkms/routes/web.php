@@ -10,6 +10,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CoachArcherController;
 use App\Http\Controllers\ScoringController;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\PaymentController;
 
 // Public routes (no authentication required)
 Route::middleware([PreventAuthenticatedAccess::class])->group(function () {
@@ -221,4 +222,8 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
     Route::post('/committee/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');    // Create new announcement
     Route::put('/committee/announcements/{id}', [AnnouncementController::class, 'update'])->name('announcements.update'); // Update existing announcement (Edit announcement)
     Route::delete('/committee/announcements/{id}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy'); // Delete announcement
+
+    //Routes for payment
+    Route::get('/committee/payment', [PaymentController::class, 'showCommitteePaymentForm'])->name('committee.paymentForm');
+    Route::post('/committee/payment', [PaymentController::class, 'processCommitteePayment'])->name('committee.processPayment');
 });

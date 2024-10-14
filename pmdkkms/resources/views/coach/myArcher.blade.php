@@ -240,7 +240,7 @@
         <table id="archerTable">
             <thead>
                 <tr>
-                    <th onclick="sortTable(0)">No. <i class="fas fa-sort"></i></th>
+                    <th>No.</th> <!-- Remove sorting functionality for index column -->
                     <th onclick="sortTable(1)">Name <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(2)">MemberID <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(3)">Membership Status <i class="fas fa-sort"></i></th>
@@ -354,6 +354,16 @@
                 }
             }
         }
+        // Recalculate the index after sorting
+        updateTableIndex();
+    }
+
+    // Update index numbers after sorting
+    function updateTableIndex() {
+        const rows = document.querySelectorAll('#archers-table tr');
+        rows.forEach((row, index) => {
+            row.getElementsByTagName('td')[0].innerHTML = index + 1; // Update index column to reflect correct order
+        });
     }
 </script>
 

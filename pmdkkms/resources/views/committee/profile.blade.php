@@ -34,7 +34,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center; /* Center content horizontally */
+            align-items: center;
         }
 
         .profile-sidebar img {
@@ -130,6 +130,20 @@
             position: relative;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
+        /* Extend Membership Button */
+        .profile-sidebar .extend-membership-btn {
+            background-color: #5f4bb6; /* Light purple */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .profile-sidebar .extend-membership-btn:hover {
+            background-color: #3b1f8b; /* Darker purple on hover */
+        }
     </style>
 </head>
 
@@ -154,6 +168,9 @@
             <img src="{{ $user->account_profile_picture_path ? asset('storage/' . $user->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile Picture">
             <a href="{{ route('committee.editProfile') }}">
                 <button>Edit Profile</button>
+            </a>
+            <a href="{{ route('committee.paymentForm') }}">
+                <button class="extend-membership-btn">Extend Membership</button>
             </a>
         </div>
 

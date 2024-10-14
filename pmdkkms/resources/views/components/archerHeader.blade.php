@@ -262,6 +262,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="/archer/scoring">Performance</a></li>
+                            <li><a href="{{ route('archer.performanceAnalytics') }}">Analytics</a></li>
                         </ul>
                     </li>
                     <li><a href="/archer/profile" class="{{ request()->is('archer.profile') ? 'active' : '' }}">Profile</a></li>

@@ -245,15 +245,16 @@
             var scoreDistributionChart = new Chart(ctx4, {
                 type: 'bar',
                 data: {
-                    labels: ['0-20', '21-40', '41-60', '61-80', '81-100'],
+                    labels: ['0-60', '61-120', '121-180', '181-240', '241-300', '301-360'],
                     datasets: [{
                         label: 'Score Distribution',
                         data: [
-                            scoreData.filter(score => score.total <= 20).length,
-                            scoreData.filter(score => score.total > 20 && score.total <= 40).length,
-                            scoreData.filter(score => score.total > 40 && score.total <= 60).length,
-                            scoreData.filter(score => score.total > 60 && score.total <= 80).length,
-                            scoreData.filter(score => score.total > 80 && score.total <= 100).length
+                            scoreData.filter(score => score.total <= 60).length,
+                            scoreData.filter(score => score.total > 60 && score.total <= 120).length,
+                            scoreData.filter(score => score.total > 120 && score.total <= 180).length,
+                            scoreData.filter(score => score.total > 180 && score.total <= 240).length,
+                            scoreData.filter(score => score.total > 240 && score.total <= 300).length,
+                            scoreData.filter(score => score.total > 300 && score.total <= 360).length
                         ],
                         backgroundColor: 'rgba(153, 102, 255, 1)'
                     }]

@@ -273,7 +273,6 @@
                     <div class="membership-card">
                         <h2>Member</h2>
                         <ul>
-                            <li>Student - RM10/Month</li>
                             <li>Adults - RM30/Month</li>
                             <li>Eligible for PMDKK Events</li>
                             <li>Monthly or Annual membership renewal is available</li>

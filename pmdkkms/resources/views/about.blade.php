@@ -203,7 +203,7 @@
     <div class="hero">
         <div class="hero-content">
             <h1>About PMDKK</h1>
-            <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
+            <p>"The Kota Kinabalu Archery Association (Persatuan Memanah Daerah Kota Kinabalu or PMDKK) is a regional sports organization dedicated to promoting the sport of archery in Kota Kinabalu, Malaysia. PMDKK focuses on fostering archery skills among its members, offering structured training programs, organizing tournaments, and providing a platform for both amateur and professional archers to improve their abilities. The association plays a vital role in building a community around the sport, encouraging participation at all levels while upholding the values of discipline, focus, and sportsmanship."</p>
         </div>
         <div class="hero-image">
             <img src="{{ asset('images/aboutPageImages/aboutBanner1.png') }}" alt="About PMDKK">

@@ -223,13 +223,13 @@
                 <ul class="nav-links">
                     <li><a href="/">Home</a></li>
                     <li><a href="/about">About Us</a></li>
-                    <li><a href="/member">Membership</a></li>
+                    <li><a href="/member">Membership Info</a></li>
                 </ul>
                 <!-- Navigation Links for Mobile -->
                 <ul class="nav-links-mobile" id="mobile-menu">
                     <li><a href="/">Home</a></li>
                     <li><a href="/about">About Us</a></li>
-                    <li><a href="/member">Membership</a></li>
+                    <li><a href="/member">Membership Info</a></li>
                 </ul>
             </div>
 

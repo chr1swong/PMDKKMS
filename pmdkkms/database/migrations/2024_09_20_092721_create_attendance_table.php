@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('membership_id', 10)->charset('utf8mb4')->collation('utf8mb4_unicode_ci'); // Match charset and collation with membership table
             $table->date('attendance_date');
-            $table->enum('attendance_status', ['present', 'absent', 'excused']);
+            $table->enum('attendance_status', ['present', 'absent']);
+            $table->string('session')->nullable();
             $table->timestamps();
 
             // Foreign key constraint

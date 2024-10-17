@@ -7,6 +7,7 @@ use App\Models\Attendance;
 use App\Models\Membership;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AttendanceController extends Controller
 {
@@ -244,5 +245,44 @@ class AttendanceController extends Controller
 
         // Ensure we pass the correct month and year to the view, even when no records exist
         return view('coach.attendanceList', compact('attendanceSummary', 'filterMonth', 'filterYear'));
+    }
+
+    public function generateDailyQrCode()
+    {
+        $currentDate = now()->toDateString(); // Generate a unique date identifier
+
+        // Create the URL that will be scanned by archers
+        $qrUrl = route('attendance.scan', [
+            'date' => $currentDate
+        ]);
+
+        // Generate the QR code with the URL
+        $qrCode = QrCode::size(300)->generate($qrUrl);
+
+        return view('coach.attendanceQrCode', compact('qrCode', 'currentDate'));
+    }
+
+
+    public function recordAttendanceFromQr(Request $request)
+    {
+        $user = Auth::user(); // Get the logged-in archer
+
+        // Validate that the date parameter is provided
+        $request->validate([
+            'date' => 'required|date',
+        ]);
+
+        // Record attendance for the archer based on the date
+        Attendance::updateOrCreate(
+            [
+                'membership_id' => $user->membership->membership_id,
+                'attendance_date' => $request->date,
+            ],
+            [
+                'attendance_status' => 'present',
+            ]
+        );
+
+        return redirect()->route('archer.attendance')->with('success', 'Your attendance has been recorded.');
     }
 }

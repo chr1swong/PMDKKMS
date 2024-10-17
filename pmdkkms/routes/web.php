@@ -171,6 +171,15 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
 
     //Route to go to scoringList
     Route::get('/coach/scoring-list', [ScoringController::class, 'showAllEnrolledArcherScoringHistory'])->name('coach.scoringList');
+
+    // Route for coach to generate a daily QR code
+    Route::get('/coach/daily-qr', [AttendanceController::class, 'generateDailyQrCode'])->name('coach.dailyQrCode');
+
+    // Route to handle attendance recording from a scanned QR code
+    Route::get('/attendance/scan', [AttendanceController::class, 'recordAttendanceFromQr'])->name('attendance.scan');
+
+    // Route to record attendance from the QR code scan
+    Route::post('/attendance/record', [AttendanceController::class, 'recordAttendance'])->name('attendance.record');
 });
 
 // Routes accessible to committee member only

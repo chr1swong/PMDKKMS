@@ -12,6 +12,7 @@ class Attendance extends Model
         'membership_id', 
         'attendance_date', 
         'attendance_status',
+        'session',
     ];
 
     // Define relationship with membership

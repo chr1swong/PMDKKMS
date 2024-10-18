@@ -187,10 +187,7 @@
             <!-- PDF Download Button -->
             <button id="generate-pdf" class="btn-download">Download PDF</button>
 
-            <!-- QR Code Button -->
-            <a href="{{ route('coach.dailyQrCode') }}" class="btn-view" style="margin-left: 10px;">
-                Show QR Code
-            </a>
+            
         </div>
     </div>
     <hr class="hr-divider">

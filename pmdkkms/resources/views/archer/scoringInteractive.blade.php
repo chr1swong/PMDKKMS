@@ -84,12 +84,32 @@
         .btn-clear:hover {
             background-color: #616161;
         }
+
+        .magnifier {
+            position: absolute;
+            display: none;
+            border: 2px solid #000;
+            width: 150px;
+            height: 150px;
+            overflow: hidden;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .magnifier canvas {
+            transform: scale(2); /* Magnification factor */
+            transform-origin: top left;
+        }
     </style>
 </head>
 <body>
 
 <!-- Canvas Target -->
 <canvas id="targetCanvas" width="600" height="600"></canvas>
+<div class="magnifier" id="magnifier">
+    <canvas id="magnifierCanvas" width="150" height="150"></canvas>
+</div>
 
 <!-- Score Grid -->
 <div class="grid-container" id="scoreGrid">
@@ -161,6 +181,9 @@
 <script>
     const canvas = document.getElementById('targetCanvas');
     const ctx = canvas.getContext('2d');
+    const magnifier = document.getElementById('magnifier');
+    const magnifierCanvas = document.getElementById('magnifierCanvas');
+    const magnifierCtx = magnifierCanvas.getContext('2d');
 
     const colors = ['white', 'white', '#9E9E9E', '#9E9E9E', '#2D9CDB', '#2D9CDB', '#EB5757', '#EB5757', '#F2C94C', '#F2C94C', '#F2C94C'];
     const radii = [300, 270, 240, 210, 180, 150, 120, 90, 60, 33, 12]; // Adjusted radii for new size
@@ -213,17 +236,41 @@
     let dots = []; // Store all released dots with their positions
 
     canvas.addEventListener('mousedown', (event) => {
-        const rect = canvas.getBoundingClientRect();
-        currentX = event.clientX - rect.left;
-        currentY = event.clientY - rect.top;
-        isDragging = true; // Start dragging
-    });
+    const rect = canvas.getBoundingClientRect();
+    currentX = event.clientX - rect.left;
+    currentY = event.clientY - rect.top;
+    isDragging = true; // Start dragging
+
+    // Show the magnifier
+    magnifier.style.display = 'block';
+    magnifier.style.left = `${event.pageX + 10}px`; // Align with page X
+    magnifier.style.top = `${event.pageY + 10}px`; // Align with page Y
+});
 
     canvas.addEventListener('mousemove', (event) => {
         if (isDragging) {
             const rect = canvas.getBoundingClientRect();
             currentX = event.clientX - rect.left;
             currentY = event.clientY - rect.top;
+
+             // Update magnifier position
+            magnifier.style.left = `${event.clientX + 10}px`;
+            magnifier.style.top = `${event.clientY + 10}px`;
+
+            const zoomSize = 75; // Zoomed area size
+            magnifierCtx.clearRect(0, 0, 150, 150);
+
+            // Draw the zoomed-in section on the magnifier canvas
+            magnifierCtx.drawImage(
+                canvas,
+                currentX - zoomSize / 3, currentY - zoomSize / 3, // Source from canvas
+                zoomSize, zoomSize, // Area size on canvas
+                0, 0, // Top-left corner of magnifier canvas
+                115, 115 // Scale to fit the magnifier
+            );
+
+            // Draw the black dot inside the magnifier
+            drawMagnifierDot(currentX, currentY, zoomSize);
 
             // Clear canvas and redraw the target during drag
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -233,8 +280,20 @@
         }
     });
 
+    // Function to draw the dot on the magnifier canvas
+    function drawMagnifierDot(dotX, dotY, zoomSize) {
+        const offsetX = 75 - (currentX - dotX); // Adjust for zoom area center
+        const offsetY = 75 - (currentY - dotY); // Adjust for zoom area center
+
+        magnifierCtx.beginPath();
+        magnifierCtx.arc(offsetX, offsetY, 5, 0, Math.PI * 2); // Small black dot
+        magnifierCtx.fillStyle = 'black';
+        magnifierCtx.fill();
+    }
+
     canvas.addEventListener('mouseup', (event) => {
         isDragging = false; // Stop dragging
+        magnifier.style.display = 'none'; // Hide magnifier
 
         // Calculate the final score based on the released position
         const rect = canvas.getBoundingClientRect();

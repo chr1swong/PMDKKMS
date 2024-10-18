@@ -56,6 +56,16 @@ Route::middleware([PreventAuthenticatedAccess::class])->group(function () {
 
     // Handle the reset password form submission (user submits their new password)
     Route::post('/forgot-password/reset', [PasswordResetController::class, 'reset'])->name('password.update');
+
+    // Route for showing the success message after attendance is recorded
+    Route::get('/attendance/success', function () {
+        return view('attendance.success');
+    })->name('attendance.success');
+
+    Route::get('/attendance/scan', [AttendanceController::class, 'recordAttendanceFromQr'])
+    ->name('attendance.scan')
+    ->withoutMiddleware(['auth']); // Allow access without logins
+
 });
 
 // Routes for all levels of auth'd user
@@ -173,10 +183,7 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function ()
     Route::get('/coach/scoring-list', [ScoringController::class, 'showAllEnrolledArcherScoringHistory'])->name('coach.scoringList');
 
     // Route for coach to generate a daily QR code
-    Route::get('/coach/daily-qr', [AttendanceController::class, 'generateDailyQrCode'])->name('coach.dailyQrCode');
-
-    // Route to handle attendance recording from a scanned QR code
-    Route::get('/attendance/scan', [AttendanceController::class, 'recordAttendanceFromQr'])->name('attendance.scan');
+    Route::get('/coach/qr/{membership_id}', [AttendanceController::class, 'generateArcherQrCode'])->name('coach.archerQrCode');
 
     // Route to record attendance from the QR code scan
     Route::post('/attendance/record', [AttendanceController::class, 'recordAttendance'])->name('attendance.record');

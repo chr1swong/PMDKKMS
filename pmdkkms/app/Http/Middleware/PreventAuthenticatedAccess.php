@@ -8,26 +8,24 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PreventAuthenticatedAccess
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
 
+        // Allow access to the QR scan route, even if the user is authenticated
+        if ($request->is('attendance/scan')) {
+            return $next($request);
+        }
+
+        // Redirect based on user role if authenticated
         if ($user) {
-            switch($user->account_role) {
-                case 1: // Assuming 1 is the role ID for archer
+            switch ($user->account_role) {
+                case 1: // Archer
                     return redirect()->route('archer.dashboard');
-                    break;
-                case 2: // Assuming 2 is the role ID for coach
+                case 2: // Coach
                     return redirect()->route('coach.dashboard');
-                    break;
-                case 3: // Assuming 3 is the role ID for committee member
+                case 3: // Committee member
                     return redirect()->route('committee.dashboard');
-                    break;
                 default:
                     return redirect()->route('home');
             }
@@ -36,3 +34,4 @@ class PreventAuthenticatedAccess
         return $next($request);
     }
 }
+

@@ -247,35 +247,35 @@ class AttendanceController extends Controller
         return view('coach.attendanceList', compact('attendanceSummary', 'filterMonth', 'filterYear'));
     }
 
-    public function generateDailyQrCode()
+    public function generateArcherQrCode($membership_id)
     {
-        $currentDate = now()->toDateString(); // Generate a unique date identifier
+        $currentDate = now()->toDateString(); // Current date
 
-        // Create the URL that will be scanned by archers
+        // Generate a QR code URL specific to the archer's attendance
         $qrUrl = route('attendance.scan', [
-            'date' => $currentDate
+            'membership_id' => $membership_id,
+            'date' => $currentDate,
         ]);
 
-        // Generate the QR code with the URL
+        // Generate the QR code
         $qrCode = QrCode::size(300)->generate($qrUrl);
 
-        return view('coach.attendanceQrCode', compact('qrCode', 'currentDate'));
+        // Pass the generated QR code and date to the view
+        return view('coach.attendanceQrCode', compact('qrCode', 'currentDate', 'membership_id'));
     }
-
 
     public function recordAttendanceFromQr(Request $request)
     {
-        $user = Auth::user(); // Get the logged-in archer
-
-        // Validate that the date parameter is provided
+        // Validate the request inputs
         $request->validate([
+            'membership_id' => 'required|exists:membership,membership_id',
             'date' => 'required|date',
         ]);
 
-        // Record attendance for the archer based on the date
+        // Record attendance for the archer based on the QR scan
         Attendance::updateOrCreate(
             [
-                'membership_id' => $user->membership->membership_id,
+                'membership_id' => $request->membership_id,
                 'attendance_date' => $request->date,
             ],
             [
@@ -283,6 +283,15 @@ class AttendanceController extends Controller
             ]
         );
 
-        return redirect()->route('archer.attendance')->with('success', 'Your attendance has been recorded.');
+        // Fetch the archer's details
+        $membership = Membership::where('membership_id', $request->membership_id)->first();
+        $archerName = $membership->account->account_full_name ?? 'N/A';
+        $membershipId = $membership->membership_id;
+        $attendanceDate = $request->date;
+
+        // Pass the details to the success view
+        return view('attendanceSuccess', compact('archerName', 'membershipId', 'attendanceDate'));
     }
+
+
 }

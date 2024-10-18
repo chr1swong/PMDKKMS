@@ -125,6 +125,10 @@
         .btn-view {
             background-color: #5f4bb6;
             color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-left: 5px;
         }
 
         .btn-unenroll {
@@ -269,6 +273,7 @@
                                 <button type="submit" class="btn btn-unenroll">Unenroll</button>
                             </form>
                             <a href="{{ route('coach.viewProfile', $archer->membership_id) }}" class="btn btn-view">View Profile</a>
+                            <a href="{{ route('coach.archerQrCode', $archer->membership_id) }}" class="btn btn-view">Show QR</a>
                         </div>
                     </td>
                 </tr>

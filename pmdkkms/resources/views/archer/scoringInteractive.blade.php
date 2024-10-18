@@ -208,78 +208,118 @@
     const scoreGrid = Array(6).fill(null).map(() => Array(6).fill(null));
 
     // Calculate score based on click distance from center (inner = X, outer = 1)
-    canvas.addEventListener('click', (event) => {
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    let distance = Math.sqrt((x - canvas.width / 2) ** 2 + (y - canvas.height / 2) ** 2);
+    let isDragging = false; // Track if the mouse is being dragged
+    let currentX = 0, currentY = 0; // Store current position of the black dot
+    let dots = []; // Store all released dots with their positions
 
-    // Adjust distance based on whether it's the innermost circle or other rings
-    if (distance <= radii[radii.length - 1]) {
-        distance -= 5; // Subtract 5px for innermost 'X' circle
-    } else {
-        distance -= 7; // Subtract 7px for other rings
-    }
+    canvas.addEventListener('mousedown', (event) => {
+        const rect = canvas.getBoundingClientRect();
+        currentX = event.clientX - rect.left;
+        currentY = event.clientY - rect.top;
+        isDragging = true; // Start dragging
+    });
 
-    let score;
+    canvas.addEventListener('mousemove', (event) => {
+        if (isDragging) {
+            const rect = canvas.getBoundingClientRect();
+            currentX = event.clientX - rect.left;
+            currentY = event.clientY - rect.top;
 
-    // Check if click is within the innermost circle for 'X'
-    if (distance <= radii[radii.length - 1]) {
-        score = 'X'; // Set as 'X' for the innermost circle
-    } else {
-        score = 10 - Math.floor(distance / 30); // Calculate regular score for other rings
-        if (score < 1) score = 1; // Ensure minimum score is 1
-    }
+            // Clear canvas and redraw the target during drag
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawTarget();
+            drawAllDots(); // Redraw all previous dots
+            drawDot(currentX, currentY); // Draw the current dragged dot
+        }
+    });
 
-    // Insert score into the next available spot in the grid
-    let scorePlaced = false; // Flag to ensure only one score is placed
-    for (let i = 0; i < 6 && !scorePlaced; i++) {
-        for (let j = 0; j < 6; j++) {
-            if (scoreGrid[i][j] === null) {
-                scoreGrid[i][j] = score;
-                document.getElementById(`set${i + 1}-score${j + 1}`).textContent = score;
-                scorePlaced = true; // Set flag to prevent further insertion
-                break; // Exit inner loop
+    canvas.addEventListener('mouseup', (event) => {
+        isDragging = false; // Stop dragging
+
+        // Calculate the final score based on the released position
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        let distance = Math.sqrt((x - canvas.width / 2) ** 2 + (y - canvas.height / 2) ** 2);
+
+        // Adjust distance based on whether it's the innermost circle or other rings
+        if (distance <= radii[radii.length - 1]) {
+            distance -= 5; // Subtract 5px for innermost 'X' circle
+        } else {
+            distance -= 7; // Subtract 7px for other rings
+        }
+
+        let score;
+
+        // Check if the dot is in the innermost circle
+        if (distance <= radii[radii.length - 1]) {
+            score = 'X'; // Set as 'X' for the innermost circle
+        } else {
+            score = 10 - Math.floor(distance / 30); // Calculate the score for other rings
+            if (score < 1) score = 1; // Ensure minimum score of 1
+        }
+
+        // Insert score into the next available spot in the grid
+        let scorePlaced = false;
+        for (let i = 0; i < 6 && !scorePlaced; i++) {
+            for (let j = 0; j < 6; j++) {
+                if (scoreGrid[i][j] === null) {
+                    scoreGrid[i][j] = score;
+                    document.getElementById(`set${i + 1}-score${j + 1}`).textContent = score;
+                    scorePlaced = true; // Prevent further insertion
+                    break;
+                }
             }
         }
+
+        // Store the dot's final position
+        dots.push({ x, y });
+
+        // Redraw the canvas with all dots
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawTarget();
+        drawAllDots(); // Draw all stored dots
+    });
+
+    function drawDot(x, y) {
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2); // Small black dot with 5px radius
+        ctx.fillStyle = 'black';
+        ctx.fill();
     }
 
-    // Draw a black dot on the clicked position
-    drawDot(x, y);
-});
+    // Draw all released dots from the dots array
+    function drawAllDots() {
+        dots.forEach(dot => drawDot(dot.x, dot.y));
+    }
 
-function drawDot(x, y) {
-    ctx.beginPath();
-    ctx.arc(x, y, 5, 0, Math.PI * 2); // Small black circle with 5px radius
-    ctx.fillStyle = 'black';
-    ctx.fill();
-}
-
-
-function clearGrid() {
-    // Clear the score grid
-    for (let i = 0; i < 6; i++) {
-        for (let j = 0; j < 6; j++) {
-            scoreGrid[i][j] = null;
-            document.getElementById(`set${i + 1}-score${j + 1}`).textContent = '';
+    function clearGrid() {
+        // Clear the score grid
+        for (let i = 0; i < 6; i++) {
+            for (let j = 0; j < 6; j++) {
+                scoreGrid[i][j] = null;
+                document.getElementById(`set${i + 1}-score${j + 1}`).textContent = '';
+            }
         }
+
+        // Clear the dots and canvas, then redraw the target
+        dots = []; // Reset the dots array
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear entire canvas
+        drawTarget(); // Redraw the target without dots
     }
 
-    // Clear the canvas and redraw the target
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear entire canvas
-    drawTarget(); // Redraw the target without dots
-}
+    function enterScore() {
+        alert('Scores submitted: ' + JSON.stringify(scoreGrid));
+        clearGrid();
+    }
 
-function enterScore() {
-    alert('Scores submitted: ' + JSON.stringify(scoreGrid));
-    clearGrid();
-}
+    function cancel() {
+        window.location.href = "{{ route('archer.scoring') }}";
+    }
 
-function cancel() {
-    window.location.href = "{{ route('archer.scoring') }}";
-}
+    drawTarget();
 
-drawTarget();
+
 
 </script>
 

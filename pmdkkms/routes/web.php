@@ -117,6 +117,11 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function ()
     // Route for showing scoring details
     Route::get('/archer/scoring-details/{id}', [ScoringController::class, 'showScoreDetails'])->name('scoring.details');
 
+    // Route for the interactive scoring
+    Route::get('/archer/scoringInteractive', function () {
+        return view('archer.scoringInteractive');
+    })->name('archer.scoringInteractive');
+
     // Route for updating score
     Route::put('/archer/scoring/{id}', [ScoringController::class, 'updateScore'])->name('scoring.update');
 

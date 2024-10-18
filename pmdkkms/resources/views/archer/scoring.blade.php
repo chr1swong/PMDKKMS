@@ -322,6 +322,12 @@
         <form action="{{ route('archer.scoringHistory') }}" method="GET">
             <button type="submit" class="btn view-history-btn">View Scoring History</button>
         </form>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{{ route('archer.scoringInteractive') }}" class="btn add-btn" style="background-color: #ff5722;">
+                Switch to Interactive Scoring Mode
+            </a>
+        </div>
     </div>
 
     <!-- Main Form -->

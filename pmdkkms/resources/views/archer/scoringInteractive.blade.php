@@ -28,34 +28,62 @@
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
+            grid-template-columns: 120px repeat(6, 1fr) 80px; /* 8 columns: Set + 6 Scores + Total */
+            gap: 2px;
             margin-bottom: 10px;
-            width: 80%;
+            width: 90%;
+            max-width: 800px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow: hidden;
         }
 
         .grid-item {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid black;
+            padding: 8px; /* Reduce padding for a more compact look */
             text-align: center;
-            font-weight: bold;
+            font-weight: 600; /* Make the text bold */
+            background-color: white;
+            border: 1px solid #ddd; /* Light border between items */
+            font-size: 14px; /* Adjust font size for readability */
+        }
+
+        .grid-item:nth-child(8n+1) {
+            background-color: #2196f3; /* Light blue color for SET rows */
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+        }
+
+        /* Optional: Add some padding for better alignment */
+        .grid-item {
+            padding: 10px;
         }
 
         .buttons {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
             width: 80%;
-            margin-top: 10px;
+            margin-top: 15px;
+            gap: 10px;
         }
 
         .btn {
-            font-size: 16px;
-            padding: 10px 20px;
+            font-size: 14px;
+            padding: 8px 15px; /* Compact padding */
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s;
+            width: 100%; /* Full-width buttons for better mobile layout */
+            max-width: 150px;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: scale(1.05); /* Subtle hover effect */
         }
 
         .btn-cancel {
@@ -101,6 +129,22 @@
             transform: scale(2); /* Magnification factor */
             transform-origin: top left;
         }
+
+        /* Responsive design for mobile devices */
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 80px repeat(6, 1fr) 60px; /* Adjusted for smaller screens */
+            }
+
+            .buttons {
+                flex-direction: column; /* Stack buttons vertically */
+                width: 100%;
+            }
+
+            .btn {
+                max-width: none; /* Allow full width on small screens */
+            }
+        }
     </style>
 </head>
 <body>
@@ -111,15 +155,7 @@
     <canvas id="magnifierCanvas" width="150" height="150"></canvas>
 </div>
 
-<!-- Score Grid -->
 <div class="grid-container" id="scoreGrid">
-    <div class="grid-item">Set</div>
-    <div class="grid-item">1</div>
-    <div class="grid-item">2</div>
-    <div class="grid-item">3</div>
-    <div class="grid-item">4</div>
-    <div class="grid-item">5</div>
-    <div class="grid-item">6</div>
 
     <!-- Dynamically created rows for each set -->
     <div class="grid-item">Set 1</div>
@@ -129,6 +165,7 @@
     <div class="grid-item" id="set1-score4"></div>
     <div class="grid-item" id="set1-score5"></div>
     <div class="grid-item" id="set1-score6"></div>
+    <div class="grid-item" id="set1-total">0</div>
 
     <div class="grid-item">Set 2</div>
     <div class="grid-item" id="set2-score1"></div>
@@ -137,6 +174,7 @@
     <div class="grid-item" id="set2-score4"></div>
     <div class="grid-item" id="set2-score5"></div>
     <div class="grid-item" id="set2-score6"></div>
+    <div class="grid-item" id="set2-total">0</div>
 
     <div class="grid-item">Set 3</div>
     <div class="grid-item" id="set3-score1"></div>
@@ -145,6 +183,7 @@
     <div class="grid-item" id="set3-score4"></div>
     <div class="grid-item" id="set3-score5"></div>
     <div class="grid-item" id="set3-score6"></div>
+    <div class="grid-item" id="set3-total">0</div>
 
     <div class="grid-item">Set 4</div>
     <div class="grid-item" id="set4-score1"></div>
@@ -153,6 +192,7 @@
     <div class="grid-item" id="set4-score4"></div>
     <div class="grid-item" id="set4-score5"></div>
     <div class="grid-item" id="set4-score6"></div>
+    <div class="grid-item" id="set4-total">0</div>
 
     <div class="grid-item">Set 5</div>
     <div class="grid-item" id="set5-score1"></div>
@@ -161,6 +201,7 @@
     <div class="grid-item" id="set5-score4"></div>
     <div class="grid-item" id="set5-score5"></div>
     <div class="grid-item" id="set5-score6"></div>
+    <div class="grid-item" id="set5-total">0</div>
 
     <div class="grid-item">Set 6</div>
     <div class="grid-item" id="set6-score1"></div>
@@ -169,7 +210,13 @@
     <div class="grid-item" id="set6-score4"></div>
     <div class="grid-item" id="set6-score5"></div>
     <div class="grid-item" id="set6-score6"></div>
+    <div class="grid-item" id="set6-total">0</div>
+
+    <div class="grid-item" style="grid-column: span 7; text-align: right;">Overall Total</div>
+    <div class="grid-item" id="overall-total">0</div>
+
 </div>
+
 
 <!-- Buttons -->
 <div class="buttons">
@@ -293,11 +340,35 @@
         magnifierCtx.fill();
     }
 
+    function calculateTotal(setIndex) {
+        let total = 0;
+        for (let j = 0; j < 6; j++) {
+            const score = scoreGrid[setIndex][j];
+            if (score === 'X') {
+                total += 10;  // Treat 'X' as 10 points
+            } else if (score === 'M' || score === null) {
+                total += 0;   // Treat 'M' and empty cells as 0 points
+            } else {
+                total += parseInt(score, 10);  // Add numeric scores
+            }
+        }
+        document.getElementById(`set${setIndex + 1}-total`).textContent = total;
+        updateOverallTotal();
+    }
+
+    function updateOverallTotal() {
+        let overallTotal = 0;
+        for (let i = 0; i < 6; i++) {
+            const setTotal = parseInt(document.getElementById(`set${i + 1}-total`).textContent, 10);
+            overallTotal += isNaN(setTotal) ? 0 : setTotal;
+        }
+        document.getElementById('overall-total').textContent = overallTotal;
+    }
+
     canvas.addEventListener('mouseup', (event) => {
         isDragging = false; // Stop dragging
         magnifier.style.display = 'none'; // Hide magnifier
 
-        // Calculate the final score based on the released position
         const rect = canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
@@ -305,23 +376,21 @@
 
         // Adjust distance based on whether it's the innermost circle or other rings
         if (distance <= radii[radii.length - 1]) {
-            distance -= 5; // Subtract 5px for innermost 'X' circle
+            distance -= 5;
         } else {
-            distance -= 7; // Subtract 7px for other rings
+            distance -= 7;
         }
 
         let score;
-        // Check if the dot is outside the outermost ring (considered a 'Miss')
         if (distance > radii[0]) {
-            score = 'M'; // Miss with a value of 0
+            score = 'M';  // Miss
         } else if (distance <= radii[radii.length - 1]) {
-            score = 'X'; // Set as 'X' for the innermost circle
+            score = 'X';  // Innermost circle
         } else {
-            score = 10 - Math.floor(distance / 30); // Calculate score for other rings
+            score = 10 - Math.floor(distance / 30); // Calculate other scores
             if (score < 1) score = 1; // Ensure minimum score of 1
         }
 
-        // Insert score into the next available spot in the grid
         let scorePlaced = false;
         for (let i = 0; i < 6 && !scorePlaced; i++) {
             for (let j = 0; j < 6; j++) {
@@ -329,7 +398,8 @@
                     scoreGrid[i][j] = score;
                     document.getElementById(`set${i + 1}-score${j + 1}`).textContent = score;
                     scoreHistory.push({ set: i, position: j, dot: { x, y } });
-                    scorePlaced = true; // Prevent further insertion
+                    scorePlaced = true;
+                    calculateTotal(i);  // Update the total after placing a score
                     break;
                 }
             }
@@ -368,9 +438,13 @@
         // Remove the corresponding dot
         dots = dots.filter(d => d.x !== dot.x || d.y !== dot.y);
 
+        // Redraw the canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawTarget();
         drawAllDots(); // Redraw remaining dots
+
+        // Recalculate the total for the relevant set
+        calculateTotal(set);
     }
 
     function clearGrid() {
@@ -380,12 +454,16 @@
                 scoreGrid[i][j] = null;
                 document.getElementById(`set${i + 1}-score${j + 1}`).textContent = '';
             }
+            // Reset the total for each set
+            document.getElementById(`set${i + 1}-total`).textContent = '0';
         }
 
         // Clear the dots and canvas, then redraw the target
         dots = []; // Reset the dots array
         ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear entire canvas
         drawTarget(); // Redraw the target without dots
+
+        updateOverallTotal();
     }
 
     function enterScore() {
@@ -397,9 +475,86 @@
         window.location.href = "{{ route('archer.scoring') }}";
     }
 
+
+    //Touch Screen part
+    // Helper function to get the correct event (touch or mouse)
+    function getEventCoords(event) {
+        const rect = canvas.getBoundingClientRect();
+        let clientX, clientY;
+
+        if (event.touches) {
+            // Handle touch events
+            const touch = event.touches[0];
+            clientX = touch.clientX;
+            clientY = touch.clientY;
+        } else {
+            // Handle mouse events
+            clientX = event.clientX;
+            clientY = event.clientY;
+        }
+
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top,
+        };
+    }
+
+    // Updated start drag for both mouse and touch events
+    function startDrag(event) {
+        event.preventDefault(); // Prevents default behavior like scrolling on mobile
+
+        const { x, y } = getEventCoords(event);
+        currentX = x;
+        currentY = y;
+        isDragging = true;
+
+        // Show the magnifier
+        magnifier.style.display = 'block';
+        magnifier.style.left = `${event.pageX + 10}px`;
+        magnifier.style.top = `${event.pageY + 10}px`;
+    }
+
+    // Handle drag movement for mouse and touch events
+    function moveDrag(event) {
+        if (!isDragging) return;
+
+        const { x, y } = getEventCoords(event);
+        currentX = x;
+        currentY = y;
+
+        // Update magnifier position
+        const touch = event.touches ? event.touches[0] : event;
+        magnifier.style.left = `${touch.pageX + 10}px`;
+        magnifier.style.top = `${touch.pageY + 10}px`;
+
+        // Draw zoomed-in view
+        const zoomSize = 75;
+        magnifierCtx.clearRect(0, 0, 150, 150);
+        magnifierCtx.drawImage(
+            canvas,
+            currentX - zoomSize / 3, currentY - zoomSize / 3,
+            zoomSize, zoomSize,
+            0, 0,
+            115, 115
+        );
+    }
+
+    // Handle drag end for both mouse and touch
+    function endDrag() {
+        isDragging = false;
+        magnifier.style.display = 'none';
+    }
+
+    // Add event listeners for both mouse and touch events
+    canvas.addEventListener('mousedown', startDrag);
+    canvas.addEventListener('mousemove', moveDrag);
+    canvas.addEventListener('mouseup', endDrag);
+
+    canvas.addEventListener('touchstart', startDrag);
+    canvas.addEventListener('touchmove', moveDrag);
+    canvas.addEventListener('touchend', endDrag);
+    
     drawTarget();
-
-
 
 </script>
 

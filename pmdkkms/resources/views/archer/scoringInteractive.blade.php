@@ -174,6 +174,7 @@
 <!-- Buttons -->
 <div class="buttons">
     <button class="btn btn-cancel" onclick="cancel()">Cancel</button>
+    <button class="btn" onclick="revertScore()">Back</button>
     <button class="btn-clear" onclick="clearGrid()">Clear</button>
     <button class="btn-enter" onclick="enterScore()">Enter</button>
 </div>
@@ -229,6 +230,7 @@
     }
 
     const scoreGrid = Array(6).fill(null).map(() => Array(6).fill(null));
+    let scoreHistory = []; 
 
     // Calculate score based on click distance from center (inner = X, outer = 1)
     let isDragging = false; // Track if the mouse is being dragged
@@ -236,16 +238,16 @@
     let dots = []; // Store all released dots with their positions
 
     canvas.addEventListener('mousedown', (event) => {
-    const rect = canvas.getBoundingClientRect();
-    currentX = event.clientX - rect.left;
-    currentY = event.clientY - rect.top;
-    isDragging = true; // Start dragging
+        const rect = canvas.getBoundingClientRect();
+        currentX = event.clientX - rect.left;
+        currentY = event.clientY - rect.top;
+        isDragging = true; // Start dragging
 
-    // Show the magnifier
-    magnifier.style.display = 'block';
-    magnifier.style.left = `${event.pageX + 10}px`; // Align with page X
-    magnifier.style.top = `${event.pageY + 10}px`; // Align with page Y
-});
+        // Show the magnifier
+        magnifier.style.display = 'block';
+        magnifier.style.left = `${event.pageX + 10}px`; // Align with page X
+        magnifier.style.top = `${event.pageY + 10}px`; // Align with page Y
+    });
 
     canvas.addEventListener('mousemove', (event) => {
         if (isDragging) {
@@ -309,12 +311,13 @@
         }
 
         let score;
-
-        // Check if the dot is in the innermost circle
-        if (distance <= radii[radii.length - 1]) {
+        // Check if the dot is outside the outermost ring (considered a 'Miss')
+        if (distance > radii[0]) {
+            score = 'M'; // Miss with a value of 0
+        } else if (distance <= radii[radii.length - 1]) {
             score = 'X'; // Set as 'X' for the innermost circle
         } else {
-            score = 10 - Math.floor(distance / 30); // Calculate the score for other rings
+            score = 10 - Math.floor(distance / 30); // Calculate score for other rings
             if (score < 1) score = 1; // Ensure minimum score of 1
         }
 
@@ -325,6 +328,7 @@
                 if (scoreGrid[i][j] === null) {
                     scoreGrid[i][j] = score;
                     document.getElementById(`set${i + 1}-score${j + 1}`).textContent = score;
+                    scoreHistory.push({ set: i, position: j, dot: { x, y } });
                     scorePlaced = true; // Prevent further insertion
                     break;
                 }
@@ -350,6 +354,23 @@
     // Draw all released dots from the dots array
     function drawAllDots() {
         dots.forEach(dot => drawDot(dot.x, dot.y));
+    }
+
+    function revertScore() {
+        if (scoreHistory.length === 0) return; // No scores to revert
+
+        const lastEntry = scoreHistory.pop(); // Get the last score and dot position
+        const { set, position, dot } = lastEntry;
+
+        scoreGrid[set][position] = null; // Clear the score
+        document.getElementById(`set${set + 1}-score${position + 1}`).textContent = '';
+
+        // Remove the corresponding dot
+        dots = dots.filter(d => d.x !== dot.x || d.y !== dot.y);
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawTarget();
+        drawAllDots(); // Redraw remaining dots
     }
 
     function clearGrid() {

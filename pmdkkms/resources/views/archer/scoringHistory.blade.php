@@ -282,7 +282,7 @@
     {{ $scoringData->links() }}
 
     <!-- Back Button -->
-    <a href="{{ route('archer.dashboard') }}" class="back-btn">
+    <a href="{{ route('archer.scoring') }}" class="back-btn">
         <i class="fas fa-arrow-left"></i> Back
     </a>
 </div>

@@ -24,6 +24,8 @@
             border: 1px solid #000;
             margin-bottom: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 800px;  /* Larger canvas width */
+            height: 800px; /* Larger canvas height */
         }
 
         .grid-container {
@@ -45,7 +47,7 @@
             font-weight: 600; /* Make the text bold */
             background-color: white;
             border: 1px solid #ddd; /* Light border between items */
-            font-size: 14px; /* Adjust font size for readability */
+            font-size: 16px; /* Adjust font size for readability */
         }
 
         .grid-item:nth-child(8n+1) {
@@ -57,9 +59,13 @@
             border: none;
         }
 
-        /* Optional: Add some padding for better alignment */
         .grid-item {
             padding: 10px;
+        }
+
+        .total-cell {
+            background-color: #e0e0e0; /* Light grey color for total rows */
+            font-weight: 700;
         }
 
         .buttons {
@@ -70,20 +76,33 @@
             gap: 10px;
         }
 
+        .buttons-container {
+            display: flex;
+            justify-content: space-between; 
+            align-items: center;
+            width: 100%; /* Full width to match content */
+            max-width: 800px;
+            margin-top: 20px;
+            padding: 10px 0;
+            background-color: #fff; /* White background for the button section */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+            border-radius: 8px;
+        }
+
         .btn {
-            font-size: 14px;
-            padding: 8px 15px; /* Compact padding */
+            font-size: 16px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s;
-            width: 100%; /* Full-width buttons for better mobile layout */
+            width: 20%;
             max-width: 150px;
             text-align: center;
         }
 
         .btn:hover {
-            transform: scale(1.05); /* Subtle hover effect */
+            transform: scale(1.05); 
         }
 
         .btn-cancel {
@@ -141,8 +160,14 @@
                 width: 100%;
             }
 
+            .buttons-container {
+                flex-direction: column; /* Stack buttons on smaller screens */
+                gap: 10px;
+            }
+
             .btn {
-                max-width: none; /* Allow full width on small screens */
+                width: 80%; /* Full width for buttons on smaller screens */
+                max-width: none;
             }
         }
     </style>
@@ -150,7 +175,7 @@
 <body>
 
 <!-- Canvas Target -->
-<canvas id="targetCanvas" width="600" height="600"></canvas>
+<canvas id="targetCanvas" width="800" height="800"></canvas>
 <div class="magnifier" id="magnifier">
     <canvas id="magnifierCanvas" width="150" height="150"></canvas>
 </div>
@@ -165,7 +190,7 @@
     <div class="grid-item" id="set1-score4"></div>
     <div class="grid-item" id="set1-score5"></div>
     <div class="grid-item" id="set1-score6"></div>
-    <div class="grid-item" id="set1-total">0</div>
+    <div class="grid-item total-cell" id="set1-total">0</div>
 
     <div class="grid-item">Set 2</div>
     <div class="grid-item" id="set2-score1"></div>
@@ -174,7 +199,7 @@
     <div class="grid-item" id="set2-score4"></div>
     <div class="grid-item" id="set2-score5"></div>
     <div class="grid-item" id="set2-score6"></div>
-    <div class="grid-item" id="set2-total">0</div>
+    <div class="grid-item total-cell" id="set2-total">0</div>
 
     <div class="grid-item">Set 3</div>
     <div class="grid-item" id="set3-score1"></div>
@@ -183,7 +208,7 @@
     <div class="grid-item" id="set3-score4"></div>
     <div class="grid-item" id="set3-score5"></div>
     <div class="grid-item" id="set3-score6"></div>
-    <div class="grid-item" id="set3-total">0</div>
+    <div class="grid-item total-cell" id="set3-total">0</div>
 
     <div class="grid-item">Set 4</div>
     <div class="grid-item" id="set4-score1"></div>
@@ -192,7 +217,7 @@
     <div class="grid-item" id="set4-score4"></div>
     <div class="grid-item" id="set4-score5"></div>
     <div class="grid-item" id="set4-score6"></div>
-    <div class="grid-item" id="set4-total">0</div>
+    <div class="grid-item total-cell" id="set4-total">0</div>
 
     <div class="grid-item">Set 5</div>
     <div class="grid-item" id="set5-score1"></div>
@@ -201,7 +226,7 @@
     <div class="grid-item" id="set5-score4"></div>
     <div class="grid-item" id="set5-score5"></div>
     <div class="grid-item" id="set5-score6"></div>
-    <div class="grid-item" id="set5-total">0</div>
+    <div class="grid-item total-cell" id="set5-total">0</div>
 
     <div class="grid-item">Set 6</div>
     <div class="grid-item" id="set6-score1"></div>
@@ -210,20 +235,22 @@
     <div class="grid-item" id="set6-score4"></div>
     <div class="grid-item" id="set6-score5"></div>
     <div class="grid-item" id="set6-score6"></div>
-    <div class="grid-item" id="set6-total">0</div>
+    <div class="grid-item total-cell" id="set6-total">0</div>
 
-    <div class="grid-item" style="grid-column: span 7; text-align: right;">Overall Total</div>
-    <div class="grid-item" id="overall-total">0</div>
+    <div class="grid-item total-cell" style="grid-column: span 7; text-align: right;">
+        Overall Total
+    </div>
+    <div class="grid-item total-cell" id="overall-total">0</div>
 
 </div>
 
 
 <!-- Buttons -->
-<div class="buttons">
+<div class="buttons-container">
     <button class="btn btn-cancel" onclick="cancel()">Cancel</button>
+    <button class="btn btn-clear" onclick="clearGrid()">Clear</button>
     <button class="btn" onclick="revertScore()">Back</button>
-    <button class="btn-clear" onclick="clearGrid()">Clear</button>
-    <button class="btn-enter" onclick="enterScore()">Enter</button>
+    <button class="btn btn-enter" onclick="enterScore()">Enter</button>
 </div>
 
 <script>
@@ -237,8 +264,11 @@
     const radii = [300, 270, 240, 210, 180, 150, 120, 90, 60, 33, 12]; // Adjusted radii for new size
 
     function drawTarget() {
+        const targetRadius = 500;
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
+
+        const padding = 30;
 
         colors.forEach((color, index) => {
             ctx.beginPath();
@@ -264,7 +294,7 @@
 
         // Scores at the edges of each ring
         const scores = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        ctx.font = '14px Poppins'; // Increased font size
+        ctx.font = '14px Poppins'; 
         ctx.fillStyle = 'black';
         ctx.textAlign = 'center';
 

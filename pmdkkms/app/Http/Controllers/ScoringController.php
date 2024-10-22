@@ -204,8 +204,18 @@ class ScoringController extends Controller
         // Find the score record by ID
         $score = Score::findOrFail($id);
 
-        // Pass the score data to the view
-        return view('archer.scoringDetails', compact('score'));
+        // Retrieve the user's full name using a join on membership and account tables
+        $user = DB::table('membership')
+            ->join('account', 'membership.account_id', '=', 'account.account_id')
+            ->where('membership.membership_id', $score->membership_id)
+            ->select('account.account_full_name')
+            ->first();
+
+        // Check if the user exists, otherwise set a default name
+        $fullName = $user ? $user->account_full_name : 'Unknown User';
+
+        // Pass the score and the user's full name to the view
+        return view('archer.scoringDetails', compact('score', 'fullName'));
     }
 
     // Update an existing score for archer

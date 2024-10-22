@@ -259,7 +259,7 @@
                         <td>{{ $index + 1 }}</td>
                         <td>{{ \Carbon\Carbon::parse($score->date)->format('d F Y') }}</td>
                         <td>{{ $score->distance }}M</td>
-                        <td>{{ $score->total }}/360</td>
+                        <td>{{ $score->overall_total }}/360</td>
                         <td>
                             <a href="{{ route('scoring.details', $score->id) }}" class="btn btn-view">View Scoring Details</a>
                         </td>

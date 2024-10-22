@@ -16,15 +16,23 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center; 
+            align-items: center;
             box-sizing: border-box;
+        }
+
+        header {
+            width: 100%;
+            background-color: #001f3f;
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
         }
 
         .main-container {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 20px;
-            max-width: 1200px;
+            max-width: 1300px;
             width: 100%;
             padding: 20px;
             box-sizing: border-box;
@@ -37,8 +45,9 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            max-width: 400px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 460px;
+            box-sizing: border-box;
         }
 
         .image-container {
@@ -56,31 +65,31 @@
 
         .grid-container {
             display: grid;
-            grid-template-columns: 80px repeat(6, 1.5fr) 60px;
-            gap: 3px;
+            grid-template-columns: 90px repeat(6, 1fr) 80px;
+            gap: 10; 
             border: 1px solid #ccc;
             background-color: #f9f9f9;
             border-radius: 8px;
+            width: 100%; 
+            box-sizing: border-box;
             overflow: hidden;
-            width: 100%;
-            max-width: 700px;
-            margin: 0 auto;
         }
 
         .grid-item {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 12px;
+            padding: 10px;
             font-weight: 600;
             background-color: white;
             border: 1px solid #ddd;
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .grid-item:nth-child(8n+1) {
             background-color: #2196f3;
             color: white;
+            font-weight: 700;
         }
 
         .total-cell {
@@ -170,6 +179,7 @@
     <div class="right-column">
         <!-- Score Info Section -->
         <div class="info-container">
+        <p><strong>Name:</strong> <span id="full-name">{{ $fullName }}</span></p>
             <p><strong>Distance:</strong> {{ $score->distance }} meters</p>
             <p><strong>Date:</strong> {{ $score->date }}</p>
         </div>
@@ -237,9 +247,10 @@
         </div>
 
         <div class="score-summary">
-            <p><strong>X:</strong> {{ $score->x_count }}, 
-               <strong>10:</strong> {{ $score->ten_count }}, 
-               <strong>X+10:</strong> {{ $score->x_and_ten_count }}
+            <p>
+                <strong>X:</strong> <span style="font-weight: normal;">{{ $score->x_count }}</span>,&nbsp;&nbsp;&nbsp; 
+                <strong>10:</strong> <span style="font-weight: normal;">{{ $score->ten_count }}</span>,&nbsp;&nbsp;&nbsp;
+                <strong>X+10:</strong> <span style="font-weight: normal;">{{ $score->x_and_ten_count }}</span>
             </p> 
         </div>
 

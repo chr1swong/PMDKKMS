@@ -11,66 +11,62 @@ class ScoringController extends Controller
     // Store the scoring data for an archer
     public function storeScore(Request $request)
 {
-    // Validate all 36 scores (6 sets with 6 scores each) and other inputs
+    // Validate all 36 scores as strings to accommodate 'X' and 'M'
     $request->validate([
         'distance' => 'required|integer|min:1',
         'date' => 'required|date',
-        'set1_score1' => 'required|integer|min:0|max:10',
-        'set1_score2' => 'required|integer|min:0|max:10',
-        'set1_score3' => 'required|integer|min:0|max:10',
-        'set1_score4' => 'required|integer|min:0|max:10',
-        'set1_score5' => 'required|integer|min:0|max:10',
-        'set1_score6' => 'required|integer|min:0|max:10',
-        'set2_score1' => 'required|integer|min:0|max:10',
-        'set2_score2' => 'required|integer|min:0|max:10',
-        'set2_score3' => 'required|integer|min:0|max:10',
-        'set2_score4' => 'required|integer|min:0|max:10',
-        'set2_score5' => 'required|integer|min:0|max:10',
-        'set2_score6' => 'required|integer|min:0|max:10',
-        'set3_score1' => 'required|integer|min:0|max:10',
-        'set3_score2' => 'required|integer|min:0|max:10',
-        'set3_score3' => 'required|integer|min:0|max:10',
-        'set3_score4' => 'required|integer|min:0|max:10',
-        'set3_score5' => 'required|integer|min:0|max:10',
-        'set3_score6' => 'required|integer|min:0|max:10',
-        'set4_score1' => 'required|integer|min:0|max:10',
-        'set4_score2' => 'required|integer|min:0|max:10',
-        'set4_score3' => 'required|integer|min:0|max:10',
-        'set4_score4' => 'required|integer|min:0|max:10',
-        'set4_score5' => 'required|integer|min:0|max:10',
-        'set4_score6' => 'required|integer|min:0|max:10',
-        'set5_score1' => 'required|integer|min:0|max:10',
-        'set5_score2' => 'required|integer|min:0|max:10',
-        'set5_score3' => 'required|integer|min:0|max:10',
-        'set5_score4' => 'required|integer|min:0|max:10',
-        'set5_score5' => 'required|integer|min:0|max:10',
-        'set5_score6' => 'required|integer|min:0|max:10',
-        'set6_score1' => 'required|integer|min:0|max:10',
-        'set6_score2' => 'required|integer|min:0|max:10',
-        'set6_score3' => 'required|integer|min:0|max:10',
-        'set6_score4' => 'required|integer|min:0|max:10',
-        'set6_score5' => 'required|integer|min:0|max:10',
-        'set6_score6' => 'required|integer|min:0|max:10',
+        'set1_score1' => 'required|string|max:2',
+        'set1_score2' => 'required|string|max:2',
+        'set1_score3' => 'required|string|max:2',
+        'set1_score4' => 'required|string|max:2',
+        'set1_score5' => 'required|string|max:2',
+        'set1_score6' => 'required|string|max:2',
+        'set2_score1' => 'required|string|max:2',
+        'set2_score2' => 'required|string|max:2',
+        'set2_score3' => 'required|string|max:2',
+        'set2_score4' => 'required|string|max:2',
+        'set2_score5' => 'required|string|max:2',
+        'set2_score6' => 'required|string|max:2',
+        'set3_score1' => 'required|string|max:2',
+        'set3_score2' => 'required|string|max:2',
+        'set3_score3' => 'required|string|max:2',
+        'set3_score4' => 'required|string|max:2',
+        'set3_score5' => 'required|string|max:2',
+        'set3_score6' => 'required|string|max:2',
+        'set4_score1' => 'required|string|max:2',
+        'set4_score2' => 'required|string|max:2',
+        'set4_score3' => 'required|string|max:2',
+        'set4_score4' => 'required|string|max:2',
+        'set4_score5' => 'required|string|max:2',
+        'set4_score6' => 'required|string|max:2',
+        'set5_score1' => 'required|string|max:2',
+        'set5_score2' => 'required|string|max:2',
+        'set5_score3' => 'required|string|max:2',
+        'set5_score4' => 'required|string|max:2',
+        'set5_score5' => 'required|string|max:2',
+        'set5_score6' => 'required|string|max:2',
+        'set6_score1' => 'required|string|max:2',
+        'set6_score2' => 'required|string|max:2',
+        'set6_score3' => 'required|string|max:2',
+        'set6_score4' => 'required|string|max:2',
+        'set6_score5' => 'required|string|max:2',
+        'set6_score6' => 'required|string|max:2',
         'notes' => 'nullable|string',
         'canvas_image' => 'required|string',
     ]);
 
-    // Extract the Base64 data
+    // Extract and decode the Base64 image data
     $imageData = $request->input('canvas_image');
-
-    // Decode the image data
     $imageName = 'score_' . time() . '.png';
     $imagePath = public_path('images/scoring/' . $imageName);
 
-    // Ensure the directory exists
     if (!file_exists(public_path('images/scoring'))) {
         mkdir(public_path('images/scoring'), 0777, true);
     }
 
-    // Save the decoded image to the path
     list(, $imageData) = explode(',', $imageData);
     $imageData = base64_decode($imageData);
-    
+
     if (file_put_contents($imagePath, $imageData) === false) {
         return back()->withErrors('Failed to save the canvas image.');
     }
@@ -85,21 +81,29 @@ class ScoringController extends Controller
 
     // Loop through all sets to calculate totals and counters
     for ($set = 1; $set <= 6; $set++) {
-        $setTotal = 0; // Initialize the set's total
-
+        $setTotal = 0;
+    
         for ($score = 1; $score <= 6; $score++) {
             $currentScore = $request->input("set{$set}_score{$score}");
-            $setTotal += $currentScore; // Add to set total
-            $overallTotal += $currentScore; // Add to overall total
-
-            // Update X and 10 counters
-            if ($currentScore == 10) {
-                $tenCount++;
-                $xCount++; // Assuming X = 10
+    
+            // Check if the score is 'X'
+            if ($currentScore === 'X') {
+                $setTotal += 10;  // Treat 'X' as 10 points for calculations
+                $xCount++;
+                $tenCount++;  // 'X' also counts as 10
+            } elseif ($currentScore === 'M') {
+                $setTotal += 0;  // 'M' is a miss
+            } else {
+                $numericScore = intval($currentScore);  // Convert string to integer
+                $setTotal += $numericScore;
+    
+                if ($numericScore === 10) {
+                    $tenCount++;
+                }
             }
         }
-
-        // Store the set total in the array
+    
+        $overallTotal += $setTotal;
         $setTotals["set{$set}_total"] = $setTotal;
     }
 
@@ -157,10 +161,11 @@ class ScoringController extends Controller
         'ten_count' => $tenCount,
         'x_and_ten_count' => $xCount + $tenCount,
         'notes' => $request->notes,
-    ], $setTotals)); // Merge set totals into the creation array
+    ], $setTotals));
 
     return back()->with('success', 'Score recorded successfully.');
 }
+
 
     // Show scoring input page for archer
     public function scoring()

@@ -829,11 +829,13 @@
         for (let set = 1; set <= 6; set++) {
             for (let score = 1; score <= 6; score++) {
                 let value = document.getElementById(`set${set}-score${score}`).textContent || '0';
-                
-                // Treat 'X' as 10
-                if (value === 'X') value = 10;
 
-                document.querySelector(`input[name="set${set}_score${score}"]`).value = parseInt(value, 10);
+                // Keep 'X' as 'X' and do not convert it to 10
+                if (value === 'X') {
+                    document.querySelector(`input[name="set${set}_score${score}"]`).value = 'X';
+                } else {
+                    document.querySelector(`input[name="set${set}_score${score}"]`).value = value.toString();
+                }
             }
         }
 

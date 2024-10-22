@@ -10,47 +10,135 @@ class ScoringController extends Controller
 {
     // Store the scoring data for an archer
     public function storeScore(Request $request)
-    {
-        // Validate the score data
-        $request->validate([
-            'set' => 'required|integer|min:1',
-            'category' => 'required|string',
-            'distance' => 'required|integer|min:1',
-            'date' => 'required|date',
-            'score1' => 'required|integer|min:0|max:60',
-            'score2' => 'required|integer|min:0|max:60',
-            'score3' => 'required|integer|min:0|max:60',
-            'score4' => 'required|integer|min:0|max:60',
-            'score5' => 'required|integer|min:0|max:60',
-            'score6' => 'required|integer|min:0|max:60',
-            'notes' => 'nullable|string',
-        ]);
+{
+    // Validate all 36 scores (6 sets with 6 scores each) and other inputs
+    $request->validate([
+        'distance' => 'required|integer|min:1',
+        'date' => 'required|date',
+        'set1_score1' => 'required|integer|min:0|max:10',
+        'set1_score2' => 'required|integer|min:0|max:10',
+        'set1_score3' => 'required|integer|min:0|max:10',
+        'set1_score4' => 'required|integer|min:0|max:10',
+        'set1_score5' => 'required|integer|min:0|max:10',
+        'set1_score6' => 'required|integer|min:0|max:10',
+        'set2_score1' => 'required|integer|min:0|max:10',
+        'set2_score2' => 'required|integer|min:0|max:10',
+        'set2_score3' => 'required|integer|min:0|max:10',
+        'set2_score4' => 'required|integer|min:0|max:10',
+        'set2_score5' => 'required|integer|min:0|max:10',
+        'set2_score6' => 'required|integer|min:0|max:10',
+        'set3_score1' => 'required|integer|min:0|max:10',
+        'set3_score2' => 'required|integer|min:0|max:10',
+        'set3_score3' => 'required|integer|min:0|max:10',
+        'set3_score4' => 'required|integer|min:0|max:10',
+        'set3_score5' => 'required|integer|min:0|max:10',
+        'set3_score6' => 'required|integer|min:0|max:10',
+        'set4_score1' => 'required|integer|min:0|max:10',
+        'set4_score2' => 'required|integer|min:0|max:10',
+        'set4_score3' => 'required|integer|min:0|max:10',
+        'set4_score4' => 'required|integer|min:0|max:10',
+        'set4_score5' => 'required|integer|min:0|max:10',
+        'set4_score6' => 'required|integer|min:0|max:10',
+        'set5_score1' => 'required|integer|min:0|max:10',
+        'set5_score2' => 'required|integer|min:0|max:10',
+        'set5_score3' => 'required|integer|min:0|max:10',
+        'set5_score4' => 'required|integer|min:0|max:10',
+        'set5_score5' => 'required|integer|min:0|max:10',
+        'set5_score6' => 'required|integer|min:0|max:10',
+        'set6_score1' => 'required|integer|min:0|max:10',
+        'set6_score2' => 'required|integer|min:0|max:10',
+        'set6_score3' => 'required|integer|min:0|max:10',
+        'set6_score4' => 'required|integer|min:0|max:10',
+        'set6_score5' => 'required|integer|min:0|max:10',
+        'set6_score6' => 'required|integer|min:0|max:10',
+        'notes' => 'nullable|string',
+    ]);
 
-        // Calculate total score
-        $total = $request->score1 + $request->score2 + $request->score3 + $request->score4 + $request->score5 + $request->score6;
+    // Initialize totals and counters
+    $overallTotal = 0;
+    $xCount = 0;
+    $tenCount = 0;
 
-        // Retrieve the membership ID for the current user
-        $membership = DB::table('membership')->where('account_id', Auth::id())->first();
-        
-        // Create a new score entry
-        Score::create([
-            'membership_id' => $membership->membership_id, // Link the score to membership ID
-            'set' => $request->set,
-            'category' => $request->category,
-            'distance' => $request->distance,
-            'date' => $request->date,
-            'score1' => $request->score1,
-            'score2' => $request->score2,
-            'score3' => $request->score3,
-            'score4' => $request->score4,
-            'score5' => $request->score5,
-            'score6' => $request->score6,
-            'total' => $total,
-            'notes' => $request->notes,
-        ]);
+    // Array to store each set's total
+    $setTotals = [];
 
-        return back()->with('success', 'Score recorded successfully.');
+    // Loop through all sets to calculate totals and counters
+    for ($set = 1; $set <= 6; $set++) {
+        $setTotal = 0; // Initialize the set's total
+
+        for ($score = 1; $score <= 6; $score++) {
+            $currentScore = $request->input("set{$set}_score{$score}");
+            $setTotal += $currentScore; // Add to set total
+            $overallTotal += $currentScore; // Add to overall total
+
+            // Update X and 10 counters
+            if ($currentScore == 10) {
+                $tenCount++;
+                $xCount++; // Assuming X = 10
+            }
+        }
+
+        // Store the set total in the array
+        $setTotals["set{$set}_total"] = $setTotal;
     }
+
+    // Retrieve the membership ID for the current user
+    $membership = DB::table('membership')->where('account_id', Auth::id())->first();
+
+    if (!$membership) {
+        return back()->withErrors('Membership not found.');
+    }
+
+    // Create a new score entry with set totals
+    Score::create(array_merge([
+        'membership_id' => $membership->membership_id,
+        'distance' => $request->distance,
+        'date' => $request->date,
+        'set1_score1' => $request->set1_score1,
+        'set1_score2' => $request->set1_score2,
+        'set1_score3' => $request->set1_score3,
+        'set1_score4' => $request->set1_score4,
+        'set1_score5' => $request->set1_score5,
+        'set1_score6' => $request->set1_score6,
+        'set2_score1' => $request->set2_score1,
+        'set2_score2' => $request->set2_score2,
+        'set2_score3' => $request->set2_score3,
+        'set2_score4' => $request->set2_score4,
+        'set2_score5' => $request->set2_score5,
+        'set2_score6' => $request->set2_score6,
+        'set3_score1' => $request->set3_score1,
+        'set3_score2' => $request->set3_score2,
+        'set3_score3' => $request->set3_score3,
+        'set3_score4' => $request->set3_score4,
+        'set3_score5' => $request->set3_score5,
+        'set3_score6' => $request->set3_score6,
+        'set4_score1' => $request->set4_score1,
+        'set4_score2' => $request->set4_score2,
+        'set4_score3' => $request->set4_score3,
+        'set4_score4' => $request->set4_score4,
+        'set4_score5' => $request->set4_score5,
+        'set4_score6' => $request->set4_score6,
+        'set5_score1' => $request->set5_score1,
+        'set5_score2' => $request->set5_score2,
+        'set5_score3' => $request->set5_score3,
+        'set5_score4' => $request->set5_score4,
+        'set5_score5' => $request->set5_score5,
+        'set5_score6' => $request->set5_score6,
+        'set6_score1' => $request->set6_score1,
+        'set6_score2' => $request->set6_score2,
+        'set6_score3' => $request->set6_score3,
+        'set6_score4' => $request->set6_score4,
+        'set6_score5' => $request->set6_score5,
+        'set6_score6' => $request->set6_score6,
+        'overall_total' => $overallTotal,
+        'x_count' => $xCount,
+        'ten_count' => $tenCount,
+        'x_and_ten_count' => $xCount + $tenCount,
+        'notes' => $request->notes,
+    ], $setTotals)); // Merge set totals into the creation array
+
+    return back()->with('success', 'Score recorded successfully.');
+}
 
     // Show scoring input page for archer
     public function scoring()
@@ -117,8 +205,6 @@ class ScoringController extends Controller
     {
         // Validate the score data
         $request->validate([
-            'set' => 'required|integer|min:1',
-            'category' => 'required|string',
             'distance' => 'required|integer|min:1',
             'date' => 'required|date',
             'score1' => 'required|integer|min:0|max:60',
@@ -136,8 +222,6 @@ class ScoringController extends Controller
         // Find the existing score entry and update it
         $score = Score::findOrFail($id);
         $score->update([
-            'set' => $request->set,
-            'category' => $request->category,
             'distance' => $request->distance,
             'date' => $request->date,
             'score1' => $request->score1,

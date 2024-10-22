@@ -827,11 +827,6 @@
         document.getElementById('scoreForm').submit();
     }
 
-    function cancel() {
-        window.location.href = "{{ route('archer.scoring') }}";
-    }
-
-
     //Touch Screen part
     // Helper function to get the correct event (touch or mouse)
     function getEventCoords(event) {

@@ -156,27 +156,8 @@ class ScoringController extends Controller
         $membership_id = Auth::user()->membership->membership_id;
 
         // Base query for scoring data
-        $query = Score::where('membership_id', $membership_id);
-
-        // Apply filters based on the request
-        switch ($request->input('filter')) {
-            case 'last1day':
-                $query->where('date', '>=', now()->subDay());
-                break;
-            case 'last3days':
-                $query->where('date', '>=', now()->subDays(3));
-                break;
-            case 'last7days':
-                $query->where('date', '>=', now()->subDays(7));
-                break;
-            case 'last30days':
-                $query->where('date', '>=', now()->subDays(30));
-                break;
-            case 'all':
-            default:
-                // Do not filter, show all records
-                break;
-        }
+        $query = Score::where('membership_id', $membership_id)
+        ->select('id', 'date', 'distance', 'overall_total', 'x_count', 'ten_count');
 
         // Custom date range filter
         if ($request->filled('start-date') && $request->filled('end-date')) {

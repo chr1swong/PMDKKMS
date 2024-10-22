@@ -20,6 +20,113 @@
             height: 100vh;
         }
 
+        .main-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* Canvas on the left, right column on the right */
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 400px; /* Set the same max-width */
+            margin: 0 auto; /* Center align */
+            box-sizing: border-box; /* Include padding in width calculations */
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%; /* Full width */
+            max-width: 400px; /* Same max-width as the grid container */
+            box-sizing: border-box;
+        }
+
+        .input-section select {
+            width: 100%; 
+            padding: 10px;
+            padding-right: 40px; /* Add space for the arrow */
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: white;
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .input-section select::after {
+            content: '▼'; /* Unicode arrow */
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            font-size: 16px;
+            color: #777;
+            z-index: 1; /* Ensure the arrow is on top */
+        }
+
+        .input-section input {
+            width: auto;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .select-wrapper::after {
+            content: '▼'; /* Unicode arrow */
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none; /* Prevent interaction with the arrow */
+            font-size: 12px;
+            color: #777;
+        }
+
+        .notes-section {
+            margin-top: 5px;
+        }
+
+        .notes-section label {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .notes-section textarea {
+            resize: none; /* Disable resizing */
+            overflow-y: scroll; /* Add vertical scroll if content overflows */
+            max-height: 150px; /* Set a fixed maximum height */
+            min-height: 100px; /* Set a fixed minimum height */
+            width: 100%; /* Full width of the container */
+            font-family: 'Poppins', sans-serif; /* Matching the rest of the design */
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box; /* Include padding and border in the width */
+            background-color: white; /* Set background color to white */
+        }
+
         #targetCanvas {
             border: 1px solid #000;
             margin-bottom: 20px;
@@ -30,24 +137,32 @@
 
         .grid-container {
             display: grid;
-            grid-template-columns: 120px repeat(6, 1fr) 80px; /* 8 columns: Set + 6 Scores + Total */
-            gap: 2px;
-            margin-bottom: 10px;
-            width: 90%;
-            max-width: 800px;
+            /* Adjust column sizes: narrower set and total columns, wider score cells */
+            grid-template-columns: 80px repeat(6, 1.5fr) 60px;
+            gap: 3px; /* Slightly increase gap for better readability */
             border: 1px solid #ccc;
             background-color: #f9f9f9;
             border-radius: 8px;
             overflow: hidden;
+            width: 100%;
+            max-width: 700px; /* Expand container width slightly */
+            margin: 0 auto;
+            box-sizing: border-box;
         }
 
         .grid-item {
-            padding: 8px; /* Reduce padding for a more compact look */
+            display: flex; /* Use flexbox for perfect alignment */
+            align-items: center; /* Center content vertically */
+            justify-content: center; /* Center content horizontally */
+            padding: 12px; /* Increase padding for more space */
             text-align: center;
-            font-weight: 600; /* Make the text bold */
+            font-weight: 600;
             background-color: white;
-            border: 1px solid #ddd; /* Light border between items */
-            font-size: 16px; /* Adjust font size for readability */
+            border: 1px solid #ddd;
+            font-size: 18px;
+            white-space: nowrap;
+            overflow: hidden;
+            box-sizing: border-box;
         }
 
         .grid-item:nth-child(8n+1) {
@@ -68,25 +183,17 @@
             font-weight: 700;
         }
 
-        .buttons {
-            display: flex;
-            justify-content: space-around;
-            width: 80%;
-            margin-top: 15px;
-            gap: 10px;
+        .score-summary {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: left;
         }
 
-        .buttons-container {
+        .buttons {
             display: flex;
-            justify-content: space-between; 
-            align-items: center;
-            width: 100%; /* Full width to match content */
-            max-width: 800px;
-            margin-top: 20px;
-            padding: 10px 0;
-            background-color: #fff; /* White background for the button section */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-            border-radius: 8px;
+            justify-content: space-between; /* Spread buttons evenly */
+            gap: 10px; /* Add space between buttons */
+            margin-top: 15px; /* Space from the grid */
         }
 
         .btn {
@@ -96,7 +203,7 @@
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s;
-            width: 20%;
+            flex: 1; /* Ensure all buttons take equal space */
             max-width: 150px;
             text-align: center;
         }
@@ -108,6 +215,7 @@
         .btn-cancel {
             background-color: #f44336;
             color: white;
+            margin-top: 20px; 
         }
 
         .btn-cancel:hover {
@@ -130,6 +238,15 @@
 
         .btn-clear:hover {
             background-color: #616161;
+        }
+
+        .btn-undo {
+            background-color: #ff6f6f; /* Lighter red */
+            color: white;
+        }
+
+        .btn-undo:hover {
+            background-color: #ff5252; /* Slightly darker on hover */
         }
 
         .magnifier {
@@ -174,84 +291,114 @@
 </head>
 <body>
 
-<!-- Canvas Target -->
-<canvas id="targetCanvas" width="800" height="800"></canvas>
-<div class="magnifier" id="magnifier">
-    <canvas id="magnifierCanvas" width="150" height="150"></canvas>
+<div class="main-container">
+    <!-- Canvas -->
+    <canvas id="targetCanvas" width="800" height="800"></canvas>
+            <div class="magnifier" id="magnifier">
+                <canvas id="magnifierCanvas" width="150" height="150"></canvas>
+            </div>
+
+    <!-- Right Column with Input and Grid -->
+    <div class="right-column">
+        <!-- Input Section -->
+        <div class="input-section">
+            <select id="distance" name="distance" required>
+                <option value="10" selected>10 meters</option>
+                <option value="20">20 meters</option>
+                <option value="30">30 meters</option>
+                <option value="40">40 meters</option>
+                <option value="50">50 meters</option>
+                <option value="60">60 meters</option>
+                <option value="70">70 meters</option>
+            </select>
+            <input type="date" id="date" name="date" value="{{ now()->format('Y-m-d') }}" required>
+
+            <div class="notes-section">
+                <label for="notes" style="font-weight: bold;">Notes: <span style="font-size: 12px; font-style: italic;">*Optional*</span></label>
+                <textarea name="notes" id="notes" placeholder="Add any notes here (optional)"></textarea>
+            </div>
+        </div>
+
+        <!-- Grid Container -->
+        <div class="grid-container" id="scoreGrid">
+            <div class="grid-item">Set 1</div>
+            <div class="grid-item" id="set1-score1"></div>
+            <div class="grid-item" id="set1-score2"></div>
+            <div class="grid-item" id="set1-score3"></div>
+            <div class="grid-item" id="set1-score4"></div>
+            <div class="grid-item" id="set1-score5"></div>
+            <div class="grid-item" id="set1-score6"></div>
+            <div class="grid-item total-cell" id="set1-total">0</div>
+
+            <div class="grid-item">Set 2</div>
+            <div class="grid-item" id="set2-score1"></div>
+            <div class="grid-item" id="set2-score2"></div>
+            <div class="grid-item" id="set2-score3"></div>
+            <div class="grid-item" id="set2-score4"></div>
+            <div class="grid-item" id="set2-score5"></div>
+            <div class="grid-item" id="set2-score6"></div>
+            <div class="grid-item total-cell" id="set2-total">0</div>
+
+            <div class="grid-item">Set 3</div>
+            <div class="grid-item" id="set3-score1"></div>
+            <div class="grid-item" id="set3-score2"></div>
+            <div class="grid-item" id="set3-score3"></div>
+            <div class="grid-item" id="set3-score4"></div>
+            <div class="grid-item" id="set3-score5"></div>
+            <div class="grid-item" id="set3-score6"></div>
+            <div class="grid-item total-cell" id="set3-total">0</div>
+
+            <div class="grid-item">Set 4</div>
+            <div class="grid-item" id="set4-score1"></div>
+            <div class="grid-item" id="set4-score2"></div>
+            <div class="grid-item" id="set4-score3"></div>
+            <div class="grid-item" id="set4-score4"></div>
+            <div class="grid-item" id="set4-score5"></div>
+            <div class="grid-item" id="set4-score6"></div>
+            <div class="grid-item total-cell" id="set4-total">0</div>
+
+            <div class="grid-item">Set 5</div>
+            <div class="grid-item" id="set5-score1"></div>
+            <div class="grid-item" id="set5-score2"></div>
+            <div class="grid-item" id="set5-score3"></div>
+            <div class="grid-item" id="set5-score4"></div>
+            <div class="grid-item" id="set5-score5"></div>
+            <div class="grid-item" id="set5-score6"></div>
+            <div class="grid-item total-cell" id="set5-total">0</div>
+
+            <div class="grid-item">Set 6</div>
+            <div class="grid-item" id="set6-score1"></div>
+            <div class="grid-item" id="set6-score2"></div>
+            <div class="grid-item" id="set6-score3"></div>
+            <div class="grid-item" id="set6-score4"></div>
+            <div class="grid-item" id="set6-score5"></div>
+            <div class="grid-item" id="set6-score6"></div>
+            <div class="grid-item total-cell" id="set6-total">0</div>
+
+            <div class="grid-item total-cell" style="grid-column: span 7; text-align: right;">
+                Overall Total
+            </div>
+            <div class="grid-item total-cell" id="overall-total">0</div>
+        </div>
+
+        <div class="score-summary">
+            <p>
+                <strong>X:</strong> <span id="x-count" style="font-weight: normal;">0</span>,&nbsp;&nbsp;&nbsp;
+                <strong>10:</strong> <span id="ten-count" style="font-weight: normal;">0</span>,&nbsp;&nbsp;&nbsp;
+                <strong>X+10:</strong> <span id="x-and-ten-count" style="font-weight: normal;">0</span>
+            </p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="buttons">
+            <button class="btn btn-clear" onclick="clearGrid()">Clear</button>
+            <button class="btn btn-undo" onclick="revertScore()">Undo</button>
+            <button class="btn btn-enter" onclick="enterScore()">Submit</button>
+        </div>
 </div>
 
-<div class="grid-container" id="scoreGrid">
-
-    <!-- Dynamically created rows for each set -->
-    <div class="grid-item">Set 1</div>
-    <div class="grid-item" id="set1-score1"></div>
-    <div class="grid-item" id="set1-score2"></div>
-    <div class="grid-item" id="set1-score3"></div>
-    <div class="grid-item" id="set1-score4"></div>
-    <div class="grid-item" id="set1-score5"></div>
-    <div class="grid-item" id="set1-score6"></div>
-    <div class="grid-item total-cell" id="set1-total">0</div>
-
-    <div class="grid-item">Set 2</div>
-    <div class="grid-item" id="set2-score1"></div>
-    <div class="grid-item" id="set2-score2"></div>
-    <div class="grid-item" id="set2-score3"></div>
-    <div class="grid-item" id="set2-score4"></div>
-    <div class="grid-item" id="set2-score5"></div>
-    <div class="grid-item" id="set2-score6"></div>
-    <div class="grid-item total-cell" id="set2-total">0</div>
-
-    <div class="grid-item">Set 3</div>
-    <div class="grid-item" id="set3-score1"></div>
-    <div class="grid-item" id="set3-score2"></div>
-    <div class="grid-item" id="set3-score3"></div>
-    <div class="grid-item" id="set3-score4"></div>
-    <div class="grid-item" id="set3-score5"></div>
-    <div class="grid-item" id="set3-score6"></div>
-    <div class="grid-item total-cell" id="set3-total">0</div>
-
-    <div class="grid-item">Set 4</div>
-    <div class="grid-item" id="set4-score1"></div>
-    <div class="grid-item" id="set4-score2"></div>
-    <div class="grid-item" id="set4-score3"></div>
-    <div class="grid-item" id="set4-score4"></div>
-    <div class="grid-item" id="set4-score5"></div>
-    <div class="grid-item" id="set4-score6"></div>
-    <div class="grid-item total-cell" id="set4-total">0</div>
-
-    <div class="grid-item">Set 5</div>
-    <div class="grid-item" id="set5-score1"></div>
-    <div class="grid-item" id="set5-score2"></div>
-    <div class="grid-item" id="set5-score3"></div>
-    <div class="grid-item" id="set5-score4"></div>
-    <div class="grid-item" id="set5-score5"></div>
-    <div class="grid-item" id="set5-score6"></div>
-    <div class="grid-item total-cell" id="set5-total">0</div>
-
-    <div class="grid-item">Set 6</div>
-    <div class="grid-item" id="set6-score1"></div>
-    <div class="grid-item" id="set6-score2"></div>
-    <div class="grid-item" id="set6-score3"></div>
-    <div class="grid-item" id="set6-score4"></div>
-    <div class="grid-item" id="set6-score5"></div>
-    <div class="grid-item" id="set6-score6"></div>
-    <div class="grid-item total-cell" id="set6-total">0</div>
-
-    <div class="grid-item total-cell" style="grid-column: span 7; text-align: right;">
-        Overall Total
-    </div>
-    <div class="grid-item total-cell" id="overall-total">0</div>
-
-</div>
-
-
-<!-- Buttons -->
-<div class="buttons-container">
+    <!-- Cancel Button at the Bottom -->
     <button class="btn btn-cancel" onclick="cancel()">Cancel</button>
-    <button class="btn btn-clear" onclick="clearGrid()">Clear</button>
-    <button class="btn" onclick="revertScore()">Back</button>
-    <button class="btn btn-enter" onclick="enterScore()">Enter</button>
-</div>
 
 <script>
     const canvas = document.getElementById('targetCanvas');
@@ -395,7 +542,30 @@
         document.getElementById('overall-total').textContent = overallTotal;
     }
 
+    let xCount = 0;
+    let tenCount = 0;
+    let xAndTenCount = 0;
+
+    function updateScoreSummary() {
+        document.getElementById('x-count').textContent = xCount;
+        document.getElementById('ten-count').textContent = tenCount;
+        document.getElementById('x-and-ten-count').textContent = xAndTenCount;
+    }
+
+    function resetCounters() {
+        xCount = 0;
+        tenCount = 0;
+        xAndTenCount = 0;
+        updateScoreSummary();
+    }
+
+
     canvas.addEventListener('mouseup', (event) => {
+        if (scoreHistory.length >= 36) {
+            alert('All grid boxes are filled!');
+            return; // Stop further processing if the grid is full
+        }
+
         isDragging = false; // Stop dragging
         magnifier.style.display = 'none'; // Hide magnifier
 
@@ -416,9 +586,15 @@
             score = 'M';  // Miss
         } else if (distance <= radii[radii.length - 1]) {
             score = 'X';  // Innermost circle
+            xCount++;
+            xAndTenCount++; // Increment X+10 only for X
         } else {
             score = 10 - Math.floor(distance / 30); // Calculate other scores
             if (score < 1) score = 1; // Ensure minimum score of 1
+            if (score === 10) {
+                tenCount++;
+                xAndTenCount++; // Increment X+10 only for 10
+            }
         }
 
         let scorePlaced = false;
@@ -427,7 +603,7 @@
                 if (scoreGrid[i][j] === null) {
                     scoreGrid[i][j] = score;
                     document.getElementById(`set${i + 1}-score${j + 1}`).textContent = score;
-                    scoreHistory.push({ set: i, position: j, dot: { x, y } });
+                    scoreHistory.push({ set: i, position: j, dot: { x, y }, score });
                     scorePlaced = true;
                     calculateTotal(i);  // Update the total after placing a score
                     break;
@@ -435,6 +611,8 @@
             }
         }
 
+        updateScoreSummary();
+        
         // Store the dot's final position
         dots.push({ x, y });
 
@@ -460,13 +638,30 @@
         if (scoreHistory.length === 0) return; // No scores to revert
 
         const lastEntry = scoreHistory.pop(); // Get the last score and dot position
-        const { set, position, dot } = lastEntry;
+        const { set, position, dot, score } = lastEntry;
+
+        // Decrement X or 10 counters if applicable
+        if (score === 'X') {
+            xCount--;
+            xAndTenCount--; // Decrement combined counter
+        }
+        if (score === 10) {
+            tenCount--;
+            xAndTenCount--; // Decrement combined counter
+        }
+
+        updateScoreSummary(); // Update the displayed counters
 
         scoreGrid[set][position] = null; // Clear the score
         document.getElementById(`set${set + 1}-score${position + 1}`).textContent = '';
 
-        // Remove the corresponding dot
-        dots = dots.filter(d => d.x !== dot.x || d.y !== dot.y);
+        // Find the last matching dot and remove only that one
+        for (let i = dots.length - 1; i >= 0; i--) {
+            if (dots[i].x === dot.x && dots[i].y === dot.y) {
+                dots.splice(i, 1); // Remove the last matching dot
+                break; // Stop after removing one dot
+            }
+        }
 
         // Redraw the canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -476,6 +671,7 @@
         // Recalculate the total for the relevant set
         calculateTotal(set);
     }
+
 
     function clearGrid() {
         // Clear the score grid
@@ -493,6 +689,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear entire canvas
         drawTarget(); // Redraw the target without dots
 
+        resetCounters(); // // Reset all counters including X, 10, and X+10
         updateOverallTotal();
     }
 

@@ -216,6 +216,7 @@
         <button class="close" onclick="this.parentElement.style.display='none';">&times;</button>
     </div>
 @endif
+
 <div class="scoring-history-container">
     <div class="scoring-header">
         <h1 class="scoring-history-header">Scoring History</h1>
@@ -224,7 +225,6 @@
 
     <hr class="hr-divider">
 
-    <!-- Membership ID and Filter -->
     <div class="filter-container">
         <div>
             <label for="membership-id">Membership ID</label>
@@ -242,17 +242,14 @@
         </div>
     </div>
 
-    <!-- Scoring History Table -->
     <div class="table-container">
         <table id="scoringTable">
             <thead>
                 <tr>
-                    <th>No.</th> <!-- Index column without sorter -->
+                    <th>No.</th>
                     <th onclick="sortTable(1)">Date <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(2)">Category <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(3)">Set <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(4)">Distance <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(5)">Total Score <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(2)">Distance <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(3)">Total Score <i class="fas fa-sort"></i></th>
                     <th>Performance</th>
                 </tr>
             </thead>
@@ -261,8 +258,6 @@
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td>{{ \Carbon\Carbon::parse($score->date)->format('d F Y') }}</td>
-                        <td>{{ $score->category }}</td>
-                        <td>{{ $score->set }}</td>
                         <td>{{ $score->distance }}M</td>
                         <td>{{ $score->total }}/360</td>
                         <td>
@@ -271,158 +266,106 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7">No scoring records found.</td>
+                        <td colspan="5">No scoring records found.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
-    <!-- Pagination -->
     {{ $scoringData->links() }}
 
-    <!-- Back Button -->
     <a href="{{ route('archer.scoring') }}" class="back-btn">
         <i class="fas fa-arrow-left"></i> Back
     </a>
 </div>
 
-<!-- jsPDF and autoTable libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
 
 <script>
-    // Sorting function for the table
     function sortTable(n) {
         const table = document.getElementById("scoringTable");
-        let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-        switching = true;
-        dir = "asc"; // Set the sorting direction to ascending by default
+        let switching = true, dir = "asc", switchcount = 0;
         while (switching) {
             switching = false;
-            rows = table.rows;
-            for (i = 1; i < (rows.length - 1); i++) {
-                shouldSwitch = false;
-                x = rows[i].getElementsByTagName("TD")[n];
-                y = rows[i + 1].getElementsByTagName("TD")[n];
-                if (n == 1) { // Column index 1 is for the Date
-                    const xDate = new Date(x.innerHTML);
-                    const yDate = new Date(y.innerHTML);
-                    if (dir == "asc" && xDate > yDate) {
-                        shouldSwitch = true;
-                        break;
-                    } else if (dir == "desc" && xDate < yDate) {
-                        shouldSwitch = true;
-                        break;
-                    }
-                } else if (n == 4) { // Distance column
-                    const xDistance = parseInt(x.innerHTML);
-                    const yDistance = parseInt(y.innerHTML);
-                    if (dir == "asc" && xDistance > yDistance) {
-                        shouldSwitch = true;
-                        break;
-                    } else if (dir == "desc" && xDistance < yDistance) {
-                        shouldSwitch = true;
-                        break;
-                    }
-                } else if (n == 5) { // Total Score column
-                    const xScore = parseInt(x.innerHTML.split('/')[0]);
-                    const yScore = parseInt(y.innerHTML.split('/')[0]);
-                    if (dir == "asc" && xScore > yScore) {
-                        shouldSwitch = true;
-                        break;
-                    } else if (dir == "desc" && xScore < yScore) {
-                        shouldSwitch = true;
-                        break;
-                    }
-                } else {
-                    if (dir == "asc" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                        shouldSwitch = true;
-                        break;
-                    } else if (dir == "desc" && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                        shouldSwitch = true;
-                        break;
-                    }
+            let rows = table.rows;
+            for (let i = 1; i < rows.length - 1; i++) {
+                let shouldSwitch = false;
+                const x = rows[i].getElementsByTagName("TD")[n];
+                const y = rows[i + 1].getElementsByTagName("TD")[n];
+                const xValue = n === 1 ? new Date(x.innerHTML) : parseInt(x.innerHTML);
+                const yValue = n === 1 ? new Date(y.innerHTML) : parseInt(y.innerHTML);
+                if (dir === "asc" ? xValue > yValue : xValue < yValue) {
+                    shouldSwitch = true;
+                    break;
                 }
             }
             if (shouldSwitch) {
                 rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                 switching = true;
                 switchcount++;
-            } else {
-                if (switchcount == 0 && dir == "asc") {
-                    dir = "desc";
-                    switching = true;
-                }
+            } else if (switchcount === 0 && dir === "asc") {
+                dir = "desc";
+                switching = true;
             }
         }
-        updateIndex(); // Recalculate index numbers after sorting
+        updateIndex();
     }
 
-    // Function to recalculate index numbers
     function updateIndex() {
         const rows = document.querySelectorAll('#scoring-table tr');
         rows.forEach((row, index) => {
-            row.cells[0].innerHTML = index + 1; // Update index cell
+            row.cells[0].innerHTML = index + 1;
         });
     }
 
-    // PDF Generation
     document.getElementById('generate-pdf').addEventListener('click', function () {
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF('p', 'mm', 'a4');
 
-        // Table headers
-        const headers = [['No.', 'Date', 'Category', 'Set', 'Distance', 'Total Score']];
+        const headers = [['No.', 'Date', 'Distance', 'Total Score']];
 
-        // Get table data
         const tableRows = [];
         const rows = document.querySelectorAll('#scoringTable tbody tr');
 
         rows.forEach((row, index) => {
             const cells = row.querySelectorAll('td');
             const rowData = [
-                index + 1, // No.
-                cells[1].innerText, // Date
-                cells[2].innerText, // Category
-                cells[3].innerText, // Set
-                cells[4].innerText, // Distance
-                cells[5].innerText  // Total Score
+                index + 1,
+                cells[1].innerText,
+                cells[2].innerText,
+                cells[3].innerText
             ];
-            tableRows.push(rowData); // Push each row data into tableRows array
+            tableRows.push(rowData);
         });
 
-        // Add title to PDF
         pdf.setFontSize(18);
         pdf.text('Scoring History', 14, 20);
 
-        // Create table in the PDF
         pdf.autoTable({
             head: headers,
             body: tableRows,
-            startY: 30, // Y position where the table starts
+            startY: 30,
             styles: {
-                fontSize: 10, // Font size for table
-                cellPadding: 3, // Cell padding
-                halign: 'center', // Text alignment inside cells
-                valign: 'middle', // Vertical alignment
-                lineColor: [44, 62, 80], // Line color for the table borders
-                lineWidth: 0.5 // Line width for the table borders
+                fontSize: 10,
+                cellPadding: 3,
+                halign: 'center',
+                valign: 'middle',
+                lineColor: [44, 62, 80],
+                lineWidth: 0.5
             },
             headStyles: {
-                fillColor: [33, 150, 243], // Header background color (blue)
-                textColor: [255, 255, 255], // Header text color (white)
+                fillColor: [33, 150, 243],
+                textColor: [255, 255, 255]
             }
         });
 
-        // Get current date
-        const currentDate = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
-
-        // Save the generated PDF with date in the filename
+        const currentDate = new Date().toISOString().split('T')[0];
         pdf.save(`scoring_history_${currentDate}.pdf`);
     });
-
 </script>
 
 </body>
 </html>
+

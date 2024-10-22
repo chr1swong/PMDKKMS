@@ -74,61 +74,40 @@ Route::middleware('auth')->group(function () {
 });
 
 // Routes accessible to archer only
-Route::middleware(['auth', RoleAccessMiddleware::class.':1'])->group(function () {
-    Route::get('/archer/dashboard', function () {
-        return view('archer.dashboard');
-    })->name('archer.dashboard');
+Route::middleware(['auth', RoleAccessMiddleware::class . ':1'])->group(function () {
+
+    // Archer Dashboard
+    Route::get('/archer/dashboard', [EventController::class, 'showArcherDashboard'])->name('archer.dashboard');
 
     // Archer Profile
     Route::get('/archer/profile', [AccountController::class, 'profile'])->name('archer.profile');
+    Route::get('/archer/editProfile', [AccountController::class, 'editProfile'])->name('archer.editProfile');
+    Route::post('/archer/updateProfile', [AccountController::class, 'updateProfile'])->name('archer.updateProfile');
+    Route::post('/archer/changePassword', [PasswordResetController::class, 'changePassword'])->name('archer.changePassword');
+    Route::put('/archer/updateProfilePicture', [AccountController::class, 'updateProfilePicture'])->name('archer.updateProfilePicture');
 
-    // Route for archer attendance
+    // Archer Attendance
     Route::get('/archer/attendance', [AttendanceController::class, 'showAttendanceForm'])->name('archer.attendance');
     Route::post('/archer/attendance', [AttendanceController::class, 'storeAttendance'])->name('attendance.store');
     Route::get('/archer/attendance/view', [AttendanceController::class, 'viewAttendance'])->name('attendance.view');
 
-    // Route for viewing the edit profile form (GET)
-    Route::get('/archer/editProfile', [AccountController::class, 'editProfile'])->name('archer.editProfile');
-
-    // Route for handling profile update (POST)
-    Route::post('/archer/updateProfile', [AccountController::class, 'updateProfile'])->name('archer.updateProfile');
-
-    // Route for handling changing password
-    Route::post('/archer/changePassword', [PasswordResetController::class, 'changePassword'])->name('archer.changePassword'); // Changed route name here
-
-    // Route for updating profile picture
-    Route::put('/archer/updateProfilePicture', [AccountController::class, 'updateProfilePicture'])->name('archer.updateProfilePicture');
-
-    //Route for viewing events
+    // Events
     Route::get('/archer/events', [EventController::class, 'viewEvents'])->name('archer.events');
 
-    //Route for viewing events in dashboard
-    Route::get('/archer/dashboard', [EventController::class, 'showArcherDashboard'])->name('archer.dashboard');
-
-    // Route to display the scoring form (GET request)
+    // Scoring Routes
     Route::get('/archer/scoring', [ScoringController::class, 'scoring'])->name('archer.scoring');
-
-    // Route to store the score (POST request)
-    Route::post('/archer/scoring', [ScoringController::class, 'storeScore'])->name('archer.storeScore');
-
-    // Route for showing the scoring history page
+    Route::post('/archer/scoring', [ScoringController::class, 'storeScore'])->name('scoring.store');  // Updated route name here
     Route::get('/archer/scoring-history', [ScoringController::class, 'showScoringHistoryArcher'])->name('archer.scoringHistory');
-
-    // Route for showing scoring details
     Route::get('/archer/scoring-details/{id}', [ScoringController::class, 'showScoreDetails'])->name('scoring.details');
+    Route::put('/archer/scoring/{id}', [ScoringController::class, 'updateScore'])->name('scoring.update');
+    Route::delete('/archer/scoring/{id}', [ScoringController::class, 'deleteScore'])->name('scoring.delete');
 
-    // Route for the interactive scoring
+    // Interactive Scoring
     Route::get('/archer/scoringInteractive', function () {
         return view('archer.scoringInteractive');
     })->name('archer.scoringInteractive');
 
-    // Route for updating score
-    Route::put('/archer/scoring/{id}', [ScoringController::class, 'updateScore'])->name('scoring.update');
-
-    // Route for score deletion
-    Route::delete('/archer/scoring/{id}', [ScoringController::class, 'deleteScore'])->name('scoring.delete');
-
-    // Route for performance analytics
+    // Performance Analytics
     Route::get('/archer/performance-analytics', [AnalyticsController::class, 'performanceAnalytics'])->name('archer.performanceAnalytics');
 });
 

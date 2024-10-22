@@ -52,7 +52,28 @@ class ScoringController extends Controller
         'set6_score5' => 'required|integer|min:0|max:10',
         'set6_score6' => 'required|integer|min:0|max:10',
         'notes' => 'nullable|string',
+        'canvas_image' => 'required|string',
     ]);
+
+    // Extract the Base64 data
+    $imageData = $request->input('canvas_image');
+
+    // Decode the image data
+    $imageName = 'score_' . time() . '.png';
+    $imagePath = public_path('images/scoring/' . $imageName);
+
+    // Ensure the directory exists
+    if (!file_exists(public_path('images/scoring'))) {
+        mkdir(public_path('images/scoring'), 0777, true);
+    }
+
+    // Save the decoded image to the path
+    list(, $imageData) = explode(',', $imageData);
+    $imageData = base64_decode($imageData);
+    
+    if (file_put_contents($imagePath, $imageData) === false) {
+        return back()->withErrors('Failed to save the canvas image.');
+    }
 
     // Initialize totals and counters
     $overallTotal = 0;
@@ -94,6 +115,7 @@ class ScoringController extends Controller
         'membership_id' => $membership->membership_id,
         'distance' => $request->distance,
         'date' => $request->date,
+        'canvas_image' => $imageName,
         'set1_score1' => $request->set1_score1,
         'set1_score2' => $request->set1_score2,
         'set1_score3' => $request->set1_score3,

@@ -69,6 +69,7 @@ class CreateScoresTable extends Migration
             $table->integer('ten_count')->default(0); // Store 10 count
             $table->integer('x_and_ten_count')->default(0); // Store combined X+10 count
 
+            $table->string('canvas_image')->nullable();
             $table->text('notes')->nullable(); // Optional notes
             $table->timestamps();
 

@@ -813,6 +813,19 @@
     }
 
     function submitScores() {
+        // Convert the canvas to a Base64 string
+        const canvasImage = canvas.toDataURL('image/png');
+
+        // Populate the hidden input with the image data
+        const hiddenImageInput = document.createElement('input');
+        hiddenImageInput.type = 'hidden';
+        hiddenImageInput.name = 'canvas_image';
+        hiddenImageInput.value = canvasImage;
+
+        // Append the hidden input to the form
+        document.getElementById('scoreForm').appendChild(hiddenImageInput);
+
+        // Populate hidden score inputs
         for (let set = 1; set <= 6; set++) {
             for (let score = 1; score <= 6; score++) {
                 let value = document.getElementById(`set${set}-score${score}`).textContent || '0';
@@ -820,12 +833,14 @@
                 // Treat 'X' as 10
                 if (value === 'X') value = 10;
 
-                // Populate the corresponding hidden input
                 document.querySelector(`input[name="set${set}_score${score}"]`).value = parseInt(value, 10);
             }
         }
+
+        // Submit the form
         document.getElementById('scoreForm').submit();
     }
+
 
     //Touch Screen part
     // Helper function to get the correct event (touch or mouse)

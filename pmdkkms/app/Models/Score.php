@@ -43,7 +43,8 @@ class Score extends Model
         'ten_count', 
         'x_and_ten_count', 
 
-        'notes'
+        'notes',
+        'canvas_image'
     ];
 
     // Define the relationship with the Membership model

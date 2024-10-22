@@ -803,13 +803,16 @@
             document.getElementById(`set${i + 1}-total`).textContent = '0';
         }
 
-        // Clear the dots and canvas, then redraw the target
+        // Clear the score history and dots
+        scoreHistory = []; // Reset the score history array
         dots = []; // Reset the dots array
-        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear entire canvas
-        drawTarget(); // Redraw the target without dots
 
-        resetCounters(); // // Reset all counters including X, 10, and X+10
-        updateOverallTotal();
+        // Clear the canvas and redraw the target
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawTarget();
+
+        resetCounters(); // Reset counters (X, 10, X+10)
+        updateOverallTotal(); // Reset overall total
     }
 
     function submitScores() {

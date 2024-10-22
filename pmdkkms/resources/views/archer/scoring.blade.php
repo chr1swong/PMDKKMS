@@ -387,15 +387,57 @@
             </div>
 
 
-            <!-- Hidden Inputs for Score Values -->
+            <!-- Update Hidden Inputs -->
             <div id="hidden-score-inputs">
-                <input type="hidden" name="score1">
-                <input type="hidden" name="score2">
-                <input type="hidden" name="score3">
-                <input type="hidden" name="score4">
-                <input type="hidden" name="score5">
-                <input type="hidden" name="score6">
+                <!-- Set 1 -->
+                <input type="hidden" name="set1_score1">
+                <input type="hidden" name="set1_score2">
+                <input type="hidden" name="set1_score3">
+                <input type="hidden" name="set1_score4">
+                <input type="hidden" name="set1_score5">
+                <input type="hidden" name="set1_score6">
+
+                <!-- Set 2 -->
+                <input type="hidden" name="set2_score1">
+                <input type="hidden" name="set2_score2">
+                <input type="hidden" name="set2_score3">
+                <input type="hidden" name="set2_score4">
+                <input type="hidden" name="set2_score5">
+                <input type="hidden" name="set2_score6">
+
+                <!-- Set 3 -->
+                <input type="hidden" name="set3_score1">
+                <input type="hidden" name="set3_score2">
+                <input type="hidden" name="set3_score3">
+                <input type="hidden" name="set3_score4">
+                <input type="hidden" name="set3_score5">
+                <input type="hidden" name="set3_score6">
+
+                <!-- Set 4 -->
+                <input type="hidden" name="set4_score1">
+                <input type="hidden" name="set4_score2">
+                <input type="hidden" name="set4_score3">
+                <input type="hidden" name="set4_score4">
+                <input type="hidden" name="set4_score5">
+                <input type="hidden" name="set4_score6">
+
+                <!-- Set 5 -->
+                <input type="hidden" name="set5_score1">
+                <input type="hidden" name="set5_score2">
+                <input type="hidden" name="set5_score3">
+                <input type="hidden" name="set5_score4">
+                <input type="hidden" name="set5_score5">
+                <input type="hidden" name="set5_score6">
+
+                <!-- Set 6 -->
+                <input type="hidden" name="set6_score1">
+                <input type="hidden" name="set6_score2">
+                <input type="hidden" name="set6_score3">
+                <input type="hidden" name="set6_score4">
+                <input type="hidden" name="set6_score5">
+                <input type="hidden" name="set6_score6">
             </div>
+
 
             <!-- Grid Container -->
             <div class="grid-container" id="scoreGrid">
@@ -471,7 +513,7 @@
             <div class="buttons">
                 <button type="button" class="btn btn-clear" onclick="clearGrid()">Clear</button>
                 <button type="button" class="btn btn-undo" onclick="revertScore()">Undo</button>
-                <button type="button" class="btn btn-enter" onclick="submitScores()">Submit</button>
+                <button type="submit" class="btn btn-enter" onclick="submitScores()">Submit</button>
             </div>
         </form>
     </div>
@@ -778,8 +820,8 @@
                 // Treat 'X' as 10
                 if (value === 'X') value = 10;
 
-                // Ensure the value is a valid integer
-                document.getElementById(`set${set}_score${score}`).value = parseInt(value, 10);
+                // Populate the corresponding hidden input
+                document.querySelector(`input[name="set${set}_score${score}"]`).value = parseInt(value, 10);
             }
         }
         document.getElementById('scoreForm').submit();

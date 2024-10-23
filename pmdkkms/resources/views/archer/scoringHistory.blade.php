@@ -11,6 +11,7 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
+            overflow-x: hidden; 
             background-color: #f4f4f4;
             margin: 0;
             padding: 20px;

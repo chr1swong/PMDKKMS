@@ -324,10 +324,10 @@ class ScoringController extends Controller
             ->select('account.account_full_name')
             ->first();
 
-        $archerName = $archer->account_full_name ?? 'Unknown Archer';
+        $fullName = $archer->account_full_name ?? 'Unknown Archer';
 
         // Pass the score, archer name, and referrer to the view
-        return view('coach.scoringDetails', compact('score', 'archerName', 'referrer'));
+        return view('coach.scoringDetails', compact('score', 'fullName', 'referrer'));
     }
 
     // Method for committee to view scoring history for all archers

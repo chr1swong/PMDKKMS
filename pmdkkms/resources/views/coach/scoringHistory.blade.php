@@ -13,6 +13,7 @@
             font-family: 'Poppins', sans-serif;
             background-color: #f4f4f4;
             margin: 0;
+            overflow-x: hidden; 
             padding: 20px;
         }
 
@@ -237,14 +238,15 @@
                 </tr>
             </thead>
             <tbody id="scoring-table">
-                @forelse($scoringData as $index => $score)
+                @forelse($scoringData as $score)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
+                        <td></td> <!-- Leave this empty; we'll populate it with JavaScript -->
                         <td>{{ \Carbon\Carbon::parse($score->date)->format('d F Y') }}</td>
                         <td>{{ $score->distance }}M</td>
                         <td>{{ $score->overall_total }}/360</td>
                         <td>
-                            <a href="{{ route('coach.scoringDetails', ['id' => $score->id, 'referrer' => 'scoringHistory']) }}" class="btn btn-view">View Scoring Details</a>
+                            <a href="{{ route('coach.scoringDetails', ['id' => $score->id, 'referrer' => 'scoringHistory']) }}" 
+                            class="btn btn-view">View Details</a>
                         </td>
                     </tr>
                 @empty
@@ -266,53 +268,59 @@
 </div>
 
 <script>
-    // Sorting function for the table
-    function sortTable(n) {
-        const table = document.getElementById("scoringTable");
-        let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-        switching = true;
-        dir = "asc"; // Set the sorting direction to ascending by default
-        while (switching) {
-            switching = false;
-            rows = table.rows;
-            for (i = 1; i < (rows.length - 1); i++) {
-                shouldSwitch = false;
-                x = rows[i].getElementsByTagName("TD")[n];
-                y = rows[i + 1].getElementsByTagName("TD")[n];
-                // For dates, convert them to a comparable format
-                if (n == 1) { // Column index 1 is for the Date
-                    const xDate = new Date(x.innerHTML);
-                    const yDate = new Date(y.innerHTML);
-                    if (dir == "asc" && xDate > yDate) {
-                        shouldSwitch = true;
-                        break;
-                    } else if (dir == "desc" && xDate < yDate) {
-                        shouldSwitch = true;
-                        break;
-                    }
-                } else {
-                    // For other columns, use string comparison
-                    if (dir == "asc" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                        shouldSwitch = true;
-                        break;
-                    } else if (dir == "desc" && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                        shouldSwitch = true;
-                        break;
-                    }
-                }
+    function updateTableIndexes() {
+        const table = document.getElementById('scoringTable');
+        const rows = table.querySelectorAll('tbody tr'); // Target only tbody rows
+
+        // Loop through all rows and update the first cell with the correct index
+        let visibleIndex = 1;
+        rows.forEach((row) => {
+            if (row.style.display !== 'none') { // Check if row is visible
+                const indexCell = row.querySelector('td:first-child');
+                indexCell.textContent = visibleIndex++; // Update index
             }
-            if (shouldSwitch) {
-                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
-                switchcount++;
-            } else {
-                if (switchcount == 0 && dir == "asc") {
-                    dir = "desc";
-                    switching = true;
-                }
-            }
-        }
+        });
     }
+
+    // Sorting function that works with index recalculation
+    function sortTable(columnIndex, isDate = false) {
+        const table = document.getElementById('scoringTable');
+        const tbody = table.querySelector('tbody');
+        const rowsArray = Array.from(tbody.rows); // Convert rows to an array for sorting
+
+        let direction = table.dataset.sortDirection === 'asc' ? 'desc' : 'asc'; // Toggle direction
+        table.dataset.sortDirection = direction; // Save the new direction
+
+        rowsArray.sort((rowA, rowB) => {
+            let cellA = rowA.cells[columnIndex].textContent.trim();
+            let cellB = rowB.cells[columnIndex].textContent.trim();
+
+            if (isDate) { // If it's a date column, parse the dates
+                cellA = new Date(cellA);
+                cellB = new Date(cellB);
+            } else { // Otherwise, perform string comparison
+                cellA = cellA.toLowerCase();
+                cellB = cellB.toLowerCase();
+            }
+
+            if (direction === 'asc') {
+                return cellA > cellB ? 1 : -1;
+            } else {
+                return cellA < cellB ? 1 : -1;
+            }
+        });
+
+        // Rebuild the tbody with the sorted rows
+        rowsArray.forEach((row) => tbody.appendChild(row));
+
+        // Recalculate indexes after sorting
+        updateTableIndexes();
+    }
+
+    // Call the function to initialize the indexes when the page loads
+    window.onload = updateTableIndexes;
+
+
 </script>
 
 </body>

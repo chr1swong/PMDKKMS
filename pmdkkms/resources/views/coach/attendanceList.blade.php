@@ -14,6 +14,7 @@
             font-family: 'Poppins', sans-serif;
             background-color: #f4f4f4;
             margin: 0;
+            overflow-x: hidden; 
             padding: 20px;
         }
 

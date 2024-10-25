@@ -145,10 +145,21 @@
         .btn-view {
             background-color: #5f4bb6;
             color: white;
+            padding: 8px 12px; /* Adjusted padding to look balanced */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px; /* Ensure consistent font size */
+            font-weight: 500;
+            display: inline-block; /* Ensure the button doesn't stretch */
+            line-height: 1.2; /* Adjust line height for vertical centering */
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .btn-view:hover {
             background-color: #3b1f8b;
+            transform: scale(1.05); /* Slight scaling effect on hover */
         }
 
         .btn-download {
@@ -251,13 +262,11 @@
         <table id="scoringTable">
             <thead>
                 <tr>
-                    <th>No.</th> <!-- Index column without sorter -->
-                    <th onclick="sortTable(1, 'alpha')">Archer Name <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(2, 'date')">Date <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(3, 'alpha')">Category <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(4, 'num')">Set <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(5, 'num')">Distance <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(6, 'num')">Total Score <i class="fas fa-sort"></i></th>
+                    <th>No.</th>
+                    <th onclick="sortTable(1)">Archer Name <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(2)">Date <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(3)">Distance <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(4)">Total Score <i class="fas fa-sort"></i></th>
                     <th>Performance</th>
                 </tr>
             </thead>
@@ -267,17 +276,15 @@
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $score->archer_name }}</td>
                         <td>{{ \Carbon\Carbon::parse($score->date)->format('d F Y') }}</td>
-                        <td>{{ $score->category }}</td>
-                        <td>{{ $score->set }}</td>
                         <td>{{ $score->distance }}M</td>
-                        <td>{{ $score->total }}/360</td>
+                        <td>{{ $score->overall_total }}/360</td>
                         <td>
-                            <a href="{{ route('committee.scoringDetails', $score->id) }}" class="btn btn-view">View Scoring Details</a>
+                            <a href="{{ route('committee.scoringDetails', $score->id) }}" class="btn-view">View Details</a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8">No scoring records found.</td>
+                        <td colspan="6">No scoring records found.</td>
                     </tr>
                 @endforelse
             </tbody>

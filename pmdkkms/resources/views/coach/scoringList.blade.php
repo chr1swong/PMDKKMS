@@ -13,6 +13,7 @@
             font-family: 'Poppins', sans-serif;
             background-color: #f4f4f4;
             margin: 0;
+            overflow-x: hidden; 
             padding: 20px;
         }
 
@@ -145,10 +146,21 @@
         .btn-view {
             background-color: #5f4bb6;
             color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px; 
+            font-weight: 500;
+            display: inline-block; 
+            line-height: 1.2; 
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .btn-view:hover {
             background-color: #3b1f8b;
+            transform: scale(1.05); 
         }
 
         .btn-download {
@@ -268,7 +280,7 @@
                         <td>{{ $score->distance }}M</td>
                         <td>{{ $score->overall_total }}/360</td>
                         <td>
-                            <a href="{{ route('coach.scoringDetails', ['id' => $score->id, 'referrer' => 'scoringList']) }}" class="btn-view">View Details</a>
+                            <a href="{{ route('coach.scoringDetails', ['id' => $score->id, 'referrer' => 'scoringList']) }}" class="btn btn-view">View Details</a>
                         </td>
                     </tr>
                 @empty

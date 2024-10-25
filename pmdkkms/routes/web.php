@@ -112,65 +112,40 @@ Route::middleware(['auth', RoleAccessMiddleware::class . ':1'])->group(function 
 });
 
 // Routes accessible to coach only
-Route::middleware(['auth', RoleAccessMiddleware::class.':2'])->group(function () {
-    Route::get('/coach/dashboard', function () {
-        return view('coach.dashboard');
-    })->name('coach.dashboard');
+Route::middleware(['auth', RoleAccessMiddleware::class . ':2'])->group(function () {
+
+    // Coach Dashboard
+    Route::get('/coach/dashboard', [CoachArcherController::class, 'showCoachDashboard'])->name('coach.dashboard');
 
     // Coach Profile
     Route::get('/coach/profile', [AccountController::class, 'coachProfile'])->name('coach.profile');
-
-    // Route for viewing the edit profile form (GET)
-    Route::get('/coach/editProfile', [AccountController::class, 'coachEditProfile'])->name('coach.editProfile'); 
-
-    // Route for handling profile update (POST)
+    Route::get('/coach/editProfile', [AccountController::class, 'coachEditProfile'])->name('coach.editProfile');
     Route::post('/coach/updateProfile', [AccountController::class, 'updateCoachProfile'])->name('coach.updateProfile');
-
-    // Route for handling password change
     Route::post('/coach/changePassword', [PasswordResetController::class, 'changeCoachPassword'])->name('coach.changePassword');
-
-    // Route for updating profile picture
     Route::put('/coach/updateProfilePicture', [AccountController::class, 'updateCoachProfilePicture'])->name('coach.updateProfilePicture');
 
-    // Route for viewing events
+    // Events for Coach
     Route::get('/coach/events', [EventController::class, 'viewEvents'])->name('coach.events');
 
-    //Route for viewing events in dashboard
-    Route::get('/coach/dashboard', [EventController::class, 'showCoachDashboard'])->name('coach.dashboard');
-
-    // Routes to CoachArcherController
+    // Coach-Archer Relationship Routes
     Route::get('/coach/myArcher', [CoachArcherController::class, 'showMyArchers'])->name('coach.myArcher');
     Route::post('/coach/enroll-archer/{archer}', [CoachArcherController::class, 'enrollArcher'])->name('coach.enrollArcher');
     Route::post('/coach/unenroll-archer/{archer}', [CoachArcherController::class, 'unenrollArcher'])->name('coach.unenrollArcher');
-
     Route::get('/coach/archer/profile/{membership_id}', [CoachArcherController::class, 'viewCoachArcherProfile'])->name('coach.viewProfile');
 
-    // Route for coach to view a specific archer's attendance
+    // Attendance Routes for Coach
     Route::get('/coach/attendance/{membership_id}', [AttendanceController::class, 'viewCoachArcherAttendance'])->name('coach.attendanceView');
-
-    // Route for coach to update the archer's attendance
     Route::post('/coach/attendance/{membership_id}/update', [AttendanceController::class, 'updateCoachArcherAttendance'])->name('coach.updateAttendance');
-
-    // Route for coach's scoring history view of a specific archer
-    Route::get('/coach/scoring-history/{membership_id}', [ScoringController::class, 'showCoachArcherScoringHistory'])->name('coach.scoringHistoryArcher');
-
-    // Route for coach to view scoring details of a specific archer
-    Route::get('/coach/scoring-details/{id}/{referrer?}', [ScoringController::class, 'showCoachArcherScoringDetails'])->name('coach.scoringDetails');
-
-    // Route for viewing coach dashboard
-    Route::get('/coach/dashboard', [CoachArcherController::class, 'showCoachDashboard'])->name('coach.dashboard');
-
-    // Route to go to attendanceList
     Route::get('/coach/attendance-list', [AttendanceController::class, 'viewAllAttendanceForCoach'])->name('coach.attendanceList');
 
-    //Route to go to scoringList
-    Route::get('/coach/scoring-list', [ScoringController::class, 'showAllEnrolledArcherScoringHistory'])->name('coach.scoringList');
-
-    // Route for coach to generate a daily QR code
+    // QR Code Routes
     Route::get('/coach/qr/{membership_id}', [AttendanceController::class, 'generateArcherQrCode'])->name('coach.archerQrCode');
-
-    // Route to record attendance from the QR code scan
     Route::post('/attendance/record', [AttendanceController::class, 'recordAttendance'])->name('attendance.record');
+
+    // Scoring Routes for Coach
+    Route::get('/coach/scoring-list', [ScoringController::class, 'showAllEnrolledArcherScoringHistory'])->name('coach.scoringList');
+    Route::get('/coach/scoring-history/{membership_id}', [ScoringController::class, 'showCoachArcherScoringHistory'])->name('coach.scoringHistoryArcher');
+    Route::get('/coach/scoring-details/{id}/{referrer?}', [ScoringController::class, 'showCoachArcherScoringDetails'])->name('coach.scoringDetails');
 });
 
 // Routes accessible to committee member only

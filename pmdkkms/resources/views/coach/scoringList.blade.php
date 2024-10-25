@@ -251,13 +251,11 @@
         <table id="scoringTable">
             <thead>
                 <tr>
-                    <th>No.</th> <!-- Index without sorter -->
+                    <th>No.</th>
                     <th onclick="sortTable(1)">Archer Name <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(2)">Date <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(3)">Category <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(4)">Set <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(5)">Distance <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(6)">Total Score <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(3)">Distance <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(4)">Total Score <i class="fas fa-sort"></i></th>
                     <th>Performance</th>
                 </tr>
             </thead>
@@ -267,17 +265,15 @@
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $score->archer_name }}</td>
                         <td>{{ \Carbon\Carbon::parse($score->date)->format('d F Y') }}</td>
-                        <td>{{ $score->category }}</td>
-                        <td>{{ $score->set }}</td>
                         <td>{{ $score->distance }}M</td>
-                        <td>{{ $score->total }}/360</td>
+                        <td>{{ $score->overall_total }}/360</td>
                         <td>
-                            <a href="{{ route('coach.scoringDetails', ['id' => $score->id, 'referrer' => 'scoringList']) }}" class="btn btn-view">View Scoring Details</a>
+                            <a href="{{ route('coach.scoringDetails', ['id' => $score->id, 'referrer' => 'scoringList']) }}" class="btn-view">View Details</a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8">No scoring records found.</td>
+                        <td colspan="6">No scoring records found.</td>
                     </tr>
                 @endforelse
             </tbody>

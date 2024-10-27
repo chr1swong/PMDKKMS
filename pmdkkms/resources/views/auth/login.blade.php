@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - PMDKK</title>
-    <!-- Add your external CSS and JS files here -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -306,96 +305,96 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-    .authentication-card {
-        flex-direction: column;
-        margin: 1rem; /* Add margin for spacing */
-        width: 90%; /* Ensure it fits within the screen width */
+        .authentication-card {
+            flex-direction: column;
+            margin: 1rem; /* Add margin for spacing */
+            width: 90%; /* Ensure it fits within the screen width */
+        }
+
+        .left-panel, .right-panel {
+            width: 100%; /* Ensure both panels take up full width */
+            padding: 1.5rem;
+            box-sizing: border-box;
+        }
+
+        .left-panel {
+            min-height: 30vh; /* Adjusted for better visual spacing */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .left-panel img {
+            max-width: 70%; /* Ensure it scales better */
+            margin: auto;
+        }
+
+        .right-panel {
+            padding: 2rem 1rem;
+        }
+
+        .text-center {
+            flex-direction: column; /* Stack content vertically */
+            gap: 0.5rem;
+        }
+
+        .text-center h2 {
+            font-size: 1.5rem;
+        }
+
+        .right-panel img {
+            max-width: 12%; /* Reduce image size */
+        }
+
+        .block input {
+            font-size: 1rem;
+            padding: 0.75rem;
+        }
+
+        .remember-me-container {
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .link {
+            margin-top: 0.5rem;
+        }
+
+        .login-button {
+            font-size: 1rem;
+            padding: 1.2rem;
+        }
+
+        .popup-message {
+            width: 90%; /* Ensure it fits well on small screens */
+        }
     }
 
-    .left-panel, .right-panel {
-        width: 100%; /* Ensure both panels take up full width */
-        padding: 1.5rem;
-        box-sizing: border-box;
-    }
+    @media (max-width: 576px) {
+        .authentication-card {
+            width: 95%; /* Slight adjustment for very small screens */
+        }
 
-    .left-panel {
-        min-height: 30vh; /* Adjusted for better visual spacing */
-        justify-content: center;
-        align-items: center;
-    }
+        .left-panel img {
+            max-width: 50%; /* Ensure better scaling */
+        }
 
-    .left-panel img {
-        max-width: 70%; /* Ensure it scales better */
-        margin: auto;
-    }
+        .text-center h2 {
+            font-size: 1.2rem;
+        }
 
-    .right-panel {
-        padding: 2rem 1rem;
-    }
+        .popup-message h2 {
+            font-size: 1.2rem;
+        }
 
-    .text-center {
-        flex-direction: column; /* Stack content vertically */
-        gap: 0.5rem;
-    }
+        .block input {
+            font-size: 0.85rem;
+        }
 
-    .text-center h2 {
-        font-size: 1.5rem;
+        .login-button {
+            padding: 1rem;
+        }
     }
-
-    .right-panel img {
-        max-width: 12%; /* Reduce image size */
-    }
-
-    .block input {
-        font-size: 1rem;
-        padding: 0.75rem;
-    }
-
-    .remember-me-container {
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 1rem;
-    }
-
-    .link {
-        margin-top: 0.5rem;
-    }
-
-    .login-button {
-        font-size: 1rem;
-        padding: 1.2rem;
-    }
-
-    .popup-message {
-        width: 90%; /* Ensure it fits well on small screens */
-    }
-}
-
-@media (max-width: 576px) {
-    .authentication-card {
-        width: 95%; /* Slight adjustment for very small screens */
-    }
-
-    .left-panel img {
-        max-width: 50%; /* Ensure better scaling */
-    }
-
-    .text-center h2 {
-        font-size: 1.2rem;
-    }
-
-    .popup-message h2 {
-        font-size: 1.2rem;
-    }
-
-    .block input {
-        font-size: 0.85rem;
-    }
-
-    .login-button {
-        padding: 1rem;
-    }
-}
 
         /* Blur effect applied only to the main content */
         .main-content.blur-background {

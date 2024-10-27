@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password - PMDKK</title>
-    <!-- Add your external CSS and JS files here -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -133,24 +132,68 @@
             color: #38c172;
         }
 
-        /* Responsive Design */
+        /* General Mobile Styles */
         @media (max-width: 768px) {
             .authentication-card {
-                flex-direction: column;
+                flex-direction: column; /* Stack panels vertically */
+                margin: 1rem; /* Add margin to avoid content touching edges */
+                width: 90%; /* Ensure content fits within the screen */
+                min-height: unset; /* Allow content height to adjust */
             }
 
             .left-panel, .right-panel {
-                width: 100%;
-                padding: 2rem;
+                width: 100%; /* Full width for both panels */
+                padding: 2rem 1rem;
+                box-sizing: border-box; /* Ensure padding/borders are included */
             }
 
-            .left-panel img {
-                margin-top: 1rem;
-                margin-bottom: 1rem;
+            .left-panel {
+                align-items: center;
+                justify-content: center; /* Center align content */
+                text-align: center;
             }
 
             .left-panel h2 {
-                font-size: 2rem;
+                font-size: 2rem; /* Adjust heading size */
+            }
+
+            .left-panel img {
+                max-width: 70%; /* Adjust image size for mobile */
+                margin: 1rem 0;
+            }
+
+            .block input {
+                padding: 0.75rem; /* Comfortable size for touch */
+                font-size: 1rem; /* Adjust input text size */
+            }
+
+            .reset-button {
+                font-size: 1rem;
+                padding: 1rem; /* Ensure button is easy to press */
+            }
+        }
+
+        /* Styles for Smaller Screens (Phones) */
+        @media (max-width: 576px) {
+            .authentication-card {
+                width: 95%; /* Shrink width further for small phones */
+            }
+
+            .left-panel h2 {
+                font-size: 1.5rem; /* Adjust heading size for smaller screens */
+            }
+
+            .left-panel img {
+                max-width: 60%; /* Ensure image scales down */
+            }
+
+            .block input {
+                font-size: 0.85rem; /* Smaller text size for input fields */
+            }
+
+            .reset-button {
+                padding: 0.75rem; /* Adjust button size */
+                font-size: 0.9rem; /* Adjust button text size */
             }
         }
     </style>

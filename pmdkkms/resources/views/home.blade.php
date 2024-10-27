@@ -236,15 +236,116 @@
 
     @media (max-width: 1024px) {
         .info-section {
-            flex-direction: column;
+            flex-direction: column; /* Stack sections vertically */
+            padding: 20px; /* Adjust padding for smaller screens */
+        }
+
+        .news-updates, .upcoming-events {
+            width: 100%; /* Full width for both sections */
+            margin-bottom: 20px; /* Add space between sections */
+        }
+
+        .facebook-feed {
+            height: 500px; /* Adjust height for smaller screens */
+        }
+
+        .news-updates img {
+            margin-top: 10px;
         }
     }
 
     @media (max-width: 768px) {
-        .info-section {
+        .highlights .highlight {
             flex-direction: column;
         }
+
+        .highlight-text {
+            margin-left: 0;
+            text-align: justify;
+        }
+
+        .highlights .highlight h2 {
+            font-size: 2rem; /* Adjust heading size for smaller screens */
+        }
+
+        .highlights .highlight p {
+            font-size: 1.2rem; /* Smaller paragraph text for mobile */
+            line-height: 1.5; /* Adjust line height for better readability */
+        }
+
+        .info-section {
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 10px; /* Adjust padding */
+        }
+
+        .news-updates, .upcoming-events {
+            width: 100%; /* Ensure full width on mobile */
+            margin-bottom: 30px; /* Space between sections */
+        }
+
+        .facebook-feed {
+            width: 100%; /* Make it responsive */
+            max-width: 400px; /* Limit maximum width */
+            height: 400px; /* Adjust height for mobile */
+            margin: 0 auto; /* Center align the feed */
+            border-radius: 8px; /* Add slight rounding */
+            overflow: hidden; /* Ensure no overflow */
+        }
+
+        .news-updates h3, .upcoming-events h3 {
+            font-size: 1.5rem; /* Adjust header size */
+            margin-bottom: 15px;
+            text-align: center; /* Center headers */
+        }
+
+        .upcoming-events ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .upcoming-events ul li {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
     }
+
+    /* Styles for Smaller Screens (Phones) */
+    @media (max-width: 576px) {
+            .highlights .highlight p {
+            font-size: 1rem; /* Even smaller paragraph text for small screens */
+            line-height: 1.4; /* Adjust line height */
+            margin-bottom: 10px; /* Add some space between paragraphs */
+        }
+
+        .highlights .highlight h2 {
+            font-size: 1.5rem; /* Adjust heading size for small screens */
+        }
+
+        .info-section {
+            padding: 10px; /* Reduce padding for smaller phones */
+        }
+
+        .facebook-feed {
+            max-width: 320px; /* Adjust width for small phones */
+            height: 300px; /* Adjust height */
+        }
+
+        .news-updates h3, .upcoming-events h3 {
+            font-size: 1.25rem; /* Smaller header size */
+        }
+
+        .upcoming-events ul li {
+            font-size: 1rem; /* Smaller text size */
+            margin-bottom: 8px;
+        }
+
+        .info-section {
+            margin-top: 15px;
+        }
+    }
+
     </style>
 </head>
 

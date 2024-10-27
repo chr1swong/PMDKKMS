@@ -306,83 +306,96 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .authentication-card {
-                flex-direction: column;
-            }
+    .authentication-card {
+        flex-direction: column;
+        margin: 1rem; /* Add margin for spacing */
+        width: 90%; /* Ensure it fits within the screen width */
+    }
 
-            .left-panel, .right-panel {
-                width: 100%;
-            }
+    .left-panel, .right-panel {
+        width: 100%; /* Ensure both panels take up full width */
+        padding: 1.5rem;
+        box-sizing: border-box;
+    }
 
-            .left-panel {
-                padding: 2rem 1rem;
-                text-align: center;
-                align-items: center;
-                min-height: 30vh; /* Smaller height on mobile */
-                justify-content: center;
-            }
+    .left-panel {
+        min-height: 30vh; /* Adjusted for better visual spacing */
+        justify-content: center;
+        align-items: center;
+    }
 
-            .left-panel h2 {
-                font-size: 2rem;
-            }
+    .left-panel img {
+        max-width: 70%; /* Ensure it scales better */
+        margin: auto;
+    }
 
-            .left-panel img {
-                max-width: 50%; /* Adjust image size for smaller screens */
-                position: relative; /* Ensure proper positioning */
-                bottom: 0;
-                left: 0;
-                margin: 0 auto;
-                display: block; /* Ensure it's visible */
-            }
+    .right-panel {
+        padding: 2rem 1rem;
+    }
 
-            .right-panel {
-                padding: 2rem 1rem;
-            }
+    .text-center {
+        flex-direction: column; /* Stack content vertically */
+        gap: 0.5rem;
+    }
 
-            .right-panel img {
-                max-width: 20%;
-            }
+    .text-center h2 {
+        font-size: 1.5rem;
+    }
 
-            .popup-message {
-                width: 90%;
-                max-width: 90%;
-            }
-        }
+    .right-panel img {
+        max-width: 12%; /* Reduce image size */
+    }
 
-        @media (max-width: 576px) {
-            .authentication-card {
-                padding: 1rem;
-            }
+    .block input {
+        font-size: 1rem;
+        padding: 0.75rem;
+    }
 
-            .left-panel h2 {
-                font-size: 2rem;
-            }
+    .remember-me-container {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
 
-            .popup-message h2 {
-                font-size: 1.5rem;
-            }
+    .link {
+        margin-top: 0.5rem;
+    }
 
-            .popup-message p {
-                font-size: 0.875rem;
-            }
+    .login-button {
+        font-size: 1rem;
+        padding: 1.2rem;
+    }
 
-            .block input {
-                font-size: 0.9rem;
-            }
+    .popup-message {
+        width: 90%; /* Ensure it fits well on small screens */
+    }
+}
 
-            .login-button {
-                padding: 1rem 0.75rem;
-                font-size: 1rem;
-            }
+@media (max-width: 576px) {
+    .authentication-card {
+        width: 95%; /* Slight adjustment for very small screens */
+    }
 
-            .left-panel img {
-                max-width: 40%; /* Adjust image size for very small screens */
-            }
+    .left-panel img {
+        max-width: 50%; /* Ensure better scaling */
+    }
 
-            .right-panel img {
-                max-width: 25%;
-            }
-        }
+    .text-center h2 {
+        font-size: 1.2rem;
+    }
+
+    .popup-message h2 {
+        font-size: 1.2rem;
+    }
+
+    .block input {
+        font-size: 0.85rem;
+    }
+
+    .login-button {
+        padding: 1rem;
+    }
+}
 
         /* Blur effect applied only to the main content */
         .main-content.blur-background {

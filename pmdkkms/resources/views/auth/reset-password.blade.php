@@ -130,23 +130,68 @@
             color: #38c172;
         }
 
+        /* General Mobile Styles */
         @media (max-width: 768px) {
             .authentication-card {
-                flex-direction: column;
+                flex-direction: column; 
+                margin: 1rem; 
+                width: 90%; 
+                min-height: unset; 
             }
 
             .left-panel, .right-panel {
                 width: 100%;
-                padding: 2rem;
+                padding: 2rem 1rem;
+                box-sizing: border-box; 
             }
 
-            .left-panel img {
-                margin-top: 1rem;
-                margin-bottom: 1rem;
+            .left-panel {
+                align-items: center;
+                justify-content: center;
+                text-align: center; 
             }
 
             .left-panel h2 {
-                font-size: 2rem;
+                font-size: 2rem; 
+            }
+
+            .left-panel img {
+                max-width: 70%; 
+                margin: 1rem 0;
+            }
+
+            .block input {
+                padding: 0.75rem; 
+                font-size: 1rem; 
+            }
+
+            .reset-button {
+                font-size: 1rem;
+                padding: 1rem; 
+            }
+        }
+
+        /* Styles for Smaller Screens (Phones) */
+        @media (max-width: 576px) {
+            .authentication-card {
+                width: 95%;
+            }
+
+            .left-panel h2 {
+                font-size: 1.5rem; 
+            }
+
+            .left-panel img {
+                max-width: 60%;
+            }
+
+            .block input {
+                font-size: 0.85rem; 
+            }
+
+            .reset-button {
+                padding: 0.75rem;
+                font-size: 0.9rem; 
             }
         }
     </style>

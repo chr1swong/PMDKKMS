@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - PMDKK</title>
-    <!-- Add your external CSS and JS files here -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
@@ -208,64 +207,84 @@
 
     /* Media Queries for Responsiveness */
 
-    /* General mobile-friendly styles */
-    @media (max-width: 768px) {
-        .authentication-card {
-            flex-direction: column;
-            min-height: unset; /* Remove fixed height for better adaptability */
-        }
-
-        .left-panel, .right-panel {
-            width: 100%;
-            padding: 2rem 1rem;
-        }
-
-        .left-panel {
-            text-align: center;
-            align-items: center; /* Center content horizontally */
-        }
-
-        .left-panel h2 {
-            font-size: 2.5rem; /* Reduce heading size for smaller screens */
-        }
-
-        .right-panel {
-            padding: 2rem 1rem;
-        }
-
-        .block input {
-            padding: 0.5rem; /* Adjust input padding */
-        }
-
-        .register-button {
-            font-size: 1rem; /* Adjust button font size */
-        }
+    /* General Mobile Styles */
+@media (max-width: 768px) {
+    .authentication-card {
+        flex-direction: column;
+        margin: 1rem; /* Avoid edges crowding */
+        width: 90%; /* Ensure it fits within the screen width */
+        min-height: unset; /* Allow height to adjust naturally */
     }
 
-    /* Smaller screens (phones) */
+    .left-panel, .right-panel {
+        width: 100%;
+        padding: 1.5rem 1rem;
+        box-sizing: border-box;
+    }
+
+    .left-panel {
+        text-align: center; /* Center-align content */
+        align-items: center;
+        justify-content: center;
+    }
+
+    .left-panel h2 {
+        font-size: 2rem; /* Adjust heading size */
+    }
+
+    .left-panel img {
+        max-width: 60%; /* Scale image for mobile */
+        margin-bottom: 1rem;
+    }
+
+    .right-panel {
+        padding: 1.5rem 1rem;
+    }
+
+    .block input {
+        font-size: 1rem;
+        padding: 0.75rem; /* Comfortable touch size */
+    }
+
+    .radio-group {
+        flex-direction: column; /* Stack radio buttons */
+        gap: 1rem;
+    }
+
+    .register-button {
+        font-size: 1rem;
+        padding: 1rem; /* Adjust button size */
+    }
+}
+
+/* Styles for Smaller Screens (Phones) */
     @media (max-width: 576px) {
         .authentication-card {
-            padding: 1rem;
+            width: 95%; /* Further shrink for smaller screens */
         }
 
         .left-panel h2 {
-            font-size: 2rem;
+            font-size: 1.5rem; /* Adjust heading for small screens */
+        }
+
+        .left-panel img {
+            max-width: 50%; /* Scale image further */
         }
 
         .block input {
-            font-size: 0.9rem; /* Adjust input font size */
-        }
-
-        .register-button {
-            padding: 0.75rem 0.5rem; /* Adjust button padding */
-            font-size: 0.9rem; /* Adjust button font size */
+            font-size: 0.85rem; /* Adjust input size */
         }
 
         .radio-group {
-            flex-direction: column; /* Stack radio buttons vertically */
-            gap: 1rem;
+            gap: 0.75rem; /* Adjust spacing */
+        }
+
+        .register-button {
+            padding: 0.75rem; /* Smaller button padding */
+            font-size: 0.9rem; /* Adjust button text size */
         }
     }
+
 </style>
 </head>
 <header>

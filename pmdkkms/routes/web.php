@@ -66,6 +66,8 @@ Route::middleware([PreventAuthenticatedAccess::class])->group(function () {
     ->name('attendance.scan')
     ->withoutMiddleware(['auth']); // Allow access without logins
 
+    Route::get('/payment/return', [PaymentController::class, 'paymentReturn'])->name('payment.return');
+    Route::post('/payment/notify', [PaymentController::class, 'paymentNotify'])->name('payment.notify');
 });
 
 // Routes for all levels of auth'd user
@@ -202,7 +204,7 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
     Route::put('/committee/announcements/{id}', [AnnouncementController::class, 'update'])->name('announcements.update'); // Update existing announcement (Edit announcement)
     Route::delete('/committee/announcements/{id}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy'); // Delete announcement
 
-    //Routes for payment
+    //Routes for payments
     Route::get('/committee/payment', [PaymentController::class, 'paymentForm'])->name('committee.paymentForm');
     Route::post('/committee/payment/initiate', [PaymentController::class, 'initiatePayment'])->name('committee.initiatePayment');
     Route::get('/payment/return', [PaymentController::class, 'paymentReturn'])->name('payment.return');

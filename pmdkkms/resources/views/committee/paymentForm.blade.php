@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Membership Payment</title>
     <!-- External CSS and Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* Your existing styles */
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
@@ -16,9 +16,9 @@
         }
 
         .payment-container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -30,14 +30,9 @@
         }
 
         .payment-details {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        .payment-details div {
             display: flex;
             flex-direction: column;
+            gap: 20px;
         }
 
         .payment-details label {
@@ -52,10 +47,6 @@
             border: 1px solid #ddd;
             border-radius: 6px;
             background-color: #f9f9f9;
-        }
-
-        .full-width {
-            grid-column: span 2; /* Make element take the whole row */
         }
 
         .submit-btn {
@@ -79,8 +70,8 @@
 
         /* Media Queries for Responsiveness */
         @media (max-width: 768px) {
-            .payment-details {
-                grid-template-columns: 1fr;
+            .payment-container {
+                padding: 20px;
             }
         }
 
@@ -127,16 +118,25 @@
         </div>
     @endif
 
+    <!-- Error Message with Close Button -->
+    @if (session('error'))
+        <div class="alert alert-danger" id="error-message">
+            {{ session('error') }}
+            <button type="button" class="close" onclick="closeErrorMessage()">&times;</button>
+        </div>
+    @endif
+
     <!-- Main Payment Content -->
     <div class="payment-container">
         <h2>Extend Membership</h2>
 
-        <form action="{{ route('committee.processPayment') }}" method="POST">
+        <form action="{{ route('committee.initiatePayment') }}" method="POST">
             @csrf
             <div class="payment-details">
                 <div class="full-width">
                     <label for="duration">Select Duration:</label>
                     <select name="duration" id="duration" class="form-control" required>
+                        <option value="">-- Select Duration --</option>
                         <option value="1">1 Month (RM30)</option>
                         <option value="3">3 Months (RM90)</option>
                         <option value="6">6 Months (RM180)</option>
@@ -144,15 +144,17 @@
                     </select>
                 </div>
             </div>
-
             <button type="submit" class="submit-btn">Proceed to Payment</button>
         </form>
     </div>
 
-    <!-- JavaScript for closing the success message -->
+    <!-- JavaScript for closing the success and error messages -->
     <script>
         function closeSuccessMessage() {
             document.getElementById('success-message').style.display = 'none';
+        }
+        function closeErrorMessage() {
+            document.getElementById('error-message').style.display = 'none';
         }
     </script>
 </body>

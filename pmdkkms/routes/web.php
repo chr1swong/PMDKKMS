@@ -203,6 +203,8 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
     Route::delete('/committee/announcements/{id}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy'); // Delete announcement
 
     //Routes for payment
-    Route::get('/committee/payment', [PaymentController::class, 'showCommitteePaymentForm'])->name('committee.paymentForm');
-    Route::post('/committee/payment', [PaymentController::class, 'processCommitteePayment'])->name('committee.processPayment');
+    Route::get('/committee/payment', [PaymentController::class, 'paymentForm'])->name('committee.paymentForm');
+    Route::post('/committee/payment/initiate', [PaymentController::class, 'initiatePayment'])->name('committee.initiatePayment');
+    Route::get('/payment/return', [PaymentController::class, 'paymentReturn'])->name('payment.return');
+    Route::post('/payment/notify', [PaymentController::class, 'paymentNotify'])->name('payment.notify');
 });

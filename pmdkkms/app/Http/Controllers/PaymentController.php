@@ -215,12 +215,23 @@ class PaymentController extends Controller
         }
     }
 
-    public function paymentHistoryCommittee()
+    public function paymentHistoryCommittee(Request $request)
     {
-        // Fetch all payment transactions with associated account details
-        $payments = Payment::with('account')->paginate(10); // Adjust pagination as needed
+        // Fetch the start and end dates from the request
+        $startDate = $request->query('start-date');
+        $endDate = $request->query('end-date');
 
-        // Pass the payments data to the view
-        return view('committee.paymentHistory', compact('payments'));
+        // Fetch the payment records, applying date filter if provided
+        $payments = Payment::with('account')
+            ->when($startDate, function ($query, $startDate) {
+                return $query->whereDate('created_at', '>=', $startDate);
+            })
+            ->when($endDate, function ($query, $endDate) {
+                return $query->whereDate('created_at', '<=', $endDate);
+            })
+            ->paginate(10); // Adjust pagination as needed
+
+        // Pass the payments data and selected dates to the view
+        return view('committee.paymentHistory', compact('payments', 'startDate', 'endDate'));
     }
 }

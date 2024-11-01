@@ -89,8 +89,16 @@
             transition: color 0.3s ease;
         }
 
-        .close:hover {
-            color: #0c3d20; /* Darker green on hover */
+        .alert-success .close:hover {
+            color: #0c3d20; 
+        }
+
+        .error-message .close {
+            color: #cd5c5c; 
+        }
+
+        .error-message .close:hover {
+            color: #a94442; 
         }
 
         .alert-success {
@@ -101,6 +109,22 @@
             margin-bottom: 20px;
             position: relative;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .error-message {
+            background-color: #f8d7da; /* Light red background for error */
+            color: #cd5c5c; /* Red text */
+            padding: 15px 40px 15px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-container hr {
+            border: none;
+            border-top: 2px solid #e0e0e0;
+            margin: 10px 0 20px;
         }
     </style>
 </head>
@@ -120,7 +144,7 @@
 
     <!-- Error Message with Close Button -->
     @if (session('error'))
-        <div class="alert alert-danger" id="error-message">
+        <div class="error-message" id="error-message">
             {{ session('error') }}
             <button type="button" class="close" onclick="closeErrorMessage()">&times;</button>
         </div>
@@ -129,6 +153,7 @@
     <!-- Main Payment Content -->
     <div class="payment-container">
         <h2>Extend Membership</h2>
+        <hr>
 
         <form action="{{ route('committee.initiatePayment') }}" method="POST">
             @csrf

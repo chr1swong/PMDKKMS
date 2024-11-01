@@ -209,4 +209,7 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
     Route::post('/committee/payment/initiate', [PaymentController::class, 'initiatePayment'])->name('committee.initiatePayment');
     Route::get('/payment/return', [PaymentController::class, 'paymentReturn'])->name('payment.return');
     Route::post('/payment/notify', [PaymentController::class, 'paymentNotify'])->name('payment.notify');
+    // Route to access the payment history page
+    Route::get('/committee/paymentHistory', [PaymentController::class, 'paymentHistoryCommittee'])->name('committee.paymentHistory');
+
 });

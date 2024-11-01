@@ -134,7 +134,6 @@ class PaymentController extends Controller
         }
     }
 
-    // Handle payment return (user comes back after payment)
     public function paymentReturn(Request $request)
     {
         // Retrieve BillCode and Status
@@ -145,7 +144,7 @@ class PaymentController extends Controller
         $payment = Payment::where('toyyibpay_billcode', $billcode)->first();
 
         if (!$payment) {
-            return redirect()->route('committee.profile')->with('error', 'Payment not found.');
+            return redirect()->route('committee.paymentForm')->with('error', 'Payment not found.');
         }
 
         if ($status_id == 1) {
@@ -169,9 +168,12 @@ class PaymentController extends Controller
         } else {
             // Payment failed or canceled
             $payment->update(['payment_status' => 'Failed']);
-            return redirect()->route('committee.profile')->with('error', 'Payment failed or canceled.');
+            
+            // Redirect back to payment form with an error message
+            return redirect()->route('committee.paymentForm')->with('error', 'Payment failed or canceled. Please try again.');
         }
     }
+
 
     // Handle payment notification (ToyyibPay calls this URL to notify payment status)
     public function paymentNotify(Request $request)

@@ -268,7 +268,8 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="/committee/attendanceList">Attendance</a></li>
-                            <li><a href="{{ route('committee.scoringHistory') }}">Performance</a></li>
+                            <li><a href="{{ route('committee.scoringHistory') }}">Scoring</a></li>
+                            <li><a href="{{ route('committee.paymentHistory') }}">Transactions</a></li>
                         </ul>
                     </li>
                     <li><a href="/committee/profile" class="{{ request()->is('committee.profile') ? 'active' : '' }}">Profile</a></li>

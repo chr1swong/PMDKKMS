@@ -90,7 +90,13 @@
             font-size: 16px;
             border-radius: 5px;
             border: 1px solid #ccc;
-            width: 200px;
+            width: 180px; 
+        }
+
+        .status-search-container {
+            display: flex;
+            gap: 10px; 
+            align-items: center;
         }
 
         .table-container {
@@ -246,8 +252,9 @@
     </div>
     <hr class="hr-divider">
 
-    <!-- Filter and Search -->
     <div class="filter-container">
+    <!-- Status Filter and Search Bar Container -->
+    <div class="status-search-container">
         <!-- Membership Status filter -->
         <select id="status-filter" name="status-filter" onchange="filterByStatus()">
             <option value="all">All Statuses</option>
@@ -262,6 +269,16 @@
             <input type="text" id="search-input" onkeyup="searchByName()" placeholder="Search by name..">
         </div>
     </div>
+
+    <!-- Date filters -->
+    <div class="date-filters">
+        <form action="{{ route('committee.paymentHistory') }}" method="GET">
+            <input type="date" name="start-date" id="start-date" value="{{ request('start-date') }}">
+            <input type="date" name="end-date" id="end-date" value="{{ request('end-date') }}">
+            <button type="submit" class="btn">Filter</button>
+        </form>
+    </div>
+</div>
 
     <!-- Payment List Table -->
     <div class="table-container">

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment History</title>
+    <title>Transaction History</title>
     <!-- External CSS and Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -96,7 +96,7 @@
         .table-container {
             width: 100%;
             margin: 20px auto;
-            max-height: 505px;
+            max-height: 600px;
             overflow-y: auto;
         }
 
@@ -127,20 +127,7 @@
             vertical-align: middle;
         }
 
-        .btn-download {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .btn-download:hover {
-            background-color: #218838;
-        }
-
-        /* Success or Error Message */
+        /* Success Message Styling */
         .alert-success {
             background-color: #d4edda;
             color: #155724;
@@ -168,6 +155,74 @@
         .close:hover {
             color: #0c3d20;
         }
+
+        .btn-download {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-download:hover {
+            background-color: #218838;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 1rem 0;
+        }
+
+        .pagination li {
+            list-style: none;
+            margin: 0 5px;
+        }
+
+        .pagination li a,
+        .pagination li span {
+            display: block;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .pagination li a:hover {
+            background-color: #f4f4f4;
+        }
+
+        .pagination .active span {
+            background-color: #333;
+            color: white;
+            border-color: #333;
+        }
+
+        .status-completed {
+            background-color: #28a745; /* Green */
+            color: white;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .status-pending {
+            background-color: #ffc107; /* Yellow */
+            color: white;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .status-failed {
+            background-color: #dc3545; /* Red */
+            color: white;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -186,50 +241,58 @@
 
 <div class="payment-history-container">
     <div class="header-row">
-        <h1 class="payment-history-header">Payment History</h1>
+        <h1 class="payment-history-header">Transaction History</h1>
         <button id="generate-pdf" class="btn-download">Download PDF</button>
     </div>
     <hr class="hr-divider">
 
     <!-- Filter and Search -->
     <div class="filter-container">
-        <!-- Date filter -->
-        <select id="date-filter" name="date-filter" onchange="filterByDate()">
-            <option value="all">All Dates</option>
-            @foreach ($dates as $date)
-                <option value="{{ $date }}" {{ $selectedDate == $date ? 'selected' : '' }}>{{ $date }}</option>
-            @endforeach
+        <!-- Membership Status filter -->
+        <select id="status-filter" name="status-filter" onchange="filterByStatus()">
+            <option value="all">All Statuses</option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+            <option value="failed">Failed</option>
         </select>
 
-        <!-- Search bar for member names -->
+        <!-- Search bar for names -->
         <div class="search-wrapper">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" id="search-input" onkeyup="searchByName()" placeholder="Search by member name..">
+            <input type="text" id="search-input" onkeyup="searchByName()" placeholder="Search by name..">
         </div>
     </div>
 
-    <!-- Payment History Table -->
+    <!-- Payment List Table -->
     <div class="table-container">
         <table id="paymentTable">
             <thead>
                 <tr>
                     <th>No.</th>
-                    <th onclick="sortTable(1)">Member Name <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(1)">Name <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(2)">MemberID <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(3)">Amount (RM) <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(4)">Date <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(4)">Extend Duration <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(5)">Status <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(6)">Transaction Date <i class="fas fa-sort"></i></th>
                 </tr>
             </thead>
-            <tbody id="payment-table">
+            <tbody id="payments-table">
                 @foreach($payments as $key => $payment)
-                <tr data-name="{{ strtolower($payment->account->account_full_name ?? 'N/A') }}" data-date="{{ $payment->date }}">
+                <tr data-name="{{ strtolower($payment->account->account_full_name) }}" data-status="{{ strtolower($payment->payment_status) }}">
                     <td>{{ $key + 1 }}</td>
-                    <td>{{ $payment->account->account_full_name ?? 'N/A' }}</td>
+                    <td>{{ $payment->account->account_full_name }}</td>
                     <td>{{ $payment->membership_id }}</td>
                     <td>{{ number_format($payment->amount, 2) }}</td>
-                    <td>{{ $payment->created_at->format('Y-m-d') }}</td>
-                    <td>{{ $payment->payment_status }}</td>
+                    <td>{{ $payment->duration }} months</td>
+                    <td class="
+                        @if(strtolower($payment->payment_status) === 'completed') status-completed
+                        @elseif(strtolower($payment->payment_status) === 'pending') status-pending
+                        @else status-failed
+                        @endif">
+                        {{ ucfirst($payment->payment_status) }}
+                    </td>
+                    <td>{{ $payment->created_at->format('Y-m-d H:i') }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -237,7 +300,10 @@
     </div>
 
     <!-- Pagination -->
-    {{ $payments->links() }}
+    <div class="d-flex justify-content-center mt-4">
+        {{ $payments->links('pagination::bootstrap-4') }}
+    </div>
+    
 </div>
 
 <!-- jsPDF and autoTable libraries -->
@@ -245,24 +311,26 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
 
 <script>
-    function filterByDate() {
-        const selectedDate = document.getElementById('date-filter').value;
-        const rows = document.querySelectorAll('#payment-table tr');
+    function filterByStatus() {
+        const selectedStatus = document.getElementById('status-filter').value;
+        const rows = document.querySelectorAll('#payments-table tr');
+
+        let visibleIndex = 1; // Initialize index for visible rows
 
         rows.forEach(function (row) {
-            const date = row.getAttribute('data-date');
-            if (selectedDate === 'all' || date === selectedDate) {
+            const status = row.getAttribute('data-status');
+            if (selectedStatus === 'all' || status === selectedStatus) {
                 row.style.display = '';
+                row.cells[0].innerHTML = visibleIndex++; // Update index cell for visible rows
             } else {
                 row.style.display = 'none';
             }
         });
-        updateIndex(); // Recalculate index numbers after filtering
     }
 
     function searchByName() {
         const input = document.getElementById("search-input").value.toLowerCase();
-        const rows = document.querySelectorAll('#payment-table tr');
+        const rows = document.querySelectorAll('#payments-table tr');
 
         rows.forEach(function (row) {
             const name = row.getAttribute('data-name').toLowerCase();
@@ -279,7 +347,7 @@
         let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
         table = document.querySelector("table");
         switching = true;
-        dir = "asc";
+        dir = "asc"; 
         while (switching) {
             switching = false;
             rows = table.rows;
@@ -310,47 +378,71 @@
                 }
             }
         }
-        updateIndex();
+        updateIndex(); // Recalculate index numbers after sorting
     }
 
     function updateIndex() {
-        const rows = document.querySelectorAll('#payment-table tr');
+        const rows = document.querySelectorAll('#payments-table tr');
         rows.forEach((row, index) => {
-            row.cells[0].innerHTML = index + 1;
+            row.cells[0].innerHTML = index + 1; // Update index cell
         });
     }
 
+    // Generate PDF
     document.getElementById('generate-pdf').addEventListener('click', function () {
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF('p', 'mm', 'a4');
-        const headers = [['No.', 'Member Name', 'MemberID', 'Amount (RM)', 'Date', 'Status']];
+
+        // Table headers
+        const headers = [['No.', 'Name', 'MemberID', 'Amount (RM)', 'Duration (Months)', 'Status', 'Transaction Date']];
+
+        // Get table data
         const tableRows = [];
         const rows = document.querySelectorAll('#paymentTable tbody tr');
 
         rows.forEach((row, index) => {
             const cells = row.querySelectorAll('td');
             const rowData = [
-                index + 1,
-                cells[1].innerText,
-                cells[2].innerText,
-                cells[3].innerText,
-                cells[4].innerText,
-                cells[5].innerText
+                index + 1, // No.
+                cells[1].innerText, // Name
+                cells[2].innerText, // MemberID
+                cells[3].innerText, // Amount
+                cells[4].innerText, // Duration
+                cells[5].innerText, // Status
+                cells[6].innerText  // Transaction Date
             ];
-            tableRows.push(rowData);
+            tableRows.push(rowData); // Push each row data into tableRows array
         });
 
+        // Add title to PDF
         pdf.setFontSize(18);
-        pdf.text("Payment History", 14, 20);
+        pdf.text("Transaction History", 14, 20);
+
+        // Create table in the PDF
         pdf.autoTable({
             head: headers,
             body: tableRows,
-            startY: 30,
-            styles: { fontSize: 10, cellPadding: 3, halign: 'center', valign: 'middle' },
-            headStyles: { fillColor: [33, 150, 243], textColor: [255, 255, 255] }
+            startY: 30, // Y position where the table starts
+            styles: {
+                fontSize: 10,
+                cellPadding: 3,
+                halign: 'center',
+                valign: 'middle',
+                lineColor: [44, 62, 80],
+                lineWidth: 0.5
+            },
+            headStyles: {
+                fillColor: [33, 150, 243],
+                textColor: [255, 255, 255]
+            }
         });
 
-        pdf.save(`payment_history.pdf`);
+        // Get current date
+        const date = new Date();
+        const formattedDate = date.toISOString().split('T')[0];
+
+        // Save the generated PDF with the current date in the filename
+        pdf.save(`transaction_history_${formattedDate}.pdf`);
     });
 
     function closeSuccessMessage() {

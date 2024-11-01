@@ -388,6 +388,7 @@
                 <div class="card payments">
                     <i class="fas fa-money-bill-wave"></i>
                     <h3>Payments</h3>
+                    <span>&nbsp;</span>
                 </div>
             </a>
         </div>

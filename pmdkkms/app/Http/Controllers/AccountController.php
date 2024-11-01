@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class AccountController extends Controller
 {
@@ -22,17 +23,20 @@ class AccountController extends Controller
             'account_password' => 'required|string|min:8|confirmed',
             'account_role' => 'required|in:1,2,3',
         ]);
-
+    
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-
+    
         // Handle profile picture upload if present
         $profilePicturePath = '';
         if ($request->hasFile('profile_picture')) {
             $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
         }
-
+    
+        // Set membership expiry to the exact current date
+        $currentDate = Carbon::now()->startOfDay();
+    
         // Create new account
         $account = Account::create([
             'account_full_name' => $request->account_full_name,
@@ -40,25 +44,42 @@ class AccountController extends Controller
             'account_password' => Hash::make($request->account_password),
             'account_role' => $request->account_role,
             'account_contact_number' => $request->account_contact_number,
-            'account_membership_status' => '2', // default status
-            'account_membership_expiry' => now()->addYear(), // example expiration date
+            'account_membership_status' => '2', // default status, 1-active, 2-inactive
+            'account_membership_expiry' => $currentDate, // Set expiry date to the current date
             'account_profile_picture_path' => $profilePicturePath, // Store the uploaded picture path or empty string
         ]);
-
+    
         // Generate the zero-padded membership ID based on account_id
         $membership_id = str_pad($account->account_id, 6, '0', STR_PAD_LEFT);
-
+    
         // Insert into membership table
         DB::table('membership')->insert([
             'membership_id' => $membership_id,
             'account_id' => $account->account_id,
-            'membership_expiry' => now()->addYear(),
-            'membership_status' => 1, // 1-active, 2-inactive
+            'membership_expiry' => $currentDate, // Set expiry date to the current date
+            'membership_status' => 2, // 1-active, 2-inactive
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-
+    
         return redirect()->route('account.login')->with('success', 'Registration successful! Please log in.');
+    }
+
+    // Add this method to AccountController to check and update all membership statuses
+    public function updateAllMembershipStatuses()
+    {
+        $memberships = DB::table('membership')->get();
+
+        foreach ($memberships as $membership) {
+            $newStatus = Carbon::now()->greaterThan(Carbon::parse($membership->membership_expiry)) ? 2 : 1;
+
+            // Update the database only if the status has changed
+            if ($membership->membership_status != $newStatus) {
+                DB::table('membership')
+                    ->where('membership_id', $membership->membership_id)
+                    ->update(['membership_status' => $newStatus, 'updated_at' => now()]);
+            }
+        }
     }
 
     // Login method
@@ -93,6 +114,11 @@ class AccountController extends Controller
         $request->session()->regenerate();
         Log::info('SESSION ID AFTER REGENERATION ----> ' . $request->session()->getId());
 
+        // Check and update all membership statuses if the user is a committee member
+        if (Auth::user()->account_role == 3) { // 3 represents Committee Member
+            $this->updateAllMembershipStatuses();
+        }
+
         // Redirect based on user role
         switch (Auth::user()->account_role) {
             case 1: // Archer
@@ -121,66 +147,108 @@ class AccountController extends Controller
     // Display profile method for Archer
     public function profile()
     {
-        $user = Auth::user(); // Get the currently authenticated user
+        $user = Auth::user();
 
-        // Retrieve membership details based on account_id, if it exists
+        // Retrieve membership details based on account_id
         $membership = DB::table('membership')->where('account_id', $user->account_id)->first();
-        
-        // Check if the membership exists
-        $membership_id = $membership ? $membership->membership_id : 'N/A'; // If membership is null, fallback to 'N/A'
-        $membership_status = $membership ? $membership->membership_status : 'N/A'; // Retrieve membership status
-        $membership_expiry = $membership ? $membership->membership_expiry : 'N/A'; // Retrieve membership expiry
+
+        if ($membership) {
+            // Check if the membership has expired
+            if (Carbon::now()->greaterThan($membership->membership_expiry)) {
+                // If expired, update the membership_status to 'Inactive' (2)
+                DB::table('membership')->where('account_id', $user->account_id)->update(['membership_status' => 2]);
+                $membership_status = 'Inactive';
+            } else {
+                // If not expired, ensure membership_status is 'Active' (1)
+                DB::table('membership')->where('account_id', $user->account_id)->update(['membership_status' => 1]);
+                $membership_status = 'Active';
+            }
+        } else {
+            $membership_status = 'N/A';
+        }
+
+        // Set other membership information
+        $membership_id = $membership ? $membership->membership_id : 'N/A';
+        $membership_expiry = $membership ? $membership->membership_expiry : 'N/A';
 
         // Pass the user and membership data to the view
         return view('archer.profile', [
             'user' => $user,
             'membership_id' => $membership_id,
-            'membership_status' => $membership_status, // Pass membership_status
-            'membership_expiry' => $membership_expiry, // Pass membership_expiry
+            'membership_status' => $membership_status,
+            'membership_expiry' => $membership_expiry,
         ]);
     }
 
     // Display profile method for Coach
     public function coachProfile()
     {
-        $user = Auth::user(); // Get the currently authenticated user
-
-        // Retrieve membership details based on account_id, if it exists
+        $user = Auth::user();
+    
+        // Retrieve membership details based on account_id
         $membership = DB::table('membership')->where('account_id', $user->account_id)->first();
     
-        // Check if the membership exists
-        $membership_id = $membership ? $membership->membership_id : 'N/A'; // If membership is null, fallback to 'N/A'
-        $membership_status = $membership ? $membership->membership_status : 'N/A'; // Retrieve membership status
-        $membership_expiry = $membership ? $membership->membership_expiry : 'N/A'; // Retrieve membership expiry
-
+        if ($membership) {
+            // Check if the membership has expired
+            if (Carbon::now()->greaterThan($membership->membership_expiry)) {
+                // If expired, update the membership_status to 'Inactive' (2)
+                DB::table('membership')->where('account_id', $user->account_id)->update(['membership_status' => 2]);
+                $membership_status = 'Inactive';
+            } else {
+                // If not expired, ensure membership_status is 'Active' (1)
+                DB::table('membership')->where('account_id', $user->account_id)->update(['membership_status' => 1]);
+                $membership_status = 'Active';
+            }
+        } else {
+            $membership_status = 'N/A';
+        }
+    
+        // Set other membership information
+        $membership_id = $membership ? $membership->membership_id : 'N/A';
+        $membership_expiry = $membership ? $membership->membership_expiry : 'N/A';
+    
         // Pass the user and membership data to the view
         return view('coach.profile', [
             'user' => $user,
             'membership_id' => $membership_id,
-            'membership_status' => $membership_status, // Pass membership_status
-            'membership_expiry' => $membership_expiry, // Pass membership_expiry
+            'membership_status' => $membership_status,
+            'membership_expiry' => $membership_expiry,
         ]);
     }
 
     // Display profile method for Committee
     public function committeeProfile()
     {
-        $user = Auth::user(); // Get the currently authenticated user
+        $user = Auth::user();
 
-        // Retrieve membership details based on account_id, if it exists
+        // Retrieve membership details based on account_id
         $membership = DB::table('membership')->where('account_id', $user->account_id)->first();
 
-        // Check if the membership exists
-        $membership_id = $membership ? $membership->membership_id : 'N/A'; // If membership is null, fallback to 'N/A'
-        $membership_status = $membership ? $membership->membership_status : 'N/A'; // Retrieve membership status
-        $membership_expiry = $membership ? $membership->membership_expiry : 'N/A'; // Retrieve membership expiry
+        if ($membership) {
+            // Check if the membership has expired and update the status accordingly
+            $membership_status = Carbon::now()->greaterThan(Carbon::parse($membership->membership_expiry)) ? 'Inactive' : 'Active';
+
+            // Update the database only if there's a mismatch
+            $database_status = $membership->membership_status == 1 ? 'Active' : 'Inactive';
+            if ($membership_status != $database_status) {
+                DB::table('membership')
+                    ->where('account_id', $user->account_id)
+                    ->update(['membership_status' => $membership_status == 'Active' ? 1 : 2]);
+            }
+        } else {
+            $membership_status = 'N/A'; // Handle the case where no membership exists
+        }
+
+        // Set other membership information
+        $membership_id = $membership ? $membership->membership_id : 'N/A';
+        $membership_expiry = $membership ? $membership->membership_expiry : 'N/A';
 
         // Pass the user and membership data to the view
         return view('committee.profile', [
             'user' => $user,
             'membership_id' => $membership_id,
-            'membership_status' => $membership_status, // Pass membership_status
-            'membership_expiry' => $membership_expiry, // Pass membership_expiry
+            'membership_status' => $membership_status,
+            'membership_expiry' => $membership_expiry,
         ]);
     }
 

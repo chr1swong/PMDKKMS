@@ -16,19 +16,23 @@ class PaymentController extends Controller
     // Display the payment form
     public function paymentForm()
     {
-        // Get user and membership info
+        // Get the currently authenticated user
         $user = Auth::user();
 
-        // Retrieve membership details
+        // Retrieve membership details for the user
         $membership = DB::table('membership')->where('account_id', $user->account_id)->first();
 
-        // Check if the membership exists
+        // Check if the membership exists and assign appropriate values
         $membership_id = $membership ? $membership->membership_id : 'N/A';
+        $membership_status = $membership && $membership->membership_status == 1 ? 'Active' : 'Inactive';
+        $membership_expiry = $membership && $membership->membership_expiry ? Carbon::parse($membership->membership_expiry)->toFormattedDateString() : 'N/A';
 
-        // Pass the user and membership data to the view
+        // Pass the user, membership details, and new variables to the view
         return view('committee.paymentForm', [
             'user' => $user,
             'membership_id' => $membership_id,
+            'membership_status' => $membership_status,
+            'membership_expiry' => $membership_expiry,
         ]);
     }
 
@@ -209,5 +213,14 @@ class PaymentController extends Controller
                 $payment->update(['payment_status' => 'Failed']);
             }
         }
+    }
+
+    public function paymentHistoryCommittee()
+    {
+        // Fetch all payment transactions with associated account details
+        $payments = Payment::with('account')->paginate(10); // Adjust pagination as needed
+
+        // Pass the payments data to the view
+        return view('committee.paymentHistory', compact('payments'));
     }
 }

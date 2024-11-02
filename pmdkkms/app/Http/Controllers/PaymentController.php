@@ -268,4 +268,52 @@ class PaymentController extends Controller
         // Pass the payments data and selected dates to the view
         return view('committee.paymentHistory', compact('payments', 'startDate', 'endDate'));
     }
+
+    public function paymentHistoryArcher(Request $request)
+    {
+        // Get the authenticated archer
+        $user = Auth::user();
+
+        // Fetch the start and end dates from the request
+        $startDate = $request->query('start-date');
+        $endDate = $request->query('end-date');
+
+        // Fetch payment records for the current archer, applying date filter if provided
+        $payments = Payment::with('account')
+            ->where('account_id', $user->account_id)
+            ->when($startDate, function ($query, $startDate) {
+                return $query->whereDate('created_at', '>=', $startDate);
+            })
+            ->when($endDate, function ($query, $endDate) {
+                return $query->whereDate('created_at', '<=', $endDate);
+            })
+            ->paginate(10); // Adjust pagination as needed
+
+        // Pass the payments data and selected dates to the view
+        return view('archer.paymentHistory', compact('payments', 'startDate', 'endDate'));
+    }
+
+    public function paymentHistoryCoach(Request $request)
+    {
+        // Get the authenticated coach
+        $user = Auth::user();
+
+        // Fetch the start and end dates from the request
+        $startDate = $request->query('start-date');
+        $endDate = $request->query('end-date');
+
+        // Fetch payment records for the current coach, applying date filter if provided
+        $payments = Payment::with('account')
+            ->where('account_id', $user->account_id)
+            ->when($startDate, function ($query, $startDate) {
+                return $query->whereDate('created_at', '>=', $startDate);
+            })
+            ->when($endDate, function ($query, $endDate) {
+                return $query->whereDate('created_at', '<=', $endDate);
+            })
+            ->paginate(10); // Adjust pagination as needed
+
+        // Pass the payments data and selected dates to the view
+        return view('coach.paymentHistory', compact('payments', 'startDate', 'endDate'));
+    }
 }

@@ -280,7 +280,9 @@
                     <li><a href="/committee/events">Events</a></li>
                     <li><a href="/committee/attendanceList">Attendance</a></li>
                     <li><a href="{{ route('committee.scoringHistory') }}">Performance</a></li>
+                    <li><a href="{{ route('committee.paymentHistory') }}">Transactions</a></li>
                     <li><a href="/committee/profile">Profile</a></li>
+
                 </ul>
             </div>
 

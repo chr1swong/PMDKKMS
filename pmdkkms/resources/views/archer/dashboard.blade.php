@@ -216,10 +216,12 @@
             </a>
 
             <!-- Payment Card -->
-            <div class="card payment">
-                <i class="fas fa-money-bill-wave"></i>
-                <h3>Payment History</h3>
-            </div>
+            <a href="{{ route('archer.paymentHistory') }}" class="card-link">
+                <div class="card payment">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Transaction History</h3>
+                </div>
+            </a>
         </div>
 
         <!-- Announcements Section -->

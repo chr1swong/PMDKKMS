@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Middleware\PreventAuthenticatedAccess;
@@ -65,14 +66,14 @@ Route::middleware([PreventAuthenticatedAccess::class])->group(function () {
     Route::get('/attendance/scan', [AttendanceController::class, 'recordAttendanceFromQr'])
     ->name('attendance.scan')
     ->withoutMiddleware(['auth']); // Allow access without logins
-
-    Route::get('/payment/return', [PaymentController::class, 'paymentReturn'])->name('payment.return');
-    Route::post('/payment/notify', [PaymentController::class, 'paymentNotify'])->name('payment.notify');
 });
 
 // Routes for all levels of auth'd user
 Route::middleware('auth')->group(function () {
     Route::get('/logout', [AccountController::class, 'logout'])->name('account.logout');
+
+    Route::get('/payment/return', [PaymentController::class, 'paymentReturn'])->name('payment.return');
+    Route::post('/payment/notify', [PaymentController::class, 'paymentNotify'])->name('payment.notify');
 });
 
 // Routes accessible to archer only
@@ -111,6 +112,19 @@ Route::middleware(['auth', RoleAccessMiddleware::class . ':1'])->group(function 
 
     // Performance Analytics
     Route::get('/archer/performance-analytics', [AnalyticsController::class, 'performanceAnalytics'])->name('archer.performanceAnalytics');
+
+    //Routes for payments
+    Route::get('/archer/paymentForm', function () {
+        return app(PaymentController::class)->paymentForm('archer');
+    })->name('archer.paymentForm');
+    Route::post('/archer/initiatePayment', function (Request $request) {
+        return app(PaymentController::class)->initiatePayment($request, 'archer');
+    })->name('archer.initiatePayment');
+    Route::get('/archer/payment-return', [PaymentController::class, 'archerPaymentReturn'])->name('archer.payment.return');
+    Route::post('/archer/payment-notify', [PaymentController::class, 'archerPaymentNotify'])->name('archer.payment.notify');
+    // Route to access the payment history page
+    Route::get('/archer/paymentHistory', [PaymentController::class, 'paymentHistoryArcher'])->name('archer.paymentHistory');
+
 });
 
 // Routes accessible to coach only
@@ -148,6 +162,19 @@ Route::middleware(['auth', RoleAccessMiddleware::class . ':2'])->group(function 
     Route::get('/coach/scoring-list', [ScoringController::class, 'showAllEnrolledArcherScoringHistory'])->name('coach.scoringList');
     Route::get('/coach/scoring-history/{membership_id}', [ScoringController::class, 'showCoachArcherScoringHistory'])->name('coach.scoringHistoryArcher');
     Route::get('/coach/scoring-details/{id}/{referrer?}', [ScoringController::class, 'showCoachArcherScoringDetails'])->name('coach.scoringDetails');
+
+    //Routes for payments
+    Route::get('/coach/paymentForm', function () {
+        return app(PaymentController::class)->paymentForm('coach');
+    })->name('coach.paymentForm');
+    // Coach payment initiation
+    Route::post('/coach/initiatePayment', function (Request $request) {
+        return app(PaymentController::class)->initiatePayment($request, 'coach');
+    })->name('coach.initiatePayment');
+    Route::get('/coach/payment-return', [PaymentController::class, 'coachPaymentReturn'])->name('coach.payment.return');
+    Route::post('/coach/payment-notify', [PaymentController::class, 'coachPaymentNotify'])->name('coach.payment.notify');
+    // Route to access the payment history page
+    Route::get('/coach/paymentHistory', [PaymentController::class, 'paymentHistoryCoach'])->name('coach.paymentHistory');
 });
 
 // Routes accessible to committee member only
@@ -205,10 +232,14 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
     Route::delete('/committee/announcements/{id}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy'); // Delete announcement
 
     //Routes for payments
-    Route::get('/committee/payment', [PaymentController::class, 'paymentForm'])->name('committee.paymentForm');
-    Route::post('/committee/payment/initiate', [PaymentController::class, 'initiatePayment'])->name('committee.initiatePayment');
-    Route::get('/payment/return', [PaymentController::class, 'paymentReturn'])->name('payment.return');
-    Route::post('/payment/notify', [PaymentController::class, 'paymentNotify'])->name('payment.notify');
+    Route::get('/committee/paymentForm', function () {
+        return app(PaymentController::class)->paymentForm('committee');
+    })->name('committee.paymentForm');
+
+    Route::post('/committee/initiatePayment', [PaymentController::class, 'initiatePayment'])->name('committee.initiatePayment');
+    Route::get('/committee/payment-return', [PaymentController::class, 'committeePaymentReturn'])->name('committee.payment.return');
+    Route::post('/committee/payment-notify', [PaymentController::class, 'committeePaymentNotify'])->name('committee.payment.notify');
+
     // Route to access the payment history page
     Route::get('/committee/paymentHistory', [PaymentController::class, 'paymentHistoryCommittee'])->name('committee.paymentHistory');
 

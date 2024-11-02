@@ -261,8 +261,9 @@
                             Attendance <i class="fas fa-chevron-down"></i>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="/archer/scoring">Performance</a></li>
+                            <li><a href="/archer/scoring">Scoring</a></li>
                             <li><a href="{{ route('archer.performanceAnalytics') }}">Analytics</a></li>
+                            <li><a href="{{ route('archer.paymentHistory') }}">Transactions</a></li>
                         </ul>
                     </li>
                     <li><a href="/archer/profile" class="{{ request()->is('archer.profile') ? 'active' : '' }}">Profile</a></li>
@@ -272,7 +273,8 @@
                     <li><a href="/archer/dashboard">Home</a></li>
                     <li><a href="/archer/events">Events</a></li>
                     <li><a href="/archer/attendance">Attendance</a></li>
-                    <li><a href="/archer/scoring">Performance</a></li>
+                    <li><a href="/archer/scoring">Scoring</a></li>
+                    <li><a href="{{ route('archer.paymentHistory') }}">Transactions</a></li>
                     <li><a href="/archer/profile">Profile</a></li>
                 </ul>
             </div>

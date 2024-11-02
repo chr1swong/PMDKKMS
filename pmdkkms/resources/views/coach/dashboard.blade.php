@@ -207,10 +207,13 @@
                 </a>
             </div>
 
-            <div class="card payment">
-                <i class="fas fa-money-bill-wave"></i>
-                <h3>Payment History</h3>
-            </div>
+            <a href="{{ route('coach.paymentHistory') }}" class="card-link">
+                <div class="card payment">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Transaction History</h3>
+                    <span>&nbsp;</span>
+                </div>
+            </a>
         </div>
 
         <!-- Announcements Section -->

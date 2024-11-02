@@ -14,7 +14,7 @@ use Carbon\Carbon;
 class PaymentController extends Controller
 {
     // Display the payment form
-    public function paymentForm()
+    public function paymentForm($view = 'committee')
     {
         // Get the currently authenticated user
         $user = Auth::user();
@@ -27,8 +27,15 @@ class PaymentController extends Controller
         $membership_status = $membership && $membership->membership_status == 1 ? 'Active' : 'Inactive';
         $membership_expiry = $membership && $membership->membership_expiry ? Carbon::parse($membership->membership_expiry)->toFormattedDateString() : 'N/A';
 
+        // Choose the view path based on the $view parameter
+        $viewPath = match ($view) {
+            'archer' => 'archer.paymentForm',
+            'coach' => 'coach.paymentForm',
+            default => 'committee.paymentForm',
+        };
+
         // Pass the user, membership details, and new variables to the view
-        return view('committee.paymentForm', [
+        return view($viewPath, [
             'user' => $user,
             'membership_id' => $membership_id,
             'membership_status' => $membership_status,
@@ -37,7 +44,7 @@ class PaymentController extends Controller
     }
 
     // Initiate the payment
-    public function initiatePayment(Request $request)
+    public function initiatePayment(Request $request, $role = 'committee')
     {
         // Validate duration
         $request->validate([
@@ -48,8 +55,7 @@ class PaymentController extends Controller
         $membership = DB::table('membership')->where('account_id', $user->account_id)->first();
 
         // Calculate amount based on duration
-        $duration = $request->duration; // in months
-        // Prices: 1 Month (RM30), 3 Months (RM90), 6 Months (RM180), 12 Months (RM360)
+        $duration = $request->duration;
         switch ($duration) {
             case '1':
                 $amount = 30;
@@ -72,11 +78,17 @@ class PaymentController extends Controller
         $categoryCode = config('services.toyyibpay.category_code');
         $url = config('services.toyyibpay.url');
 
-        // Log credentials (ensure to remove this in production)
-        Log::info('ToyyibPay Credentials:', [
-            'userSecretKey' => $userSecretKey,
-            'categoryCode' => $categoryCode,
-        ]);
+        // Set return URLs based on role
+        $returnRoute = match ($role) {
+            'archer' => 'archer.payment.return',
+            'coach' => 'coach.payment.return',
+            default => 'committee.payment.return',
+        };
+        $callbackRoute = match ($role) {
+            'archer' => 'archer.payment.notify',
+            'coach' => 'coach.payment.notify',
+            default => 'committee.payment.notify',
+        };
 
         // Prepare data for ToyyibPay API
         $billData = [
@@ -87,8 +99,8 @@ class PaymentController extends Controller
             'billPriceSetting' => 1,
             'billPayorInfo' => 1,
             'billAmount' => $amount * 100, // amount in cents
-            'billReturnUrl' => route('payment.return'),
-            'billCallbackUrl' => route('payment.notify'),
+            'billReturnUrl' => route($returnRoute),
+            'billCallbackUrl' => route($callbackRoute),
             'billExternalReferenceNo' => 'MEMBERSHIP_' . $membership->membership_id,
             'billTo' => $user->account_full_name,
             'billEmail' => $user->account_email_address,
@@ -138,7 +150,26 @@ class PaymentController extends Controller
         }
     }
 
-    public function paymentReturn(Request $request)
+    // Committee payment return function
+    public function committeePaymentReturn(Request $request)
+    {
+        return $this->handlePaymentReturn($request, 'committee');
+    }
+
+    // Archer payment return function
+    public function archerPaymentReturn(Request $request)
+    {
+        return $this->handlePaymentReturn($request, 'archer');
+    }
+
+    // Coach payment return function
+    public function coachPaymentReturn(Request $request)
+    {
+        return $this->handlePaymentReturn($request, 'coach');
+    }
+
+    // Common logic for handling payment return
+    private function handlePaymentReturn(Request $request, $role)
     {
         // Retrieve BillCode and Status
         $billcode = $request->billcode;
@@ -148,18 +179,15 @@ class PaymentController extends Controller
         $payment = Payment::where('toyyibpay_billcode', $billcode)->first();
 
         if (!$payment) {
-            return redirect()->route('committee.paymentForm')->with('error', 'Payment not found.');
+            return redirect()->route("{$role}.paymentForm")->with('error', 'Payment not found.');
         }
 
         if ($status_id == 1) {
-            // Payment successful
             $payment->update(['payment_status' => 'Completed']);
 
-            // Extend membership expiry date
             $membership = DB::table('membership')->where('membership_id', $payment->membership_id)->first();
 
             if ($membership) {
-                // Update membership_expiry based on duration
                 $currentExpiryDate = Carbon::parse($membership->membership_expiry);
                 $newExpiryDate = $currentExpiryDate->addMonths($payment->duration);
 
@@ -168,39 +196,46 @@ class PaymentController extends Controller
                 ]);
             }
 
-            return redirect()->route('committee.profile')->with('success', 'Payment successful. Membership extended.');
+            return redirect()->route("{$role}.profile")->with('success', 'Payment successful. Membership extended.');
         } else {
-            // Payment failed or canceled
             $payment->update(['payment_status' => 'Failed']);
-            
-            // Redirect back to payment form with an error message
-            return redirect()->route('committee.paymentForm')->with('error', 'Payment failed or canceled. Please try again.');
+            return redirect()->route("{$role}.paymentForm")->with('error', 'Payment failed or canceled. Please try again.');
         }
     }
 
-
     // Handle payment notification (ToyyibPay calls this URL to notify payment status)
-    public function paymentNotify(Request $request)
+    public function committeePaymentNotify(Request $request)
     {
-        // Log the request for debugging
-        Log::info('ToyyibPay Payment Notification:', $request->all());
+        return $this->handlePaymentNotify($request, 'committee');
+    }
+
+    public function archerPaymentNotify(Request $request)
+    {
+        return $this->handlePaymentNotify($request, 'archer');
+    }
+
+    public function coachPaymentNotify(Request $request)
+    {
+        return $this->handlePaymentNotify($request, 'coach');
+    }
+
+    // Common logic for handling payment notification
+    private function handlePaymentNotify(Request $request, $role)
+    {
+        Log::info("{$role} ToyyibPay Payment Notification:", $request->all());
 
         $billcode = $request->billcode;
         $status_id = $request->status_id;
 
-        // Find the payment record
         $payment = Payment::where('toyyibpay_billcode', $billcode)->first();
 
         if ($payment) {
             if ($status_id == 1) {
-                // Payment successful
                 $payment->update(['payment_status' => 'Completed']);
 
-                // Extend membership expiry date
                 $membership = DB::table('membership')->where('membership_id', $payment->membership_id)->first();
 
                 if ($membership) {
-                    // Update membership_expiry based on duration
                     $currentExpiryDate = Carbon::parse($membership->membership_expiry);
                     $newExpiryDate = $currentExpiryDate->addMonths($payment->duration);
 
@@ -209,7 +244,6 @@ class PaymentController extends Controller
                     ]);
                 }
             } else {
-                // Payment failed or canceled
                 $payment->update(['payment_status' => 'Failed']);
             }
         }

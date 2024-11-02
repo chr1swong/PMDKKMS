@@ -131,6 +131,20 @@
             position: relative;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
+        /* Extend Membership Button */
+        .profile-sidebar .extend-membership-btn {
+            background-color: #5f4bb6; /* Light purple */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .profile-sidebar .extend-membership-btn:hover {
+            background-color: #3b1f8b; /* Darker purple on hover */
+        }
     </style>
 </head>
 
@@ -158,6 +172,9 @@
             <a href="{{ url('/archer/editProfile') }}">
                 <button>Edit Profile</button>
             </a>
+            <a href="{{ route('archer.paymentForm') }}">
+                <button class="extend-membership-btn">Extend Membership</button>
+            </a>
         </div>
 
         <!-- Profile Details Section -->
@@ -184,7 +201,7 @@
             </div>
             <div>
                 <label for="membership-status">Membership Status</label>
-                <span id="membership-status">{{ $membership_status == 1 ? 'Active' : 'Inactive' }}</span> 
+                <span id="membership-status">{{ $membership_status }}</span>
             </div>
             <div>
                 <label for="membership-expiry">Membership Expiry</label>

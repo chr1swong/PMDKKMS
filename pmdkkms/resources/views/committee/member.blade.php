@@ -73,6 +73,39 @@
             background-color: #333;
         }
 
+        .left-filters {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between role filter and search bar */
+        }
+
+        .date-filters {
+            display: flex;
+            align-items: center;
+            gap: 5px; /* Space between date inputs and button */
+        }
+
+        .date-filters input[type="date"] {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .date-filters button {
+            padding: 8px 12px;
+            font-size: 16px;
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .date-filters button:hover {
+            background-color: #333;
+        }
+
         .search-wrapper {
             position: relative;
             display: flex;
@@ -272,19 +305,29 @@
     <hr class="hr-divider">
 
     <!-- Filter and Search -->
-    <div class="filter-container">
-        <!-- Role filter -->
-        <select id="role-filter" name="role-filter" onchange="filterByRole()">
-            <option value="all">All Roles</option>
-            <option value="archer">Archer</option>
-            <option value="coach">Coach</option>
-            <option value="committee">Committee</option>
-        </select>
+        <div class="filter-container">
+        <!-- Left-side filter with role and search bar -->
+        <div class="left-filters">
+            <!-- Role filter -->
+            <select id="role-filter" name="role-filter" onchange="filterByRole()">
+                <option value="all">All Roles</option>
+                <option value="archer">Archer</option>
+                <option value="coach">Coach</option>
+                <option value="committee">Committee</option>
+            </select>
 
-        <!-- Search bar for names -->
-        <div class="search-wrapper">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" id="search-input" onkeyup="searchByName()" placeholder="Search by name..">
+            <!-- Search bar for names, positioned closer to the role filter -->
+            <div class="search-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="search-input" onkeyup="searchByName()" placeholder="Search by name..">
+            </div>
+        </div>
+
+        <!-- Right-side filter with date range -->
+        <div class="date-filters">
+            <input type="date" id="start-date" name="start-date">
+            <input type="date" id="end-date" name="end-date">
+            <button class="btn" onclick="filterByDate()">Filter</button>
         </div>
     </div>
 
@@ -298,7 +341,8 @@
                     <th onclick="sortTable(2)">MemberID <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(3)">Role <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(4)">Coach <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(5)">Membership Status <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(5)">Status <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(6)">Member Expiry <i class="fas fa-sort"></i></th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -311,6 +355,7 @@
                     <td>{{ $member->account_role == 1 ? 'Archer' : ($member->account_role == 2 ? 'Coach' : 'Committee') }}</td>
                     <td>{{ $member->coach_name ?? 'N/A' }}</td>
                     <td>{{ $member->membership_status == 1 ? 'Active' : 'Inactive' }}</td>
+                    <td>{{ $member->membership_expiry ? \Carbon\Carbon::parse($member->membership_expiry)->format('Y-m-d') : 'N/A' }}</td>
                     <td>
                         <div class="btn-container">
                             <a href="{{ route('view.profile', $member->membership_id) }}" class="btn btn-view">View Profile</a>
@@ -388,16 +433,17 @@
     function filterByRole() {
         const selectedRole = document.getElementById('role-filter').value;
         const rows = document.querySelectorAll('#members-table tr');
+        let visibleIndex = 1; // Initialize index for visible rows
 
         rows.forEach(function (row) {
             const role = row.getAttribute('data-role');
             if (selectedRole === 'all' || role === selectedRole) {
                 row.style.display = '';
+                row.cells[0].innerHTML = visibleIndex++; // Update index cell for visible rows
             } else {
                 row.style.display = 'none';
             }
         });
-        updateIndex(); // Recalculate index numbers after filtering
     }
 
     function searchByName() {
@@ -413,6 +459,23 @@
             }
         });
         updateIndex(); // Recalculate index numbers after searching
+    }
+
+    function filterByDate() {
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
+        const rows = document.querySelectorAll('#members-table tr');
+
+        rows.forEach(row => {
+            const expiryDate = row.getAttribute('data-expiry'); // Assuming there's a data attribute for membership expiry
+            if (expiryDate) {
+                const isWithinRange = (!startDate || expiryDate >= startDate) && (!endDate || expiryDate <= endDate);
+                row.style.display = isWithinRange ? '' : 'none';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        updateIndex(); // Recalculate index numbers after filtering
     }
 
     function sortTable(n) {

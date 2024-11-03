@@ -449,6 +449,7 @@ class AccountController extends Controller
                 'account.*', // Select archer's account details
                 'membership.membership_id', // Select membership details
                 'membership.membership_status',
+                'membership.membership_expiry',
                 'coach.account_full_name as coach_name' // Select coach's name
             )
             ->paginate(10); // Add pagination (10 records per page)

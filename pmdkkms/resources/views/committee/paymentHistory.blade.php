@@ -99,6 +99,21 @@
             align-items: center;
         }
 
+        .date-filters button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .date-filters button:hover {
+            background-color: #333;
+        }
+
         .table-container {
             width: 100%;
             margin: 20px auto;

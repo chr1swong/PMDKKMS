@@ -169,6 +169,21 @@
         .btn-download:hover {
             background-color: #218838;
         }
+
+        .date-filters button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .date-filters button:hover {
+            background-color: #333;
+        }
     </style>
 </head>
 <body>

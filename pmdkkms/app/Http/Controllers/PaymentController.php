@@ -254,18 +254,13 @@ class PaymentController extends Controller
         // Fetch the start and end dates from the request
         $startDate = $request->query('start-date');
         $endDate = $request->query('end-date');
-
-        // Fetch the payment records, applying date filter if provided
+    
+        // Fetch all payment records with filters if provided (unpaginated)
         $payments = Payment::with('account')
-            ->when($startDate, function ($query, $startDate) {
-                return $query->whereDate('created_at', '>=', $startDate);
-            })
-            ->when($endDate, function ($query, $endDate) {
-                return $query->whereDate('created_at', '<=', $endDate);
-            })
-            ->paginate(10); // Adjust pagination as needed
-
-        // Pass the payments data and selected dates to the view
+            ->when($startDate, fn($query) => $query->whereDate('created_at', '>=', $startDate))
+            ->when($endDate, fn($query) => $query->whereDate('created_at', '<=', $endDate))
+            ->get();
+    
         return view('committee.paymentHistory', compact('payments', 'startDate', 'endDate'));
     }
 

@@ -296,9 +296,9 @@
 </div>
 
     <!-- Payment List Table -->
-    <div class="table-container">
+    <div class="table-container" style="height: 570px; overflow-y: auto;">
         <table id="paymentTable">
-            <thead>
+            <thead style="position: sticky; top: 0; background-color: #333; color: white; z-index: 1;">
                 <tr>
                     <th>No.</th>
                     <th onclick="sortTable(1)">Name <i class="fas fa-sort"></i></th>
@@ -306,13 +306,17 @@
                     <th onclick="sortTable(3)">Amount (RM) <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(4)">Extend Duration <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(5)">Status <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(6)">Transaction Date <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(6)">Bill Code <i class="fas fa-sort"></i></th> 
+                    <th onclick="sortTable(7)">Transaction Date <i class="fas fa-sort"></i></th>
                 </tr>
             </thead>
             <tbody id="payments-table">
+                @php
+                    $startIndex = 1;
+                @endphp
                 @foreach($payments as $key => $payment)
                 <tr data-name="{{ strtolower($payment->account->account_full_name) }}" data-status="{{ strtolower($payment->payment_status) }}">
-                    <td>{{ $key + 1 }}</td>
+                    <td>{{ $startIndex + $loop->index }}</td> <!-- Updated index calculation -->
                     <td>{{ $payment->account->account_full_name }}</td>
                     <td>{{ $payment->membership_id }}</td>
                     <td>{{ number_format($payment->amount, 2) }}</td>
@@ -324,19 +328,29 @@
                         @endif">
                         {{ ucfirst($payment->payment_status) }}
                     </td>
-                    <td>{{ $payment->created_at->format('Y-m-d H:i') }}</td>
+                    <td>{{ $payment->toyyibpay_billcode ?? 'N/A' }}</td> 
+                    <td>{{ $payment->created_at->format('Y-m-d') }}</td>
                 </tr>
                 @endforeach
+
             </tbody>
         </table>
     </div>
 
-    <!-- Pagination -->
-    <div class="d-flex justify-content-center mt-4">
-        {{ $payments->links('pagination::bootstrap-4') }}
-    </div>
-    
 </div>
+
+<script type="application/json" id="allPaymentsData">
+    {!! json_encode($payments->map(function ($payment) {
+        return [
+            'account_full_name' => $payment->account->account_full_name ?? 'N/A',
+            'membership_id' => $payment->membership_id,
+            'amount' => number_format($payment->amount, 2),
+            'duration' => "{$payment->duration} months",
+            'payment_status' => ucfirst($payment->payment_status),
+            'transaction_date' => $payment->created_at->format('Y-m-d') // Format without time
+        ];
+    })) !!}
+</script>
 
 <!-- jsPDF and autoTable libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -376,10 +390,12 @@
     }
 
     function sortTable(n) {
-        let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-        table = document.querySelector("table");
+        const table = document.querySelector("table");
+        let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
         switching = true;
         dir = "asc"; 
+        const isDurationColumn = (n === 4); // Adjust this index based on your table structure
+
         while (switching) {
             switching = false;
             rows = table.rows;
@@ -387,13 +403,24 @@
                 shouldSwitch = false;
                 x = rows[i].getElementsByTagName("TD")[n];
                 y = rows[i + 1].getElementsByTagName("TD")[n];
-                if (dir == "asc") {
-                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+
+                // Custom logic for sorting duration column numerically
+                let xContent = x.innerHTML.toLowerCase();
+                let yContent = y.innerHTML.toLowerCase();
+
+                if (isDurationColumn) {
+                    // Extract numeric part for duration column (e.g., "3 months" -> 3)
+                    xContent = parseInt(xContent.split(" ")[0]);
+                    yContent = parseInt(yContent.split(" ")[0]);
+                }
+
+                if (dir === "asc") {
+                    if (xContent > yContent) {
                         shouldSwitch = true;
                         break;
                     }
-                } else if (dir == "desc") {
-                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                } else if (dir === "desc") {
+                    if (xContent < yContent) {
                         shouldSwitch = true;
                         break;
                     }
@@ -404,7 +431,7 @@
                 switching = true;
                 switchcount++;
             } else {
-                if (switchcount == 0 && dir == "asc") {
+                if (switchcount === 0 && dir === "asc") {
                     dir = "desc";
                     switching = true;
                 }
@@ -422,74 +449,62 @@
 
     // Generate PDF
     document.getElementById('generate-pdf').addEventListener('click', function () {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF('p', 'mm', 'a4');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
 
-    // Set the font to Arial
-    pdf.setFont("Arial");
+        // Define a function to add the header on each page
+        function addHeader() {
+            pdf.setFont("Arial");
+            const img = new Image();
+            img.src = '/images/pmdkkLogo.png';
+            pdf.addImage(img, 'PNG', 10, 15, 30, 30);
+            const textXPosition = 45;
+            pdf.setFontSize(14.5);
+            pdf.setFont("Arial", "bold");
+            pdf.text("PERSATUAN MEMANAH DAERAH KOTA KINABALU (PMDKK)", textXPosition, 18);
 
-    // Add the logo
-    const img = new Image();
-    img.src = '/images/pmdkkLogo.png';
-    img.onload = function () {
-        // Draw the logo on the PDF
-        pdf.addImage(img, 'PNG', 10, 15, 30, 30); // X, Y, Width, Height
+            pdf.setFontSize(10);
+            pdf.text("(D-SBH-03075)", textXPosition, 24);
 
-        // Header with Organization Name, ID, Date, Address, and Email
-        const textXPosition = 45;
-        pdf.setFontSize(14.5);
-        pdf.setFont("Arial", "bold");
-        pdf.text("PERSATUAN MEMANAH DAERAH KOTA KINABALU (PMDKK)", textXPosition, 18);
+            // Add current date
+            const today = new Date();
+            const currentDate = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}-${today.getFullYear()}`; // Format: MM-DD-YYYY
+            pdf.text(`Date: ${currentDate}`, textXPosition, 30);
 
-        // Organization ID
-        pdf.setFontSize(10);
-        pdf.text("(D-SBH-03075)", textXPosition, 24);
+            pdf.text("Peti Surat 16536, 88700 Kota Kinabalu, Sabah, Malaysia.", textXPosition, 36);
+            pdf.text("Email: pmdkk2015@gmail.com", textXPosition, 42);
+            pdf.text("Contact: 088-794 327", pdf.internal.pageSize.width - 45, 42);
+            pdf.setFontSize(14);
+            pdf.text("Transaction History", 14, 55);
+        }
 
-        // Date
-        pdf.setFontSize(10);
-        pdf.setFont("Arial", "bold");
-        const date = new Date();
-        const formattedDate = date.toISOString().split('T')[0];
-        pdf.text(`Date: ${formattedDate}`, textXPosition, 30);
+        // Define the table headers
+        const headers = [['No.', 'Name', 'MemberID', 'Amount (RM)', 'Duration (Months)', 'Status', 'Bill Code', 'Transaction Date']];
 
-        // Address
-        pdf.setFontSize(10);
-        pdf.setFont("Arial", "bold");
-        pdf.text("Peti Surat 16536, 88700 Kota Kinabalu, Sabah, Malaysia.", textXPosition, 36);
+        // Capture visible rows
+        const visibleRows = Array.from(document.querySelectorAll('#payments-table tr'))
+            .filter(row => row.style.display !== 'none')
+            .map((row, index) => [
+                index + 1, // Adjust for visible index
+                row.cells[1].innerText, // Name
+                row.cells[2].innerText, // MemberID
+                row.cells[3].innerText, // Amount
+                row.cells[4].innerText, // Duration
+                row.cells[5].innerText, // Status
+                row.cells[6].innerText, // Bill Code
+                row.cells[7].innerText  // Transaction Date
+            ]);
 
-        // Email and Contact Information
-        pdf.text("Email: pmdkk2015@gmail.com", textXPosition, 42);
-        pdf.text("Contact: 088-794 327", pdf.internal.pageSize.width - 45, 42); 
+        // Check if there is data to print
+        if (visibleRows.length === 0) {
+            alert('No data available for PDF generation based on the current filters.');
+            return;
+        }
 
-        // Title
-        pdf.setFontSize(14);
-        pdf.setFont("Arial", "bold");
-        pdf.text("Transaction History", 14, 55);
-
-        // Table headers
-        const headers = [['No.', 'Name', 'MemberID', 'Amount (RM)', 'Duration (Months)', 'Status', 'Transaction Date']];
-
-        // Get table data
-        const tableRows = [];
-        const rows = document.querySelectorAll('#paymentTable tbody tr');
-        rows.forEach((row, index) => {
-            const cells = row.querySelectorAll('td');
-            const rowData = [
-                index + 1, // No.
-                cells[1].innerText, // Name
-                cells[2].innerText, // MemberID
-                cells[3].innerText, // Amount (RM)
-                cells[4].innerText, // Duration (Months)
-                cells[5].innerText, // Status
-                cells[6].innerText  // Transaction Date
-            ];
-            tableRows.push(rowData);
-        });
-
-        // Create the table in the PDF
+        // Add table to PDF
         pdf.autoTable({
             head: headers,
-            body: tableRows,
+            body: visibleRows,
             startY: 60,
             styles: {
                 font: "Arial",
@@ -501,30 +516,35 @@
                 lineWidth: 0.1
             },
             headStyles: {
-                fillColor: [169, 169, 169], // Grey color for header
+                fillColor: [169, 169, 169],
                 textColor: [255, 255, 255]
             },
             bodyStyles: {
                 fillColor: [255, 255, 255],
                 textColor: [0, 0, 0]
+            },
+            margin: { top: 70 }, // Adjust table position below header
+            pageBreak: 'auto', // Split table across pages
+            didDrawPage: function (data) {
+                // Add the header on each page
+                addHeader();
+
+                // Add page numbering in the footer
+                const pageCount = pdf.internal.getNumberOfPages();
+                const pageText = `Page ${pdf.internal.getCurrentPageInfo().pageNumber} of ${pageCount}`;
+                pdf.setFontSize(10);
+                const pageWidth = pdf.internal.pageSize.width;
+                const textWidth = pdf.getTextWidth(pageText);
+                pdf.text(pageText, (pageWidth - textWidth) / 2, pdf.internal.pageSize.height - 10);
             }
         });
 
-        // Center-aligned page numbers in the footer
-        const pageCount = pdf.internal.getNumberOfPages();
-        for (let i = 1; i <= pageCount; i++) {
-            pdf.setPage(i);
-            pdf.setFontSize(10);
-            const pageText = `Page ${i} of ${pageCount}`;
-            const pageWidth = pdf.internal.pageSize.width;
-            const textWidth = pdf.getTextWidth(pageText);
-            pdf.text(pageText, (pageWidth - textWidth) / 2, pdf.internal.pageSize.height - 10); // Center-aligned
-        }
+        // Save the PDF with the current date
+        const date = new Date().toISOString().split('T')[0];
+        pdf.save(`transaction_history_${date}.pdf`);
+    });
 
-        // Save the PDF with the current date in the filename
-        pdf.save(`transaction_history_${formattedDate}.pdf`);
-    };
-});
+
 
     function closeSuccessMessage() {
         document.getElementById('success-message').style.display = 'none';

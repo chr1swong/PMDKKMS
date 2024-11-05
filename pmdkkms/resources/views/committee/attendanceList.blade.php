@@ -274,15 +274,15 @@
         const input = document.getElementById("search-input").value.toLowerCase();
         const rows = document.querySelectorAll('#attendance-table tr');
 
-        rows.forEach(function (row) {
+        rows.forEach((row, index) => {
             const name = row.querySelector('td:nth-child(2)').innerText.toLowerCase();
             if (name.includes(input)) {
-                row.style.display = '';  // Show the row if it matches
+                row.style.display = ''; // Show the row if it matches
+                row.cells[0].innerHTML = index + 1; // Keep original index order
             } else {
-                row.style.display = 'none';  // Hide the row if it doesn't match
+                row.style.display = 'none'; // Hide the row if it doesn't match
             }
         });
-        updateIndex(); // Recalculate index numbers after filtering
     }
 
     // Function to sort the table
@@ -307,8 +307,10 @@
                 }
             });
 
-            rows.forEach(row => table.querySelector('tbody').appendChild(row));
-            updateIndex(); // Recalculate index numbers after sorting
+            rows.forEach((row, originalIndex) => {
+                row.cells[0].innerHTML = originalIndex + 1; // Maintain original order index
+                table.querySelector('tbody').appendChild(row);
+            });
         });
     });
 
@@ -322,8 +324,49 @@
 
     // Function to generate PDF with autoTable
     document.getElementById('generate-pdf').addEventListener('click', function () {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'mm', 'a4');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', 'a4');
+
+    // Set the font to Arial
+    pdf.setFont("Arial");
+
+    // Add the logo
+    const img = new Image();
+    img.src = '/images/pmdkkLogo.png'; 
+    img.onload = function () {
+        // Draw the logo on the PDF
+        pdf.addImage(img, 'PNG', 10, 15, 30, 30); // X, Y, Width, Height
+
+        // Header with Organization Name, ID, Date, Address, and Email
+        const textXPosition = 45;
+        pdf.setFontSize(14.5);
+        pdf.setFont("Arial", "bold");
+        pdf.text("PERSATUAN MEMANAH DAERAH KOTA KINABALU (PMDKK)", textXPosition, 18);
+
+        // Organization ID
+        pdf.setFontSize(10);
+        pdf.text("(D-SBH-03075)", textXPosition, 24);
+
+        // Date
+        pdf.setFontSize(10);
+        pdf.setFont("Arial", "bold");
+        const date = new Date();
+        const formattedDate = date.toISOString().split('T')[0];
+        pdf.text(`Date: ${formattedDate}`, textXPosition, 30);
+
+        // Address
+        pdf.setFontSize(10);
+        pdf.setFont("Arial", "bold");
+        pdf.text("Peti Surat 16536, 88700 Kota Kinabalu, Sabah, Malaysia.", textXPosition, 36);
+
+        // Email and Contact Information
+        pdf.text("Email: pmdkk2015@gmail.com", textXPosition, 42);
+        pdf.text("Contact: 088-794 327", pdf.internal.pageSize.width - 45, 42); 
+
+        // Title
+        pdf.setFontSize(14);
+        pdf.setFont("Arial", "bold");
+        pdf.text(`Archer Attendance for {{ $filterMonth }} {{ $filterYear }}`, 14, 55);
 
         // Table headers
         const headers = [['No.', 'Name', 'MemberID', 'Coach', 'Attendance']];
@@ -331,7 +374,6 @@
         // Get table data
         const tableRows = [];
         const rows = document.querySelectorAll('#attendanceTable tbody tr');
-
         rows.forEach((row, index) => {
             const cells = row.querySelectorAll('td');
             const rowData = [
@@ -344,32 +386,45 @@
             tableRows.push(rowData); // Push each row data into tableRows array
         });
 
-        // Add title to PDF
-        pdf.setFontSize(18);
-        pdf.text(`Archer Attendance for {{ $filterMonth }} {{ $filterYear }}`, 14, 20);
-
-        // Create table in the PDF
+        // Create the table in the PDF
         pdf.autoTable({
             head: headers,
             body: tableRows,
-            startY: 30, // Y position where the table starts
+            startY: 60,
             styles: {
-                fontSize: 10, // Font size for table
-                cellPadding: 3, // Cell padding
-                halign: 'center', // Text alignment inside cells
-                valign: 'middle', // Vertical alignment
-                lineColor: [44, 62, 80], // Line color for the table borders
-                lineWidth: 0.5 // Line width for the table borders
+                font: "Arial",
+                fontSize: 10,
+                cellPadding: 3,
+                halign: 'center',
+                valign: 'middle',
+                lineColor: [44, 62, 80],
+                lineWidth: 0.1
             },
             headStyles: {
-                fillColor: [33, 150, 243], // Header background color (blue)
-                textColor: [255, 255, 255], // Header text color (white)
+                fillColor: [169, 169, 169], // Grey color for header
+                textColor: [255, 255, 255]
+            },
+            bodyStyles: {
+                fillColor: [255, 255, 255],
+                textColor: [0, 0, 0]
             }
         });
 
-        // Save the generated PDF
+        // Center-aligned page numbers in the footer
+        const pageCount = pdf.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+            pdf.setPage(i);
+            pdf.setFontSize(10);
+            const pageText = `Page ${i} of ${pageCount}`;
+            const pageWidth = pdf.internal.pageSize.width;
+            const textWidth = pdf.getTextWidth(pageText);
+            pdf.text(pageText, (pageWidth - textWidth) / 2, pdf.internal.pageSize.height - 10); // Center-aligned
+        }
+
+        // Save the PDF with the current date in the filename
         pdf.save(`attendance_list_{{ $filterMonth }}_{{ $filterYear }}.pdf`);
-    });
+    };
+});
 </script>
 
 </body>

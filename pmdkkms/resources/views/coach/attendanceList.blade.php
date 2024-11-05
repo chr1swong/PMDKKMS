@@ -327,51 +327,106 @@
     document.getElementById('generate-pdf').addEventListener('click', function () {
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        // Set the font to Arial
+        pdf.setFont("Arial");
 
-        // Table headers
-        const headers = [['No.', 'Name', 'MemberID', 'Attendance']];
+        // Add the logo
+        const img = new Image();
+        img.src = '/images/pmdkkLogo.png'; 
 
-        // Get table data
-        const tableRows = [];
-        const rows = document.querySelectorAll('#attendanceTable tbody tr');
+        img.onload = function () {
+            // Draw the logo on the PDF
+            pdf.addImage(img, 'PNG', 10, 15, 30, 30); // X, Y, Width, Height
 
-        rows.forEach((row, index) => {
-            const cells = row.querySelectorAll('td');
-            const rowData = [
-                index + 1, // No.
-                cells[1].innerText, // Name
-                cells[2].innerText, // MemberID
-                cells[3].innerText, // Attendance
-            ];
-            tableRows.push(rowData); // Push each row data into tableRows array
-        });
+            // Header with Organization Name, ID, Date, Address, and Email
+            const textXPosition = 45;
+            pdf.setFontSize(14.5);
+            pdf.setFont("Arial", "bold");
+            pdf.text("PERSATUAN MEMANAH DAERAH KOTA KINABALU (PMDKK)", textXPosition, 18);
 
-        // Add title to PDF
-        pdf.setFontSize(18);
-        pdf.text(`Archer Attendance for {{ $filterMonth }} {{ $filterYear }}`, 14, 20);
+            // Organization ID
+            pdf.setFontSize(10);
+            pdf.text("(D-SBH-03075)", textXPosition, 24);
 
-        // Create table in the PDF
-        pdf.autoTable({
-            head: headers,
-            body: tableRows,
-            startY: 30, // Y position where the table starts
-            styles: {
-                fontSize: 10, // Font size for table
-                cellPadding: 3, // Cell padding
-                halign: 'center', // Text alignment inside cells
-                valign: 'middle', // Vertical alignment
-                lineColor: [44, 62, 80], // Line color for the table borders
-                lineWidth: 0.5 // Line width for the table borders
-            },
-            headStyles: {
-                fillColor: [33, 150, 243], // Header background color (blue)
-                textColor: [255, 255, 255], // Header text color (white)
+            // Date
+            pdf.setFontSize(10);
+            const today = new Date();
+            const currentDate = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}-${today.getFullYear()}`; // Format: MM-DD-YYYY
+            pdf.text(`Date: ${currentDate}`, textXPosition, 30);
+
+            // Address
+            pdf.setFontSize(10);
+            pdf.text("Peti Surat 16536, 88700 Kota Kinabalu, Sabah, Malaysia.", textXPosition, 36);
+
+            // Email and Contact Information
+            pdf.text("Email: pmdkk2015@gmail.com", textXPosition, 42);
+            pdf.text("Contact: 088-794 327", pdf.internal.pageSize.width - 45, 42); 
+
+            // Title
+            pdf.setFontSize(14);
+            pdf.setFont("Arial", "bold");
+            pdf.text(`Archer Attendance for {{ $filterMonth }} {{ $filterYear }}`, 14, 55);
+
+            // Table headers
+            const headers = [['No.', 'Name', 'MemberID', 'Coach', 'Attendance']];
+
+            // Get table data
+            const tableRows = [];
+            const rows = document.querySelectorAll('#attendanceTable tbody tr');
+            rows.forEach((row, index) => {
+                const cells = row.querySelectorAll('td');
+                const rowData = [
+                    index + 1, // No.
+                    cells[1].innerText, // Name
+                    cells[2].innerText, // MemberID
+                    cells[3].innerText, // Coach
+                    cells[4].innerText  // Attendance
+                ];
+                tableRows.push(rowData);
+            });
+
+            // Create the table in the PDF
+            pdf.autoTable({
+                head: headers,
+                body: tableRows,
+                startY: 60,
+                styles: {
+                    font: "Arial",
+                    fontSize: 10,
+                    cellPadding: 3,
+                    halign: 'center',
+                    valign: 'middle',
+                    lineColor: [44, 62, 80],
+                    lineWidth: 0.1
+                },
+                headStyles: {
+                    fillColor: [169, 169, 169], // Grey color for header
+                    textColor: [255, 255, 255]
+                },
+                bodyStyles: {
+                    fillColor: [255, 255, 255],
+                    textColor: [0, 0, 0]
+                }
+            });
+
+            // Center-aligned page numbers in the footer
+            const pageCount = pdf.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                pdf.setPage(i);
+                pdf.setFontSize(10);
+                const pageText = `Page ${i} of ${pageCount}`;
+                const pageWidth = pdf.internal.pageSize.width;
+                const textWidth = pdf.getTextWidth(pageText);
+                pdf.text(pageText, (pageWidth - textWidth) / 2, pdf.internal.pageSize.height - 10); // Center-aligned
             }
-        });
 
-        // Save the generated PDF
-        pdf.save(`attendance_list_{{ $filterMonth }}_{{ $filterYear }}.pdf`);
+            // Save the PDF with the current date in the filename
+            pdf.save(`attendance_list_{{ $filterMonth }}_{{ $filterYear }}.pdf`);
+        };
     });
+
+
 </script>
 
 </body>

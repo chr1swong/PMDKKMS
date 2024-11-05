@@ -320,50 +320,98 @@
             row.cells[0].innerHTML = index + 1;
         });
     }
-
+    
+    // Generate PDF
     document.getElementById('generate-pdf').addEventListener('click', function () {
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF('p', 'mm', 'a4');
 
-        const headers = [['No.', 'Date', 'Distance', 'Total Score']];
+        // Add logo and header information
+        const img = new Image();
+        img.src = '/images/pmdkkLogo.png';
+        
+        img.onload = function () {
+            // Insert logo in the PDF
+            pdf.addImage(img, 'PNG', 10, 15, 30, 30);
 
-        const tableRows = [];
-        const rows = document.querySelectorAll('#scoringTable tbody tr');
+            // Add Organization details
+            const textXPosition = 45;
+            pdf.setFontSize(14.5);
+            pdf.setFont("Arial", "bold");
+            pdf.text("PERSATUAN MEMANAH DAERAH KOTA KINABALU (PMDKK)", textXPosition, 18);
+            
+            pdf.setFontSize(10);
+            pdf.text("(D-SBH-03075)", textXPosition, 24);
 
-        rows.forEach((row, index) => {
-            const cells = row.querySelectorAll('td');
-            const rowData = [
-                index + 1,
-                cells[1].innerText,
-                cells[2].innerText,
-                cells[3].innerText
-            ];
-            tableRows.push(rowData);
-        });
+            const today = new Date();
+            const currentDate = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}-${today.getFullYear()}`;
+            pdf.text(`Date: ${currentDate}`, textXPosition, 30);
 
-        pdf.setFontSize(18);
-        pdf.text('Scoring History', 14, 20);
+            pdf.text("Peti Surat 16536, 88700 Kota Kinabalu, Sabah, Malaysia.", textXPosition, 36);
+            pdf.text("Email: pmdkk2015@gmail.com", textXPosition, 42);
+            pdf.text("Contact: 088-794 327", pdf.internal.pageSize.width - 45, 42);
 
-        pdf.autoTable({
-            head: headers,
-            body: tableRows,
-            startY: 30,
-            styles: {
-                fontSize: 10,
-                cellPadding: 3,
-                halign: 'center',
-                valign: 'middle',
-                lineColor: [44, 62, 80],
-                lineWidth: 0.5
-            },
-            headStyles: {
-                fillColor: [33, 150, 243],
-                textColor: [255, 255, 255]
+            // Title of the document
+            pdf.setFontSize(14);
+            pdf.setFont("Arial", "bold");
+            pdf.text('Scoring History', 14, 55);
+
+            // Define table headers (excluding the "Performance" column)
+            const headers = [['No.', 'Date', 'Distance', 'Total Score']];
+
+            // Capture visible rows in the scoring table for the PDF
+            const tableRows = [];
+            const rows = document.querySelectorAll('#scoringTable tbody tr');
+
+            rows.forEach((row, index) => {
+                const cells = row.querySelectorAll('td');
+                const rowData = [
+                    index + 1, // Serial Number
+                    cells[1].innerText, // Date
+                    cells[2].innerText, // Distance
+                    cells[3].innerText  // Total Score
+                ];
+                tableRows.push(rowData);
+            });
+
+            // Add the table with data to the PDF
+            pdf.autoTable({
+                head: headers,
+                body: tableRows,
+                startY: 60,
+                styles: {
+                    font: "Arial",
+                    fontSize: 10,
+                    cellPadding: 3,
+                    halign: 'center',
+                    valign: 'middle',
+                    lineColor: [44, 62, 80],
+                    lineWidth: 0.1
+                },
+                headStyles: {
+                    fillColor: [169, 169, 169], // Grey for header
+                    textColor: [255, 255, 255]  // White text for header
+                },
+                bodyStyles: {
+                    fillColor: [255, 255, 255],
+                    textColor: [0, 0, 0]
+                }
+            });
+
+            // Add page numbers in the footer
+            const pageCount = pdf.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                pdf.setPage(i);
+                pdf.setFontSize(10);
+                const pageText = `Page ${i} of ${pageCount}`;
+                const pageWidth = pdf.internal.pageSize.width;
+                const textWidth = pdf.getTextWidth(pageText);
+                pdf.text(pageText, (pageWidth - textWidth) / 2, pdf.internal.pageSize.height - 10); // Center-aligned
             }
-        });
 
-        const currentDate = new Date().toISOString().split('T')[0];
-        pdf.save(`scoring_history_${currentDate}.pdf`);
+            // Save the PDF file with a dynamic filename
+            pdf.save(`scoring_history_${currentDate}.pdf`);
+        };
     });
 </script>
 

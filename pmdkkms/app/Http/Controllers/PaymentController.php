@@ -273,16 +273,12 @@ class PaymentController extends Controller
         $startDate = $request->query('start-date');
         $endDate = $request->query('end-date');
 
-        // Fetch payment records for the current archer, applying date filter if provided
+        // Fetch payment records for the current archer's account only, applying date filters if provided
         $payments = Payment::with('account')
-            ->where('account_id', $user->account_id)
-            ->when($startDate, function ($query, $startDate) {
-                return $query->whereDate('created_at', '>=', $startDate);
-            })
-            ->when($endDate, function ($query, $endDate) {
-                return $query->whereDate('created_at', '<=', $endDate);
-            })
-            ->paginate(10); // Adjust pagination as needed
+            ->where('account_id', $user->account_id) // Filter by the archer's account ID
+            ->when($startDate, fn($query) => $query->whereDate('created_at', '>=', $startDate))
+            ->when($endDate, fn($query) => $query->whereDate('created_at', '<=', $endDate))
+            ->get(); // Use `get()` to retrieve all matching records
 
         // Pass the payments data and selected dates to the view
         return view('archer.paymentHistory', compact('payments', 'startDate', 'endDate'));
@@ -297,16 +293,12 @@ class PaymentController extends Controller
         $startDate = $request->query('start-date');
         $endDate = $request->query('end-date');
 
-        // Fetch payment records for the current coach, applying date filter if provided
+        // Fetch payment records for the current coach's account only, applying date filters if provided
         $payments = Payment::with('account')
-            ->where('account_id', $user->account_id)
-            ->when($startDate, function ($query, $startDate) {
-                return $query->whereDate('created_at', '>=', $startDate);
-            })
-            ->when($endDate, function ($query, $endDate) {
-                return $query->whereDate('created_at', '<=', $endDate);
-            })
-            ->paginate(10); // Adjust pagination as needed
+            ->where('account_id', $user->account_id) // Filter by the coach's account ID
+            ->when($startDate, fn($query) => $query->whereDate('created_at', '>=', $startDate))
+            ->when($endDate, fn($query) => $query->whereDate('created_at', '<=', $endDate))
+            ->get(); // Use `get()` to retrieve all matching records
 
         // Pass the payments data and selected dates to the view
         return view('coach.paymentHistory', compact('payments', 'startDate', 'endDate'));

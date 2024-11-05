@@ -387,53 +387,100 @@
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF('p', 'mm', 'a4');
 
-        // Table headers
-        const headers = [['No.', 'Archer Name', 'Date', 'Category', 'Set', 'Distance', 'Total Score']];
+        // Set font
+        pdf.setFont("Arial");
 
-        // Get table data
-        const tableRows = [];
-        const rows = document.querySelectorAll('#scoringTable tbody tr');
+        // Add logo
+        const img = new Image();
+        img.src = '/images/pmdkkLogo.png'; // Ensure the image path is correct
+        img.onload = function () {
+            pdf.addImage(img, 'PNG', 10, 15, 30, 30); // X, Y, Width, Height
 
-        rows.forEach((row, index) => {
-            const cells = row.querySelectorAll('td');
-            const rowData = [
-                index + 1, // No.
-                cells[1].innerText, // Archer Name
-                cells[2].innerText, // Date
-                cells[3].innerText, // Category
-                cells[4].innerText, // Set
-                cells[5].innerText, // Distance
-                cells[6].innerText  // Total Score
-            ];
-            tableRows.push(rowData); // Push each row data into tableRows array
-        });
+            // Header text
+            const textXPosition = 45;
+            pdf.setFontSize(14.5);
+            pdf.setFont("Arial", "bold");
+            pdf.text("PERSATUAN MEMANAH DAERAH KOTA KINABALU (PMDKK)", textXPosition, 18);
 
-        // Add title to PDF
-        pdf.setFontSize(18);
-        pdf.text('Scoring History of Enrolled Archers', 14, 20);
+            // Organization ID
+            pdf.setFontSize(10);
+            pdf.text("(D-SBH-03075)", textXPosition, 24);
 
-        // Create table in the PDF
-        pdf.autoTable({
-            head: headers,
-            body: tableRows,
-            startY: 30, // Y position where the table starts
-            styles: {
-                fontSize: 10, // Font size for table
-                cellPadding: 3, // Cell padding
-                halign: 'center', // Text alignment inside cells
-                valign: 'middle', // Vertical alignment
-                lineColor: [44, 62, 80], // Line color for the table borders
-                lineWidth: 0.5 // Line width for the table borders
-            },
-            headStyles: {
-                fillColor: [33, 150, 243], // Header background color (blue)
-                textColor: [255, 255, 255], // Header text color (white)
+            // Current date
+            pdf.setFontSize(10);
+            const today = new Date();
+            const currentDate = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}-${today.getFullYear()}`; // Format: MM-DD-YYYY
+            pdf.text(`Date: ${currentDate}`, textXPosition, 30);
+
+            // Address and contact
+            pdf.text("Peti Surat 16536, 88700 Kota Kinabalu, Sabah, Malaysia.", textXPosition, 36);
+            pdf.text("Email: pmdkk2015@gmail.com", textXPosition, 42);
+            pdf.text("Contact: 088-794 327", pdf.internal.pageSize.width - 45, 42);
+
+            // Title
+            pdf.setFontSize(14);
+            pdf.setFont("Arial", "bold");
+            pdf.text('Scoring History of Enrolled Archers', 14, 55);
+
+            // Define table headers (without Performance column)
+            const headers = [['No.', 'Archer Name', 'Date', 'Distance', 'Total Score']];
+
+            // Extract table data from HTML table, excluding Performance column
+            const tableRows = [];
+            const rows = document.querySelectorAll('#scoringTable tbody tr');
+            
+            rows.forEach((row, index) => {
+                const cells = row.querySelectorAll('td');
+                const rowData = [
+                    index + 1, // No.
+                    cells[1].innerText, // Archer Name
+                    cells[2].innerText, // Date
+                    cells[3].innerText, // Distance
+                    cells[4].innerText  // Total Score
+                ];
+                tableRows.push(rowData);
+            });
+
+            // Create table in PDF
+            pdf.autoTable({
+                head: headers,
+                body: tableRows,
+                startY: 60, // Position to start table below header
+                styles: {
+                    font: "Arial",
+                    fontSize: 10,
+                    cellPadding: 3,
+                    halign: 'center',
+                    valign: 'middle',
+                    lineColor: [44, 62, 80],
+                    lineWidth: 0.1
+                },
+                headStyles: {
+                    fillColor: [169, 169, 169], // Grey for header
+                    textColor: [255, 255, 255]  // White text for header
+                },
+                bodyStyles: {
+                    fillColor: [255, 255, 255],
+                    textColor: [0, 0, 0]
+                }
+            });
+
+            // Add page numbers in the footer
+            const pageCount = pdf.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                pdf.setPage(i);
+                pdf.setFontSize(10);
+                const pageText = `Page ${i} of ${pageCount}`;
+                const pageWidth = pdf.internal.pageSize.width;
+                const textWidth = pdf.getTextWidth(pageText);
+                pdf.text(pageText, (pageWidth - textWidth) / 2, pdf.internal.pageSize.height - 10); // Center-aligned
             }
-        });
 
-        // Save the generated PDF
-        pdf.save('scoring_history.pdf');
+            // Save the PDF file with a dynamic filename
+            pdf.save(`scoring_history_${currentDate}.pdf`);
+        };
     });
+
 </script>
 
 </body>

@@ -552,9 +552,9 @@
             // Date
             pdf.setFontSize(10);
             pdf.setFont("Arial", "bold");
-            const date = new Date();
-            const formattedDate = date.toISOString().split('T')[0];
-            pdf.text(`Date: ${formattedDate}`, textXPosition, 30);
+            const today = new Date();
+            const currentDate = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}-${today.getFullYear()}`; // Format: MM-DD-YYYY
+            pdf.text(`Date: ${currentDate}`, textXPosition, 30);
 
             // Address
             pdf.setFontSize(10);

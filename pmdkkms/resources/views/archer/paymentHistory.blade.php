@@ -281,7 +281,7 @@
 
     <!-- Date filters -->
     <div class="date-filters">
-        <form action="{{ route('coach.paymentHistory') }}" method="GET">
+        <form action="{{ route('archer.paymentHistory') }}" method="GET">
             <input type="date" name="start-date" id="start-date" value="{{ request('start-date') }}">
             <input type="date" name="end-date" id="end-date" value="{{ request('end-date') }}">
             <button type="submit" class="btn">Filter</button>

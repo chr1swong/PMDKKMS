@@ -296,6 +296,10 @@
     {{ $scoringData->links() }}
 </div>
 
+<script type="application/json" id="allScoringData">
+    {!! json_encode($allScoringData) !!}
+</script>
+
 <!-- jsPDF and autoTable libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
@@ -390,107 +394,91 @@
 
     // Function to generate PDF with autoTable
     document.getElementById('generate-pdf').addEventListener('click', function () {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF('p', 'mm', 'a4');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
 
-    // Set the font to Arial
-    pdf.setFont("Arial");
+        // Set up header
+        pdf.setFont("Arial");
+        const img = new Image();
+        img.src = '/images/pmdkkLogo.png';
+        img.onload = function () {
+            pdf.addImage(img, 'PNG', 10, 15, 30, 30);
 
-    // Add the logo
-    const img = new Image();
-    img.src = '/images/pmdkkLogo.png'; 
-    img.onload = function () {
-        // Draw the logo on the PDF
-        pdf.addImage(img, 'PNG', 10, 15, 30, 30); // X, Y, Width, Height
+            const textXPosition = 45;
+            pdf.setFontSize(14.5);
+            pdf.setFont("Arial", "bold");
+            pdf.text("PERSATUAN MEMANAH DAERAH KOTA KINABALU (PMDKK)", textXPosition, 18);
 
-        // Header with Organization Name, ID, Date, Address, and Email
-        const textXPosition = 45;
-        pdf.setFontSize(14.5);
-        pdf.setFont("Arial", "bold");
-        pdf.text("PERSATUAN MEMANAH DAERAH KOTA KINABALU (PMDKK)", textXPosition, 18);
-
-        // Organization ID
-        pdf.setFontSize(10);
-        pdf.text("(D-SBH-03075)", textXPosition, 24);
-
-        // Date
-        pdf.setFontSize(10);
-        pdf.setFont("Arial", "bold");
-        const date = new Date();
-        const formattedDate = date.toISOString().split('T')[0];
-        pdf.text(`Date: ${formattedDate}`, textXPosition, 30);
-
-        // Address
-        pdf.setFontSize(10);
-        pdf.setFont("Arial", "bold");
-        pdf.text("Peti Surat 16536, 88700 Kota Kinabalu, Sabah, Malaysia.", textXPosition, 36);
-
-        // Email and Contact Information
-        pdf.text("Email: pmdkk2015@gmail.com", textXPosition, 42);
-        pdf.text("Contact: 088-794 327", pdf.internal.pageSize.width - 45, 42); 
-
-        // Title
-        pdf.setFontSize(14);
-        pdf.setFont("Arial", "bold");
-        pdf.text("Scoring History of Archers", 14, 55);
-
-        // Table headers
-        const headers = [['No.', 'Archer Name', 'Date', 'Distance', 'Total Score']];
-
-        // Get table data
-        const tableRows = [];
-        const rows = document.querySelectorAll('#scoringTable tbody tr');
-        rows.forEach((row, index) => {
-            const cells = row.querySelectorAll('td');
-            const rowData = [
-                index + 1, // No.
-                cells[1].innerText, // Archer Name
-                cells[2].innerText, // Date
-                cells[3].innerText, // Distance
-                cells[4].innerText  // Total Score
-            ];
-            tableRows.push(rowData);
-        });
-
-        // Create the table in the PDF
-        pdf.autoTable({
-            head: headers,
-            body: tableRows,
-            startY: 60,
-            styles: {
-                font: "Arial",
-                fontSize: 10,
-                cellPadding: 3,
-                halign: 'center',
-                valign: 'middle',
-                lineColor: [44, 62, 80],
-                lineWidth: 0.1
-            },
-            headStyles: {
-                fillColor: [169, 169, 169], // Grey color for header
-                textColor: [255, 255, 255]
-            },
-            bodyStyles: {
-                fillColor: [255, 255, 255],
-                textColor: [0, 0, 0]
-            }
-        });
-
-        // Center-aligned page numbers in the footer
-        const pageCount = pdf.internal.getNumberOfPages();
-        for (let i = 1; i <= pageCount; i++) {
-            pdf.setPage(i);
             pdf.setFontSize(10);
-            const pageText = `Page ${i} of ${pageCount}`;
-            const pageWidth = pdf.internal.pageSize.width;
-            const textWidth = pdf.getTextWidth(pageText);
-            pdf.text(pageText, (pageWidth - textWidth) / 2, pdf.internal.pageSize.height - 10); // Center-aligned
-        }
+            pdf.text("(D-SBH-03075)", textXPosition, 24);
+            const today = new Date();
+            const currentDate = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}-${today.getFullYear()}`;
+            pdf.text(`Date: ${currentDate}`, textXPosition, 30);
+            pdf.text("Peti Surat 16536, 88700 Kota Kinabalu, Sabah, Malaysia.", textXPosition, 36);
+            pdf.text("Email: pmdkk2015@gmail.com", textXPosition, 42);
+            pdf.text("Contact: 088-794 327", pdf.internal.pageSize.width - 45, 42);
+            pdf.setFontSize(14);
+            pdf.text("Scoring History of Archers", 14, 55);
 
-        // Save the PDF with the current date in the filename
-        pdf.save(`scoring_history_${formattedDate}.pdf`);
-    };
-});
+            // Extract data from visible rows in the HTML table
+            const headers = [['No.', 'Archer Name', 'Date', 'Distance', 'Total Score']];
+            const tableRows = [];
+            const rows = document.querySelectorAll('#scoring-table tr');
+
+            rows.forEach((row, index) => {
+                // Only include rows that are currently visible
+                if (row.style.display !== 'none') {
+                    const cells = row.querySelectorAll('td');
+                    tableRows.push([
+                        index + 1,  // Sequential index for visible rows
+                        cells[1].innerText, // Archer Name
+                        cells[2].innerText, // Date
+                        cells[3].innerText, // Distance
+                        cells[4].innerText  // Total Score
+                    ]);
+                }
+            });
+
+            // Generate the table in the PDF using the visible data
+            pdf.autoTable({
+                head: headers,
+                body: tableRows,
+                startY: 60,
+                styles: {
+                    font: "Arial",
+                    fontSize: 10,
+                    cellPadding: 3,
+                    halign: 'center',
+                    valign: 'middle',
+                    lineColor: [44, 62, 80],
+                    lineWidth: 0.1
+                },
+                headStyles: {
+                    fillColor: [169, 169, 169],
+                    textColor: [255, 255, 255]
+                },
+                bodyStyles: {
+                    fillColor: [255, 255, 255],
+                    textColor: [0, 0, 0]
+                }
+            });
+
+            // Add page numbers
+            const pageCount = pdf.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                pdf.setPage(i);
+                pdf.setFontSize(10);
+                const pageText = `Page ${i} of ${pageCount}`;
+                const pageWidth = pdf.internal.pageSize.width;
+                const textWidth = pdf.getTextWidth(pageText);
+                pdf.text(pageText, (pageWidth - textWidth) / 2, pdf.internal.pageSize.height - 10);
+            }
+
+            // Save the PDF
+            const date = new Date().toISOString().split('T')[0];
+            pdf.save(`scoring_history_${date}.pdf`);
+        };
+    });
 
 </script>
 

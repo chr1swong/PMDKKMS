@@ -333,7 +333,7 @@ class ScoringController extends Controller
     // Method for committee to view scoring history for all archers
     public function showCommitteeScoringHistory(Request $request)
     {
-        // Base query for scoring history with join on membership and account to fetch archer names
+        // Base query for scoring history with joins to fetch archer names
         $query = Score::join('membership', 'scores.membership_id', '=', 'membership.membership_id')
             ->join('account', 'membership.account_id', '=', 'account.account_id')
             ->select('scores.*', 'account.account_full_name as archer_name');
@@ -355,7 +355,6 @@ class ScoringController extends Controller
                     break;
                 case 'all':
                 default:
-                    // Do not apply any time filter if 'all' or invalid filter is provided
                     break;
             }
         }
@@ -368,11 +367,14 @@ class ScoringController extends Controller
             ]);
         }
 
-        // Paginate the results, ordered by date in descending order, 10 per page
+        // Fetch paginated data for display
         $scoringData = $query->orderBy('scores.date', 'desc')->paginate(10);
 
-        // Return the view with filtered data
-        return view('committee.scoringHistory', compact('scoringData'));
+        // Fetch all scoring data (without pagination) for PDF generation
+        $allScoringData = $query->orderBy('scores.date', 'desc')->get();
+
+        // Return the view with paginated data and all data for PDF
+        return view('committee.scoringHistory', compact('scoringData', 'allScoringData'));
     }
 
     // Show scoring details for committee's view

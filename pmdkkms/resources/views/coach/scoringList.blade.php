@@ -371,15 +371,17 @@
         const input = document.getElementById("search-input").value.toLowerCase();
         const rows = document.querySelectorAll('#scoring-table tr');
 
+        let visibleIndex = 1; // Initialize index to start from 1
+
         rows.forEach(function (row) {
-            const name = row.cells[1].innerText.toLowerCase(); 
+            const name = row.cells[1].innerText.toLowerCase();
             if (name.includes(input)) {
-                row.style.display = '';
+                row.style.display = ''; // Show matching row
+                row.cells[0].innerHTML = visibleIndex++; // Update index for visible rows
             } else {
-                row.style.display = 'none';
+                row.style.display = 'none'; // Hide non-matching row
             }
         });
-        updateIndex(); // Recalculate index numbers after searching
     }
 
     // Function to generate PDF with autoTable

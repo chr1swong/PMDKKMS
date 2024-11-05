@@ -277,15 +277,17 @@
         const input = document.getElementById("search-input").value.toLowerCase();
         const rows = document.querySelectorAll('#attendance-table tr');
 
+        let visibleIndex = 1; // Initialize index to start from 1
+
         rows.forEach(function (row) {
             const name = row.querySelector('td:nth-child(2)').innerText.toLowerCase();
             if (name.includes(input)) {
                 row.style.display = '';  // Show the row if it matches
+                row.cells[0].innerHTML = visibleIndex++; // Update index for visible rows
             } else {
                 row.style.display = 'none';  // Hide the row if it doesn't match
             }
         });
-        updateIndex(); // Recalculate index numbers after filtering
     }
 
     // Function to sort the table

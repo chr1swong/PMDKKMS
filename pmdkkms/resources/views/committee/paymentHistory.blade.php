@@ -378,15 +378,17 @@
         const input = document.getElementById("search-input").value.toLowerCase();
         const rows = document.querySelectorAll('#payments-table tr');
 
+        let visibleIndex = 1; // Initialize visible index to start from 1
+
         rows.forEach(function (row) {
             const name = row.getAttribute('data-name').toLowerCase();
             if (name.includes(input)) {
                 row.style.display = '';
+                row.cells[0].innerHTML = visibleIndex++; // Update the index for visible rows
             } else {
                 row.style.display = 'none';
             }
         });
-        updateIndex(); // Recalculate index numbers after searching
     }
 
     function sortTable(n) {

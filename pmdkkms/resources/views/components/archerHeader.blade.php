@@ -107,6 +107,7 @@
             border-radius: 4px;
             padding: 0;
             z-index: 100;
+            list-style: none;
         }
 
         .dropdown-menu li {

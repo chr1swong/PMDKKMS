@@ -258,9 +258,6 @@
         </table>
     </div>
 
-    <!-- Pagination -->
-    {{ $scoringData->links() }}
-
     <!-- Back Button -->
     <a href="{{ route('coach.myArcher') }}" class="back-btn">
         <i class="fas fa-arrow-left"></i> Back

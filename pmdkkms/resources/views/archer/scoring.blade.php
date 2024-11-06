@@ -341,6 +341,36 @@
                 max-width: none;
             }
         }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px 20px; /* Keep the horizontal padding */
+            padding-left: 40px; /* Add extra left padding for the text */
+            border-radius: 5px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%; /* Make the success message full-width */
+            text-align: left;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 30px; /* Add space to move the button slightly away from the right edge */
+            background: none;
+            border: none;
+            font-size: 30px;
+            font-weight: bold;
+            color: #155724;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #0c3d20; /* Darker green on hover */
+        }
     </style>
     
 </head>
@@ -349,6 +379,13 @@
 <header>
     @include('components.archerHeader')
 </header>
+
+@if (session('success'))
+    <div class="alert-success" id="success-message">
+        {{ session('success') }}
+        <button type="button" class="close" onclick="closeSuccessMessage()">&times;</button>
+    </div>
+@endif
 
 <div class="main-container">
     <!-- Canvas -->
@@ -930,6 +967,16 @@
     function navigateToHistory() {
         console.log('Navigating to Scoring History');
         window.location.href = "{{ route('archer.scoringHistory') }}";
+    }
+
+    document.getElementById('success-alert').style.display = 'block';
+
+    function closeSuccessMessage() {
+    // Hide the success message
+    const successMessage = document.getElementById('success-message');
+        if (successMessage) {
+            successMessage.style.display = 'none';
+        }
     }
 </script>
 

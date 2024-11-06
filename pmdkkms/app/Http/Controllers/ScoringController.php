@@ -191,8 +191,8 @@ class ScoringController extends Controller
             $query->whereBetween('date', [$request->input('start-date'), $request->input('end-date')]);
         }
 
-        // Paginate the results with 10 per page
-        $scoringData = $query->orderBy('date', 'desc')->paginate(10);
+        // Use this to get all records:
+        $scoringData = $query->orderBy('date', 'desc')->get();
 
         // Return the view with filtered data
         return view('archer.scoringHistory', compact('scoringData', 'membership_id'));
@@ -305,8 +305,8 @@ class ScoringController extends Controller
         // If no archer is found, set a default name
         $archerName = $archer->account_full_name ?? 'Unknown Archer';
 
-        // Paginate the results with 10 per page
-        $scoringData = $query->orderBy('date', 'desc')->paginate(10);
+        // Use this to get all records:
+        $scoringData = $query->orderBy('date', 'desc')->get();
 
         // Return the view with filtered data, passing the archerName
         return view('coach.scoringHistory', compact('scoringData', 'membership_id', 'archerName'));
@@ -368,7 +368,7 @@ class ScoringController extends Controller
         }
 
         // Fetch paginated data for display
-        $scoringData = $query->orderBy('scores.date', 'desc')->paginate(10);
+        $scoringData = $query->orderBy('scores.date', 'desc')->get();
 
         // Fetch all scoring data (without pagination) for PDF generation
         $allScoringData = $query->orderBy('scores.date', 'desc')->get();
@@ -419,7 +419,7 @@ class ScoringController extends Controller
             ->join('account', 'membership.account_id', '=', 'account.account_id')
             ->select('scores.*', 'account.account_full_name as archer_name')
             ->orderBy('scores.date', 'desc')
-            ->paginate(10);
+            ->get();
 
         return view('coach.scoringList', compact('scoringData'));
     }

@@ -149,119 +149,151 @@
     </div>
 
     <script>
-        // Scoring data passed from the controller
-        var scoreData = @json($scoreData);
-        var attendanceData = @json($attendanceData);
+    // Ensure data is passed correctly from the backend
+    var scoreData = @json($scoreData) || [];
+    var attendanceData = @json($attendanceData) || [];
+
+    // Chart 1: Score Trend Over Time
+    document.addEventListener('DOMContentLoaded', function () {
+        if (scoreData.length === 0) {
+            console.warn("Score data is empty or not loaded correctly.");
+        }
+        if (attendanceData.length === 0) {
+            console.warn("Attendance data is empty or not loaded correctly.");
+        }
 
         // Chart 1: Score Trend Over Time
-        document.addEventListener('DOMContentLoaded', function () {
-            var ctx1 = document.getElementById('scoreChart').getContext('2d');
-            var scoreChart = new Chart(ctx1, {
-                type: 'line',
-                data: {
-                    labels: scoreData.map(data => data.date), // Using raw dates directly
-                    datasets: [{
-                        label: 'Scores Over Time',
-                        data: scoreData.map(data => data.total), // Total scores
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        fill: false
-                    }]
-                },
-                options: {
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Score'
-                            }
+        var ctx1 = document.getElementById('scoreChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: scoreData.map(data => data.date), // Dates from scoreData
+                datasets: [{
+                    label: 'Scores Over Time',
+                    data: scoreData.map(data => {
+                        return typeof data.total === 'number' ? data.total : parseInt(data.total, 10) || 0;
+                    }), // Ensure the scores are numbers
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
                         }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Score'
+                        },
+                        beginAtZero: true
                     }
                 }
-            });
+            }
         });
 
         // Chart 2: Attendance vs Score Correlation (Scatter Plot)
-        document.addEventListener('DOMContentLoaded', function () {
-            var ctx2 = document.getElementById('attendanceScoreChart').getContext('2d');
-            var attendanceScoreChart = new Chart(ctx2, {
-                type: 'scatter',
-                data: {
-                    datasets: [{
-                        label: 'Attendance vs Score',
-                        data: scoreData.map((score, index) => ({
-                            x: index + 1, // Simulating days present, assuming order corresponds with scoreData
-                            y: score.total // Scores
-                        })),
-                        backgroundColor: 'rgba(255, 99, 132, 1)'
-                    }]
-                },
-                options: {
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Days Present'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Score'
-                            }
+        var ctx2 = document.getElementById('attendanceScoreChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Attendance vs Score',
+                    data: scoreData.map((score, index) => ({
+                        x: index + 1,
+                        y: typeof score.total === 'number' ? score.total : parseInt(score.total, 10) || 0
+                    })),
+                    backgroundColor: 'rgba(255, 99, 132, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Days Present'
                         }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Score'
+                        },
+                        beginAtZero: true
                     }
                 }
-            });
+            }
         });
 
         // Chart 3: Attendance Summary (Bar Chart)
-        document.addEventListener('DOMContentLoaded', function () {
-            var ctx3 = document.getElementById('attendanceSummaryChart').getContext('2d');
-            var attendanceSummaryChart = new Chart(ctx3, {
-                type: 'bar',
-                data: {
-                    labels: ['Total Days', 'Present', 'Absent'],
-                    datasets: [{
-                        label: 'Attendance Summary',
-                        data: [{{ $totalAttendanceDays }}, {{ $presentDays }}, {{ $totalAttendanceDays - $presentDays }}],
-                        backgroundColor: [
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 99, 132, 1)'
-                        ]
-                    }]
+        var ctx3 = document.getElementById('attendanceSummaryChart').getContext('2d');
+        new Chart(ctx3, {
+            type: 'bar',
+            data: {
+                labels: ['Total Days', 'Present', 'Absent'],
+                datasets: [{
+                    label: 'Attendance Summary',
+                    data: [
+                        {{ $totalAttendanceDays }},
+                        {{ $presentDays }},
+                        {{ $totalAttendanceDays - $presentDays }}
+                    ],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
-            });
+            }
         });
 
         // Chart 4: Score Distribution (Histogram)
-        document.addEventListener('DOMContentLoaded', function () {
-            var ctx4 = document.getElementById('scoreDistributionChart').getContext('2d');
-            var scoreDistributionChart = new Chart(ctx4, {
-                type: 'bar',
-                data: {
-                    labels: ['0-60', '61-120', '121-180', '181-240', '241-300', '301-360'],
-                    datasets: [{
-                        label: 'Score Distribution',
-                        data: [
-                            scoreData.filter(score => score.total <= 60).length,
-                            scoreData.filter(score => score.total > 60 && score.total <= 120).length,
-                            scoreData.filter(score => score.total > 120 && score.total <= 180).length,
-                            scoreData.filter(score => score.total > 180 && score.total <= 240).length,
-                            scoreData.filter(score => score.total > 240 && score.total <= 300).length,
-                            scoreData.filter(score => score.total > 300 && score.total <= 360).length
-                        ],
-                        backgroundColor: 'rgba(153, 102, 255, 1)'
-                    }]
+        var ctx4 = document.getElementById('scoreDistributionChart').getContext('2d');
+        new Chart(ctx4, {
+            type: 'bar',
+            data: {
+                labels: ['0-60', '61-120', '121-180', '181-240', '241-300', '301-360'],
+                datasets: [{
+                    label: 'Score Distribution',
+                    data: [
+                        scoreData.filter(score => parseInt(score.total, 10) <= 60).length,
+                        scoreData.filter(score => parseInt(score.total, 10) > 60 && parseInt(score.total, 10) <= 120).length,
+                        scoreData.filter(score => parseInt(score.total, 10) > 120 && parseInt(score.total, 10) <= 180).length,
+                        scoreData.filter(score => parseInt(score.total, 10) > 180 && parseInt(score.total, 10) <= 240).length,
+                        scoreData.filter(score => parseInt(score.total, 10) > 240 && parseInt(score.total, 10) <= 300).length,
+                        scoreData.filter(score => parseInt(score.total, 10) > 300 && parseInt(score.total, 10) <= 360).length
+                    ],
+                    backgroundColor: 'rgba(153, 102, 255, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
-            });
+            }
         });
-    </script>
+    });
+</script>
+
+
 </body>
 </html>

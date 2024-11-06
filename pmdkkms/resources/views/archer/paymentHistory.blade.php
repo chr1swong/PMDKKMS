@@ -431,36 +431,36 @@
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF('p', 'mm', 'a4');
 
-        // Define a function to add the header on each page
+        // Function to add the header
         function addHeader() {
             pdf.setFont("Arial");
             const img = new Image();
             img.src = '/images/pmdkkLogo.png';
             pdf.addImage(img, 'PNG', 10, 15, 30, 30);
+
             const textXPosition = 45;
             pdf.setFontSize(14.5);
             pdf.setFont("Arial", "bold");
             pdf.text("PERSATUAN MEMANAH DAERAH KOTA KINABALU (PMDKK)", textXPosition, 18);
-
             pdf.setFontSize(10);
             pdf.text("(D-SBH-03075)", textXPosition, 24);
 
             // Add current date
             const today = new Date();
-            const currentDate = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}-${today.getFullYear()}`; // Format: MM-DD-YYYY
+            const currentDate = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}-${today.getFullYear()}`;
             pdf.text(`Date: ${currentDate}`, textXPosition, 30);
-
             pdf.text("Peti Surat 16536, 88700 Kota Kinabalu, Sabah, Malaysia.", textXPosition, 36);
             pdf.text("Email: pmdkk2015@gmail.com", textXPosition, 42);
             pdf.text("Contact: 088-794 327", pdf.internal.pageSize.width - 45, 42);
+
             pdf.setFontSize(14);
             pdf.text("Transaction History", 14, 55);
         }
 
-        // Define the table headers
+        // Table headers
         const headers = [['No.', 'Name', 'MemberID', 'Amount (RM)', 'Duration (Months)', 'Status', 'Bill Code', 'Transaction Date']];
 
-        // Capture visible rows
+        // Collect visible rows for the PDF
         const visibleRows = Array.from(document.querySelectorAll('#payments-table tr'))
             .filter(row => row.style.display !== 'none')
             .map((row, index) => [
@@ -474,56 +474,68 @@
                 row.cells[7].innerText  // Transaction Date
             ]);
 
-        // Check if there is data to print
+        // Check if there's data to generate
         if (visibleRows.length === 0) {
             alert('No data available for PDF generation based on the current filters.');
             return;
         }
 
-        // Add table to PDF
-        pdf.autoTable({
-            head: headers,
-            body: visibleRows,
-            startY: 60,
-            styles: {
-                font: "Arial",
-                fontSize: 10,
-                cellPadding: 3,
-                halign: 'center',
-                valign: 'middle',
-                lineColor: [44, 62, 80],
-                lineWidth: 0.1
-            },
-            headStyles: {
-                fillColor: [169, 169, 169],
-                textColor: [255, 255, 255]
-            },
-            bodyStyles: {
-                fillColor: [255, 255, 255],
-                textColor: [0, 0, 0]
-            },
-            margin: { top: 70 }, // Adjust table position below header
-            pageBreak: 'auto', // Split table across pages
-            didDrawPage: function (data) {
-                // Add the header on each page
-                addHeader();
+        // Add the header
+        addHeader();
 
-                // Add page numbering in the footer
-                const pageCount = pdf.internal.getNumberOfPages();
-                const pageText = `Page ${pdf.internal.getCurrentPageInfo().pageNumber} of ${pageCount}`;
+        // Generate the table in the PDF
+    pdf.autoTable({
+        head: headers,
+        body: visibleRows,
+        startY: 60, // Start position below the header on the first page
+        styles: {
+            font: "Arial",
+            fontSize: 10,
+            cellPadding: 3,
+            halign: 'center',
+            valign: 'middle',
+            lineColor: [44, 62, 80],
+            lineWidth: 0.1
+        },
+        headStyles: {
+            fillColor: [169, 169, 169],
+            textColor: [255, 255, 255]
+        },
+        bodyStyles: {
+            fillColor: [255, 255, 255],
+            textColor: [0, 0, 0]
+        },
+        margin: { top: 20 }, // Use a smaller top margin for all pages
+        pageBreak: 'auto',
+        didDrawPage: function (data) {
+            // Add the header only on the first page
+            if (data.pageNumber === 1) {
+                addHeader();
+            }
+
+            // Add page numbers on each page
+            const pageCount = pdf.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                pdf.setPage(i);
                 pdf.setFontSize(10);
+                const pageText = `Page ${i} of ${pageCount}`;
                 const pageWidth = pdf.internal.pageSize.width;
                 const textWidth = pdf.getTextWidth(pageText);
                 pdf.text(pageText, (pageWidth - textWidth) / 2, pdf.internal.pageSize.height - 10);
             }
-        });
+        },
+        didDrawCell: function (data) {
+            // Adjust the start position of the table for pages after the first
+            if (data.row.index === 0 && data.pageNumber > 1) {
+                data.settings.startY = 30; // Adjusted start position for second and subsequent pages
+            }
+        }
+    });
 
-        // Save the PDF with the current date
+        // Save the PDF
         const date = new Date().toISOString().split('T')[0];
         pdf.save(`transaction_history_${date}.pdf`);
     });
-
-
 
     function closeSuccessMessage() {
         document.getElementById('success-message').style.display = 'none';

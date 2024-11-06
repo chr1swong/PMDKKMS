@@ -274,7 +274,6 @@
         </table>
     </div>
 
-    {{ $scoringData->links() }}
 
     <a href="{{ route('archer.scoring') }}" class="back-btn">
         <i class="fas fa-arrow-left"></i> Back

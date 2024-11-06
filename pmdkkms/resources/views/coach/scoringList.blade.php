@@ -292,8 +292,6 @@
         </table>
     </div>
 
-    <!-- Pagination -->
-    {{ $scoringData->links() }}
 </div>
 
 <!-- jsPDF and autoTable libraries -->
@@ -314,31 +312,39 @@
                 shouldSwitch = false;
                 x = rows[i].getElementsByTagName("TD")[n];
                 y = rows[i + 1].getElementsByTagName("TD")[n];
-                if (n == 2) {
-                    const xDate = new Date(x.innerHTML);
-                    const yDate = new Date(y.innerHTML);
-                    if (dir == "asc" && xDate > yDate) {
+                let xContent = x.innerHTML.toLowerCase();
+                let yContent = y.innerHTML.toLowerCase();
+
+                // Handle date sorting
+                if (n === 2) {
+                    const xDate = new Date(xContent);
+                    const yDate = new Date(yContent);
+                    if (dir === "asc" && xDate > yDate) {
                         shouldSwitch = true;
                         break;
-                    } else if (dir == "desc" && xDate < yDate) {
-                        shouldSwitch = true;
-                        break;
-                    }
-                } else if (n === 5 || n === 6) {
-                    const xValue = parseInt(x.innerHTML.replace(/[^\d]/g, ''), 10);
-                    const yValue = parseInt(y.innerHTML.replace(/[^\d]/g, ''), 10);
-                    if (dir == "asc" && xValue > yValue) {
-                        shouldSwitch = true;
-                        break;
-                    } else if (dir == "desc" && xValue < yValue) {
+                    } else if (dir === "desc" && xDate < yDate) {
                         shouldSwitch = true;
                         break;
                     }
-                } else {
-                    if (dir == "asc" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                }
+                // Handle total score sorting
+                else if (n === 4) { // Adjusted to sort the "Total Score" column
+                    const xValue = parseInt(xContent.split("/")[0]); // Extract numeric value
+                    const yValue = parseInt(yContent.split("/")[0]); // Extract numeric value
+                    if (dir === "asc" && xValue > yValue) {
                         shouldSwitch = true;
                         break;
-                    } else if (dir == "desc" && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    } else if (dir === "desc" && xValue < yValue) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                // Handle string sorting for other columns
+                else {
+                    if (dir === "asc" && xContent > yContent) {
+                        shouldSwitch = true;
+                        break;
+                    } else if (dir === "desc" && xContent < yContent) {
                         shouldSwitch = true;
                         break;
                     }
@@ -349,7 +355,7 @@
                 switching = true;
                 switchcount++;
             } else {
-                if (switchcount == 0 && dir == "asc") {
+                if (switchcount === 0 && dir === "asc") {
                     dir = "desc";
                     switching = true;
                 }

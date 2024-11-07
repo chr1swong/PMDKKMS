@@ -286,39 +286,55 @@
 <script>
     function sortTable(n) {
         const table = document.getElementById("scoringTable");
-        let switching = true, dir = "asc", switchcount = 0;
-        while (switching) {
-            switching = false;
-            let rows = table.rows;
-            for (let i = 1; i < rows.length - 1; i++) {
-                let shouldSwitch = false;
-                const x = rows[i].getElementsByTagName("TD")[n];
-                const y = rows[i + 1].getElementsByTagName("TD")[n];
-                const xValue = n === 1 ? new Date(x.innerHTML) : parseInt(x.innerHTML);
-                const yValue = n === 1 ? new Date(y.innerHTML) : parseInt(y.innerHTML);
-                if (dir === "asc" ? xValue > yValue : xValue < yValue) {
-                    shouldSwitch = true;
-                    break;
-                }
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr')); // Convert rows to an array
+        let direction = table.dataset.sortDirection === 'asc' ? 'desc' : 'asc'; // Toggle sort direction
+        table.dataset.sortDirection = direction;
+
+        // Sorting logic
+        rows.sort((rowA, rowB) => {
+            let cellA = rowA.cells[n].textContent.trim();
+            let cellB = rowB.cells[n].textContent.trim();
+            let comparison = 0;
+
+            // Handle date sorting
+            if (n === 1) {
+                cellA = new Date(cellA);
+                cellB = new Date(cellB);
+                comparison = cellA - cellB;
             }
-            if (shouldSwitch) {
-                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
-                switchcount++;
-            } else if (switchcount === 0 && dir === "asc") {
-                dir = "desc";
-                switching = true;
+            // Handle numeric sorting for distance and total score
+            else if (n === 2 || n === 3) {
+                cellA = parseInt(cellA.replace(/[^0-9]/g, ""), 10); // Remove non-numeric characters
+                cellB = parseInt(cellB.replace(/[^0-9]/g, ""), 10); // Remove non-numeric characters
+                comparison = cellA - cellB;
+            } 
+            // Handle string comparison
+            else {
+                comparison = cellA.localeCompare(cellB);
             }
-        }
+
+            return direction === 'asc' ? comparison : -comparison;
+        });
+
+        // Rebuild the tbody with the sorted rows
+        rows.forEach(row => tbody.appendChild(row));
+
+        // Recalculate index numbers after sorting
         updateIndex();
     }
 
+    // Update index numbers after sorting
     function updateIndex() {
         const rows = document.querySelectorAll('#scoring-table tr');
         rows.forEach((row, index) => {
-            row.cells[0].innerHTML = index + 1;
+            row.cells[0].textContent = index + 1;
         });
     }
+
+    // Call updateIndex on page load
+    window.onload = updateIndex;
+
     
     // Generate PDF
     document.getElementById('generate-pdf').addEventListener('click', function () {

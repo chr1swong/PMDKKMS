@@ -111,7 +111,8 @@ Route::middleware(['auth', RoleAccessMiddleware::class . ':1'])->group(function 
     })->name('archer.scoringInteractive');
 
     // Performance Analytics
-    Route::get('/archer/performance-analytics', [AnalyticsController::class, 'performanceAnalytics'])->name('archer.performanceAnalytics');
+    Route::get('/archer/performance-analytics', [AnalyticsController::class, 'showArcherAnalytics'])->name('archer.analytics');
+
 
     //Routes for payments
     Route::get('/archer/paymentForm', function () {

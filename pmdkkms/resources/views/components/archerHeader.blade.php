@@ -263,7 +263,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="/archer/scoring">Scoring</a></li>
-                            <li><a href="{{ route('archer.performanceAnalytics') }}">Analytics</a></li>
+                            <li><a href="{{ route('archer.analytics') }}">Analytics</a></li>
                             <li><a href="{{ route('archer.paymentHistory') }}">Transactions</a></li>
                         </ul>
                     </li>

@@ -267,55 +267,59 @@
 <script>
     function updateTableIndexes() {
         const table = document.getElementById('scoringTable');
-        const rows = table.querySelectorAll('tbody tr'); // Target only tbody rows
+        const rows = table.querySelectorAll('tbody tr'); // Only select rows inside the tbody
 
-        // Loop through all rows and update the first cell with the correct index
+        // Initialize index counter for visible rows
         let visibleIndex = 1;
         rows.forEach((row) => {
             if (row.style.display !== 'none') { // Check if row is visible
-                const indexCell = row.querySelector('td:first-child');
-                indexCell.textContent = visibleIndex++; // Update index
+                row.cells[0].textContent = visibleIndex++; // Update the first cell with the correct index
             }
         });
     }
 
-    // Sorting function that works with index recalculation
-    function sortTable(columnIndex, isDate = false) {
+    function sortTable(columnIndex) {
         const table = document.getElementById('scoringTable');
         const tbody = table.querySelector('tbody');
-        const rowsArray = Array.from(tbody.rows); // Convert rows to an array for sorting
+        const rowsArray = Array.from(tbody.rows); // Convert rows to an array
+        let direction = table.dataset.sortDirection === 'asc' ? 'desc' : 'asc'; // Toggle sort direction
+        table.dataset.sortDirection = direction; // Store the new sort direction
 
-        let direction = table.dataset.sortDirection === 'asc' ? 'desc' : 'asc'; // Toggle direction
-        table.dataset.sortDirection = direction; // Save the new direction
-
+        // Sorting logic
         rowsArray.sort((rowA, rowB) => {
             let cellA = rowA.cells[columnIndex].textContent.trim();
             let cellB = rowB.cells[columnIndex].textContent.trim();
 
-            if (isDate) { // If it's a date column, parse the dates
+            // Handle date sorting
+            if (columnIndex === 1) {
                 cellA = new Date(cellA);
                 cellB = new Date(cellB);
-            } else { // Otherwise, perform string comparison
-                cellA = cellA.toLowerCase();
-                cellB = cellB.toLowerCase();
+                return direction === 'asc' ? cellA - cellB : cellB - cellA;
+            }
+            
+            // Handle numeric sorting
+            if (columnIndex === 2 || columnIndex === 3) {
+                cellA = parseInt(cellA.replace(/[^0-9]/g, ''), 10); // Remove non-numeric characters
+                cellB = parseInt(cellB.replace(/[^0-9]/g, ''), 10); // Remove non-numeric characters
+                return direction === 'asc' ? cellA - cellB : cellB - cellA;
             }
 
-            if (direction === 'asc') {
-                return cellA > cellB ? 1 : -1;
-            } else {
-                return cellA < cellB ? 1 : -1;
-            }
+            // Handle string sorting (for performance or other columns)
+            return direction === 'asc'
+                ? cellA.localeCompare(cellB)
+                : cellB.localeCompare(cellA);
         });
 
-        // Rebuild the tbody with the sorted rows
+        // Rebuild the tbody with sorted rows
         rowsArray.forEach((row) => tbody.appendChild(row));
 
         // Recalculate indexes after sorting
         updateTableIndexes();
     }
 
-    // Call the function to initialize the indexes when the page loads
+    // Call updateTableIndexes on page load
     window.onload = updateTableIndexes;
+
 
 
 </script>

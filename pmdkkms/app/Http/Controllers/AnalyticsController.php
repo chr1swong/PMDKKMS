@@ -29,8 +29,8 @@ class AnalyticsController extends Controller
             ->sortBy('date') // Sort in ascending order to display correctly on the chart
             ->values(); // Reset the collection keys to ensure proper mapping
 
-        // Extract the dates
-        $dates = $scores->pluck('date')->map(function ($date) {
+        // Extract the dates for the score-related data
+        $scoreDates = $scores->pluck('date')->map(function ($date) {
             return \Carbon\Carbon::parse($date)->format('Y-m-d');
         })->toArray();
 
@@ -69,31 +69,41 @@ class AnalyticsController extends Controller
             return $setAverages;
         })->toArray();
 
-        // Attendance data for the current month only
+        // Attendance data for each day of the current month
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
         $totalDaysInMonth = Carbon::now()->daysInMonth;
 
+        // Generate all dates in the current month
+        $daysInMonth = CarbonPeriod::create("$currentYear-$currentMonth-01", "$currentYear-$currentMonth-$totalDaysInMonth");
+        $dailyAttendance = [];
+
+        // Initialize daily attendance with zeros (absent)
+        foreach ($daysInMonth as $day) {
+            $dailyAttendance[$day->format('Y-m-d')] = 0;
+        }
+
         // Fetch attendance records for the current month
         $attendances = Attendance::where('membership_id', $membership->membership_id)
-            ->whereMonth('created_at', $currentMonth)
-            ->whereYear('created_at', $currentYear)
+            ->whereMonth('attendance_date', $currentMonth)
+            ->whereYear('attendance_date', $currentYear)
             ->get();
 
-        $presentCount = $attendances->where('attendance_status', 'present')->count();
-        $absentCount = $attendances->where('attendance_status', 'absent')->count();
-
-        // Calculate absent days for unmarked days in the current month
-        $absentCount += $totalDaysInMonth - $attendances->count();
+        // Mark the days as present
+        foreach ($attendances as $attendance) {
+            $date = Carbon::parse($attendance->attendance_date)->format('Y-m-d');
+            if ($attendance->attendance_status === 'present' && array_key_exists($date, $dailyAttendance)) {
+                $dailyAttendance[$date] = 1; // Mark as present
+            }
+        }
 
         // Prepare data for the attendance graph
-        $attendanceRate = $totalDaysInMonth ? round(($presentCount / $totalDaysInMonth) * 100, 2) : 0;
-        $attendanceData = [
-            'present' => $presentCount,
-            'absent' => $absentCount,
-            'total' => $totalDaysInMonth
-        ];
+        $attendanceDates = array_keys($dailyAttendance);
+        $attendanceValues = array_values($dailyAttendance);
 
-        return view('archer.analytics', compact('dates', 'totalScores', 'xCounts', 'tenCounts', 'averageScores', 'attendanceRate', 'attendanceData', 'membership'));
+        return view('archer.analytics', compact(
+            'scoreDates', 'totalScores', 'xCounts', 'tenCounts', 'averageScores',
+            'attendanceDates', 'attendanceValues', 'membership'
+        ));
     }
 }

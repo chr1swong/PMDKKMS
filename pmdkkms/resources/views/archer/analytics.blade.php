@@ -96,7 +96,7 @@
                 <canvas id="scoreTrendChart"></canvas>
             </div>
             <div class="card-container">
-                <h4>X and 10 Counts Over Time</h4>
+                <h4>Xs and 10s Count Over Time</h4>
                 <canvas id="x10CountsChart"></canvas>
             </div>
             <div class="card-container">
@@ -104,8 +104,8 @@
                 <canvas id="averageScoreChart"></canvas>
             </div>
             <div class="card-container">
-                <h4>Attendance Rate for Current Month</h4>
-                <canvas id="attendanceChart"></canvas>
+                <h4>Daily Attendance for Current Month</h4>
+                <canvas id="dailyAttendanceChart"></canvas>
             </div>
         </div>
     </div>
@@ -116,7 +116,7 @@
         var scoreTrendChart = new Chart(ctxScoreTrend, {
             type: 'line',
             data: {
-                labels: @json($dates),
+                labels: @json($scoreDates),
                 datasets: [{
                     label: 'Total Score',
                     data: @json($totalScores),
@@ -143,12 +143,12 @@
             }
         });
 
-        //X and 10 Counts Over Time
+        // Xs and 10s Count Over Time
         var ctxX10Counts = document.getElementById('x10CountsChart').getContext('2d');
         var x10CountsChart = new Chart(ctxX10Counts, {
             type: 'line',
             data: {
-                labels: @json($dates),
+                labels: @json($scoreDates),
                 datasets: [
                     {
                         label: 'X Count',
@@ -186,7 +186,7 @@
             }
         });
 
-        //Average Score per Arrow
+        // Average Score per Arrow
         var ctxAverageScore = document.getElementById('averageScoreChart').getContext('2d');
         // Create labels for each set
         var setLabels = ["Set 1", "Set 2", "Set 3", "Set 4", "Set 5", "Set 6"];
@@ -204,7 +204,7 @@
         latestSetsData.forEach((setAverages, recordIndex) => {
             setAverages.forEach((averageScore, setIndex) => {
                 flattenedScores.push(averageScore);
-                labels.push(`${setLabels[setIndex]} (Record ${recordIndex + 1})`);
+                labels.push(`${setLabels[setIndex]}`); // Remove the (Record *) part
             });
         });
 
@@ -244,34 +244,46 @@
             }
         });
 
-        //Attendance Rate
-        var ctxAttendance = document.getElementById('attendanceChart').getContext('2d');
-        var attendanceChart = new Chart(ctxAttendance, {
+
+        console.log(@json($attendanceDates));
+        console.log(@json($attendanceValues));
+        // Attendance Rate (For current month)
+        var ctxDailyAttendance = document.getElementById('dailyAttendanceChart').getContext('2d');
+        var dailyAttendanceChart = new Chart(ctxDailyAttendance, {
             type: 'bar',
             data: {
-                labels: ['Present', 'Absent'],
+                labels: @json($attendanceDates), // Use attendanceDates for X-axis
                 datasets: [{
-                    label: 'Attendance',
-                    data: [@json($attendanceData['present']), @json($attendanceData['absent'])],
-                    backgroundColor: ['rgba(75, 192, 192, 0.5)', 'rgba(255, 99, 132, 0.5)'],
-                    borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+                    label: 'Present',
+                    data: @json($attendanceValues), // Y-axis: 1 for present, 0 for absent
+                    backgroundColor: 'rgba(0, 255, 0, 0.5)', 
+                    borderColor: 'rgba(0, 255, 0, 1)', 
                     borderWidth: 1
                 }]
             },
             options: {
                 responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top'
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Date' },
+                        grid: { display: false },
+                        ticks: {
+                            autoSkip: false, // Show all dates
+                            maxRotation: 90, // Rotate labels 90 degrees if needed
+                            minRotation: 90  // Rotate labels 90 degrees if needed
+                        }
                     },
-                    title: {
-                        display: true,
-                        text: 'Attendance Breakdown for Current Month'
+                    y: {
+                        title: { display: true, text: 'Attendance' },
+                        grid: { color: 'rgba(200, 200, 200, 0.2)' },
+                        beginAtZero: true,
+                        ticks: {
+                            display: false // Hide Y-axis values
+                        }
                     }
                 }
             }
         });
-
     </script>
 </body>
 </html>

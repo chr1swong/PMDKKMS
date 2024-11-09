@@ -19,10 +19,10 @@
         }
 
         .archer-container {
-            max-width: 1200px;
+            max-width: 1500px;
             margin: 40px auto;
             background-color: white;
-            padding: 40px;
+            padding: 50px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -100,9 +100,19 @@
         }
 
         table th {
+            position: relative; /* Allow relative positioning of the sort icons */
             background-color: #333;
             color: white;
             cursor: pointer;
+            padding-right: 25px; /* Add space to accommodate the icon */
+        }
+
+        table th i {
+            position: absolute;
+            right: 10px; /* Adjust position as needed */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ddd; /* Adjust color to make it subtle */
         }
 
         table td {
@@ -112,15 +122,19 @@
 
         .btn {
             padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
             font-size: 14px;
+            border-radius: 5px;
+            border: none;
             font-weight: bold;
-            display: inline-block;
-            line-height: 1.5;
             text-align: center;
             cursor: pointer;
-            width: 120px;
+            width: 120px; /* Ensure the width is consistent for all buttons */
+            display: inline-block; /* This will help align the buttons */
+            line-height: 1.5; /* Adjust line-height if needed for uniform height */
+        }
+
+        .btn {
+            white-space: nowrap; /* Prevent text from wrapping */
         }
 
         .btn-view {
@@ -197,20 +211,71 @@
             color: #0c3d20;
         }
 
-        /* Responsive adjustments */
+        /* Responsive adjustments for small screens */
         @media (max-width: 768px) {
-            .filter-container {
+            /* Adjust table layout */
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table, thead, tbody, th, td, tr {
+                display: block; /* Make table elements block to stack them */
+            }
+
+            thead tr {
+                display: none; /* Hide table headers on small screens */
+            }
+
+            tbody tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                padding: 10px;
+                background-color: #fff;
+            }
+
+            td {
+                padding: 10px 5px;
+                text-align: left;
+                position: relative;
+                border: none; /* Remove borders on small screens */
+                word-wrap: break-word; /* Allow text to wrap */
+            }
+
+            /* Label styling */
+            td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                text-transform: capitalize;
+                color: #555;
+                display: block;
+                margin-bottom: 5px;
+            }
+
+            /* Adjust button layout */
+            .btn-container {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: stretch;
+                gap: 8px;
             }
 
             .btn {
-                width: 100%;
-                margin-bottom: 10px;
+                width: 100%; /* Full-width buttons */
+                box-sizing: border-box; /* Include padding and border in width calculation */
+                margin: 0; /* Remove extra margins */
+                padding: 8px 10px; /* Adjust padding to fit better */
+            }
+        }
+
+
+        /* Medium screen adjustments */
+        @media (max-width: 1024px) {
+            .archer-container {
+                padding: 30px;
             }
 
-            .table-container {
-                max-height: 300px;
+            .btn-container {
+                gap: 5px; /* Reduce space between buttons */
             }
         }
     </style>
@@ -257,17 +322,18 @@
                 <!-- Loop through enrolled archers -->
                 @foreach($enrolledArchers as $key => $archer)
                 <tr data-name="{{ strtolower($archer->account_full_name) }}">
-                    <td>{{ $key + 1 }}</td>
-                    <td>{{ $archer->account_full_name }}</td>
-                    <td>{{ str_pad($archer->membership_id, 6, '0', STR_PAD_LEFT) }}</td>
-                    <td>{{ $archer->membership_status == 1 ? 'Active' : 'Inactive' }}</td>
-                    <td>
+                    <td data-label="No.">{{ $key + 1 }}</td>
+                    <td data-label="Name">{{ $archer->account_full_name }}</td>
+                    <td data-label="MemberID">{{ str_pad($archer->membership_id, 6, '0', STR_PAD_LEFT) }}</td>
+                    <td data-label="Membership Status">{{ $archer->membership_status == 1 ? 'Active' : 'Inactive' }}</td>
+                    <td data-label="Performance">
                         <div class="btn-container">
-                            <a href="{{ route('coach.scoringHistoryArcher', $archer->membership_id) }}" class="btn btn-view">View Training Score</a>
-                            <a href="{{ route('coach.attendanceView', $archer->membership_id) }}" class="btn btn-view">View Attendance</a>
+                            <a href="{{ route('coach.scoringHistoryArcher', $archer->membership_id) }}" class="btn btn-view">View Score</a>
+                            <a href="{{ route('coach.attendanceView', ['membership_id' => $archer->membership_id, 'referrer' => 'myArcher']) }}" class="btn btn-view">View Attendance</a>
+                            <a href="{{ route('coach.analytics', ['archerId' => $archer->membership_id]) }}" class="btn btn-view">View Analytics</a>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Action">
                         <div class="btn-container">
                             <form action="{{ route('coach.unenrollArcher', $archer->account_id) }}" method="POST">
                                 @csrf
@@ -284,17 +350,18 @@
                 @php $unenrollStart = count($enrolledArchers) + 1; @endphp
                 @foreach($unenrolledArchers as $key => $archer)
                 <tr data-name="{{ strtolower($archer->account_full_name) }}">
-                    <td>{{ $unenrollStart + $key }}</td>
-                    <td>{{ $archer->account_full_name }}</td>
-                    <td>{{ str_pad($archer->membership_id, 6, '0', STR_PAD_LEFT) }}</td>
-                    <td>{{ $archer->membership_status == 1 ? 'Active' : 'Inactive' }}</td>
-                    <td>
+                    <td data-label="No.">{{ $unenrollStart + $key }}</td>
+                    <td data-label="Name">{{ $archer->account_full_name }}</td>
+                    <td data-label="MemberID">{{ str_pad($archer->membership_id, 6, '0', STR_PAD_LEFT) }}</td>
+                    <td data-label="Membership Status">{{ $archer->membership_status == 1 ? 'Active' : 'Inactive' }}</td>
+                    <td data-label="Performance">
                         <div class="btn-container">
-                            <a href="{{ route('coach.scoringHistoryArcher', $archer->membership_id) }}" class="btn btn-view">View Training Score</a>
+                            <a href="{{ route('coach.scoringHistoryArcher', $archer->membership_id) }}" class="btn btn-view">View Score</a>
                             <a href="{{ route('coach.attendanceView', ['membership_id' => $archer->membership_id, 'referrer' => 'myArcher']) }}" class="btn btn-view">View Attendance</a>
+                            <a href="{{ route('coach.analytics', ['archerId' => $archer->membership_id]) }}" class="btn btn-view">View Analytics</a>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Action">
                         <div class="btn-container">
                             <form action="{{ route('coach.enrollArcher', $archer->account_id) }}" method="POST">
                                 @csrf

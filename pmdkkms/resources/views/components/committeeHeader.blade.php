@@ -269,6 +269,7 @@
                         <ul class="dropdown-menu">
                             <li><a href="/committee/attendanceList">Attendance</a></li>
                             <li><a href="{{ route('committee.scoringHistory') }}">Scoring</a></li>
+                            <li><a href="{{ route('committee.analyticsList') }}">Analytics</a></li>
                             <li><a href="{{ route('committee.paymentHistory') }}">Transactions</a></li>
                         </ul>
                     </li>
@@ -279,7 +280,8 @@
                     <li><a href="/committee/dashboard">Home</a></li>
                     <li><a href="/committee/events">Events</a></li>
                     <li><a href="/committee/attendanceList">Attendance</a></li>
-                    <li><a href="{{ route('committee.scoringHistory') }}">Performance</a></li>
+                    <li><a href="{{ route('committee.scoringHistory') }}">Scoring</a></li>
+                    <li><a href="{{ route('committee.analyticsList') }}">Analytics</a></li>
                     <li><a href="{{ route('committee.paymentHistory') }}">Transactions</a></li>
                     <li><a href="/committee/profile">Profile</a></li>
 

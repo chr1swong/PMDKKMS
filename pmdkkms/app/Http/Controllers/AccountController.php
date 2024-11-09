@@ -497,6 +497,23 @@ class AccountController extends Controller
         return view('coach.viewProfile', compact('member'));
     }
 
+    public function viewAnalyticsList()
+    {
+        // Fetch only Archer members and join with the coach information
+        $members = DB::table('account')
+            ->where('account.account_role', 1) // Specify the table name to resolve ambiguity
+            ->leftJoin('coach_archer', 'account.account_id', '=', 'coach_archer.archer_id') // Join coach_archer table to link archers with their coaches
+            ->leftJoin('account as coach', 'coach_archer.coach_id', '=', 'coach.account_id') // Join 'account' again to get coach details
+            ->select(
+                'account.account_full_name', // Select the archer's name
+                'coach.account_full_name as coach_name' // Select the coach's name
+            )
+            ->get();
+
+        // Pass the filtered members data to the view
+        return view('committee.analyticsList', ['members' => $members]);
+    }
+
     public function dashboard()
     {
         // Fetch the count of archers, coaches, and committee members from the 'account' table

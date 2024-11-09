@@ -37,6 +37,26 @@
             font-weight: bold;
         }
 
+        .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            color: #aaa;
+        }
+
+        .search-wrapper input {
+            padding: 8px 8px 8px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 250px;
+        }
+
         .table-container {
             width: 100%;
             margin: 20px auto;
@@ -63,6 +83,7 @@
         table th {
             background-color: #333;
             color: white;
+            cursor: pointer;
         }
 
         table td {
@@ -99,6 +120,11 @@
 <div class="analytics-container">
     <div class="header-row">
         <h1 class="analytics-header">Analytics List</h1>
+        <!-- Search Input -->
+        <div class="search-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="search-input" onkeyup="searchByName()" placeholder="Search by name..">
+        </div>
     </div>
     <hr class="hr-divider">
 
@@ -107,9 +133,9 @@
         <table id="analyticsTable">
             <thead>
                 <tr>
-                    <th>No.</th>
-                    <th>Name</th>
-                    <th>Coach</th>
+                    <th>No.</th> <!-- Index column without sorter -->
+                    <th onclick="sortTable(1)">Name <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(2)">Coach <i class="fas fa-sort"></i></th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -120,7 +146,7 @@
                     <td>{{ $member->account_full_name }}</td>
                     <td>{{ $member->coach_name ?? 'N/A' }}</td>
                     <td>
-                        <a href="{{ route('committee.analyticsDetails', ['archerId' => $member->account_id]) }}" class="btn btn-view-analytics">
+                        <a href="{{ route('committee.analytics', ['archerId' => $member->membership_id]) }}" class="btn btn-view-analytics">
                             View Analytics
                         </a>
                     </td>
@@ -130,6 +156,71 @@
         </table>
     </div>
 </div>
+
+<script>
+    function searchByName() {
+        const input = document.getElementById("search-input").value.toLowerCase();
+        const rows = document.querySelectorAll('#analytics-table tr');
+        let index = 1; // Start the index from 1
+
+        rows.forEach(function (row) {
+            const name = row.querySelector('td:nth-child(2)').innerText.toLowerCase();
+            if (name.includes(input)) {
+                row.style.display = '';
+                row.cells[0].innerText = index++; // Update the index and increment
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    function sortTable(n) {
+        let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("analyticsTable");
+        switching = true;
+        dir = "asc"; 
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+                if (dir == "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount++;
+            } else {
+                if (switchcount === 0 && dir === "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+        updateIndex(); // Recalculate index numbers after sorting
+    }
+
+    // Function to recalculate index numbers
+    function updateIndex() {
+        const rows = document.querySelectorAll('#analytics-table tr');
+        let index = 1; // Start the index from 1
+        rows.forEach((row) => {
+            row.cells[0].innerHTML = index++; 
+        });
+    }
+</script>
 
 </body>
 </html>

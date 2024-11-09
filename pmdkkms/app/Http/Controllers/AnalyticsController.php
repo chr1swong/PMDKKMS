@@ -172,8 +172,11 @@ class AnalyticsController extends Controller
         ));
     }
 
-    public function viewArcherAnalytics($archerId)
+    public function viewArcherAnalytics($archerId, $viewType = null)
     {
+        // Determine the view type if not explicitly provided
+        $viewType = $viewType ?? (request()->is('committee/*') ? 'committee' : 'coach');
+
         // Fetch the membership details for the given archer ID
         $membership = DB::table('membership')->where('account_id', $archerId)->first();
 
@@ -206,7 +209,7 @@ class AnalyticsController extends Controller
         // Calculate total scores for each record
         $totalScores = $scores->map(function ($score) {
             return $score->set1_total + $score->set2_total + $score->set3_total +
-                   $score->set4_total + $score->set5_total + $score->set6_total;
+                $score->set4_total + $score->set5_total + $score->set6_total;
         })->toArray();
 
         // Extract the x and ten counts
@@ -298,6 +301,7 @@ class AnalyticsController extends Controller
         $hitZoneLabels = array_keys($hitZonePercentages);
         $hitZoneValues = array_values($hitZonePercentages);
 
+        // Attendance data for each day of the current month
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
         $totalDaysInMonth = Carbon::now()->daysInMonth;
@@ -317,12 +321,21 @@ class AnalyticsController extends Controller
         foreach ($attendances as $attendance) {
             $date = Carbon::parse($attendance->attendance_date)->format('Y-m-d');
             if ($attendance->attendance_status === 'present' && array_key_exists($date, $dailyAttendance)) {
-                $dailyAttendance[$date] = 1;
+                $dailyAttendance[$date] = 1; // Mark as present
             }
         }
 
         $attendanceDates = array_keys($dailyAttendance);
         $attendanceValues = array_values($dailyAttendance);
+
+        // Return the appropriate view based on the $viewType
+        if ($viewType === 'committee') {
+            return view('committee.analytics', compact(
+                'scoreDates', 'totalScores', 'xCounts', 'tenCounts', 'averageScores',
+                'attendanceDates', 'attendanceValues', 'membership', 'performanceConsistency',
+                'setPerformanceComparison', 'hitZoneLabels', 'hitZoneValues', 'fullName'
+            ));
+        }
 
         return view('coach.analytics', compact(
             'scoreDates', 'totalScores', 'xCounts', 'tenCounts', 'averageScores',
@@ -330,4 +343,5 @@ class AnalyticsController extends Controller
             'setPerformanceComparison', 'hitZoneLabels', 'hitZoneValues', 'fullName'
         ));
     }
+
 }

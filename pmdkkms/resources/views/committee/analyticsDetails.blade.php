@@ -85,11 +85,14 @@
 
 <body>
     <header>
-        @include('components.archerHeader')
+        @include('components.committeeHeader')
     </header>
 
     <div class="analytics-container">
-        <h1 class="analytics-header">Archer Analytics</h1>
+        <h1 class="analytics-header">Archer Performance Analytics</h1>
+        <div class="archer-details">
+            <p>Viewing performance for: <strong>{{ $fullName }}</strong></p>
+        </div>
         <div class="analytics-summary">
             <div class="card-container">
                 <h4>Score Trend Over Time</h4>

@@ -164,6 +164,9 @@ Route::middleware(['auth', RoleAccessMiddleware::class . ':2'])->group(function 
     Route::get('/coach/scoring-history/{membership_id}', [ScoringController::class, 'showCoachArcherScoringHistory'])->name('coach.scoringHistoryArcher');
     Route::get('/coach/scoring-details/{id}/{referrer?}', [ScoringController::class, 'showCoachArcherScoringDetails'])->name('coach.scoringDetails');
 
+    // Coach Performance Analytics
+    Route::get('/coach/analytics/{archerId}', [AnalyticsController::class, 'viewArcherAnalytics'])->name('coach.analytics');
+
     //Routes for payments
     Route::get('/coach/paymentForm', function () {
         return app(PaymentController::class)->paymentForm('coach');
@@ -232,6 +235,10 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
     Route::put('/committee/announcements/{id}', [AnnouncementController::class, 'update'])->name('announcements.update'); // Update existing announcement (Edit announcement)
     Route::delete('/committee/announcements/{id}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy'); // Delete announcement
 
+    //Route for Analytics
+    Route::get('/committee/analyticsList', [AccountController::class, 'viewAnalyticsList'])->name('committee.analyticsList');
+    Route::get('/committee/analyticsDetails/{archerId}', [AnalyticsController::class, 'showCommitteeAnalytics'])->name('committee.analyticsDetails');
+    
     //Routes for payments
     Route::get('/committee/paymentForm', function () {
         return app(PaymentController::class)->paymentForm('committee');

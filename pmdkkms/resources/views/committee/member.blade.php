@@ -367,10 +367,6 @@
             </tbody>
         </table>
     </div>
-
-    <!-- Pagination -->
-    {{ $members->links() }}
-    
 </div>
 
 <div id="deleteModal" class="modal">

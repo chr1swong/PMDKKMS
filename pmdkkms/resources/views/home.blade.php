@@ -3,446 +3,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <!-- Add your external CSS and JS files here -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}"> 
-    
+    <title>Welcome | Kota Kinabalu Archery Association</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-    /* Hero Section */
-    .hero {
-        position: relative;
-        background-size: cover;
-        background-position: center;
-        padding: 5vw 2vw;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 20vh;
-        color: white;
-    }
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f8f8f8;
+        }
 
-    .hero-content {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        max-width: 90vw;
-    }
-
-    .hero-text {
-        flex: 1;
-        margin-right: 20px;
-        text-align: left;
-    }
-
-    .hero-text h1 {
-        font-size: 3vw;
-        font-weight: bold;
-        margin-bottom: 2vw;
-    }
-
-    .hero-text p {
-        font-size: 1.5vw;
-        margin-top: 10px;
-    }
-
-    .hero-image img {
-        max-width: 15vw;
-        height: auto;
-        border-radius: 50%;
-        border: 5px solid white;
-        margin-left: 2vw;
-    }
-
-    @media (max-width: 1024px) {
+        /* Hero Section */
         .hero {
-            flex-direction: column;
+            background-image: url('{{ asset('images/homePageImages/homeBanner1.png') }}');
+            background-size: cover;
+            background-position: center;
             text-align: center;
-            height: 60vh;
+            color: white;
+            padding: 100px 20px;
+            position: relative;
         }
 
-        .hero-text h1 {
-            font-size: 6vw;
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
         }
 
-        .hero-text p {
-            font-size: 3vw;
+        .hero-content {
+            position: relative;
+            z-index: 1;
         }
 
-        .hero-image img {
-            max-width: 30vw;
-            margin: 20px 0;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .hero {
-            height: auto;
-            padding: 5vw;
-        }
-
-        .hero-text h1 {
-            font-size: 7vw;
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
             margin-bottom: 10px;
         }
 
-        .hero-text p {
-            font-size: 4vw;
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
         }
 
-        .hero-image img {
-            max-width: 40vw;
-        }
-    }
-
-    /* Highlights */
-    .highlights {
-        display: flex;
-        flex-direction: column;
-        padding: 50px 20px;
-        background-color: #fff;
-    }
-
-    .highlights .highlight {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 40px;
-        position: relative;
-        flex-wrap: wrap;
-    }
-
-    .highlight .slideshow-container {
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        height: 500px;
-        overflow: hidden;
-        border-radius: 8px;
-        background-color: #f0f0f0;
-        border: 3px solid #333;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .highlight img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        opacity: 0;
-        position: absolute;
-        top: 0;
-        left: 0;
-        transition: opacity 1s ease-in-out;
-    }
-
-    .highlight img.active {
-        opacity: 1;
-    }
-
-    .highlight-text {
-        flex: 1;
-        margin-left: 20px;
-        margin-right: 20px;
-        margin-top: 0;
-        text-align: justify;
-    }
-
-    .highlights .highlight h2 {
-        font-size: 2.5em;
-        color: #000000;
-        margin-bottom: 10px;
-    }
-
-    .highlights .highlight p {
-        font-size: 1.5em;
-        color: #555;
-        text-align: justify;
-    }
-
-    .highlights .highlight:nth-child(odd) {
-        flex-direction: row;
-    }
-
-    .highlights .highlight:nth-child(even) {
-        flex-direction: row-reverse;
-    }
-
-    @media (max-width: 768px) {
-        .highlights .highlight {
-            flex-direction: column;
+        .cta-button {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s;
         }
 
-        .highlight-text {
-            margin-left: 0;
-            text-align: justify;
-        }
-    }
-
-    /* Info Section */
-    .info-section {
-        display: flex;
-        justify-content: space-around;
-        padding: 50px 20px;
-        background-color: #e7f0fa;
-        border-radius: 8px;
-        margin: 50px 0;
-    }
-
-    .news-updates, .upcoming-events {
-        width: 45%;
-        padding: 10px;
-    }
-
-    .news-updates h3, .upcoming-events h3 {
-        font-size: 1.75rem;
-        margin-bottom: 20px;
-        color: #333;
-        font-weight: bold;
-    }
-
-    .news-updates img {
-        width: 100%;
-        height: auto;
-        margin-top: 10px;
-    }
-
-    .upcoming-events ul {
-        list-style-type: none;
-        padding-left: 0;
-    }
-
-    .upcoming-events ul li {
-        margin-bottom: 10px;
-        font-size: 1.2rem;
-        color: #333;
-    }
-
-    .facebook-feed, .instagram-feed {
-        width: 100%;
-        height: 600px;
-        margin-bottom: 20px;
-    }
-
-    .instagram-feed {
-        max-width: 500px;
-        margin: 0 auto;
-    }
-
-    .upcoming-events ul li span {
-        font-weight: bold;
-        color: #00aaff;
-    }
-
-    @media (max-width: 1024px) {
-        .info-section {
-            flex-direction: column; /* Stack sections vertically */
-            padding: 20px; /* Adjust padding for smaller screens */
+        .cta-button:hover {
+            background-color: #0056b3;
         }
 
-        .news-updates, .upcoming-events {
-            width: 100%; /* Full width for both sections */
-            margin-bottom: 20px; /* Add space between sections */
+        /* Highlights Section */
+        .highlights {
+            padding: 60px 20px;
+            background-color: #fff;
+            text-align: center;
         }
 
-        .facebook-feed {
-            height: 500px; /* Adjust height for smaller screens */
-        }
-
-        .news-updates img {
-            margin-top: 10px;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .highlights .highlight {
-            flex-direction: column;
-        }
-
-        .highlight-text {
-            margin-left: 0;
-            text-align: justify;
-        }
-
-        .highlights .highlight h2 {
-            font-size: 2rem; /* Adjust heading size for smaller screens */
-        }
-
-        .highlights .highlight p {
-            font-size: 1.2rem; /* Smaller paragraph text for mobile */
-            line-height: 1.5; /* Adjust line height for better readability */
-        }
-
-        .info-section {
+        .highlight {
+            margin-bottom: 40px;
+            display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px 10px; /* Adjust padding */
         }
 
-        .news-updates, .upcoming-events {
-            width: 100%; /* Ensure full width on mobile */
-            margin-bottom: 30px; /* Space between sections */
+        .highlight img {
+            display: none;
+            width: 1200px; /* Set fixed width */
+            height: 800px; /* Set fixed height */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            object-fit: cover; /* Ensures images fill the space nicely */
+        }
+
+        .highlight img.active {
+            display: block;
+            margin: 0 auto; /* Centers the image */
+        }
+
+        .highlight h2 {
+            font-size: 2rem;
+            color: #0b1647;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .highlight p {
+            font-size: 1rem;
+            color: #555;
+            max-width: 80%; /* Centers text with the image width */
+        }
+
+        /* Info Section */
+        .info-section {
+            padding: 60px 20px;
+            background-color: #e7f0fa;
+            text-align: center;
+        }
+
+        .info-section h3 {
+            font-size: 2rem;
+            color: #0b1647;
+            margin-bottom: 20px;
+        }
+
+        .info-section .content {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* News & Updates Section */
+        .news-updates {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            flex: 1;
+            min-width: 350px;
+            max-width: 550px;
+            text-align: center;
+        }
+
+        .news-updates h3 {
+            font-size: 1.8rem;
+            color: #0b1647;
+            text-align: center;
+            margin-bottom: 15px;
         }
 
         .facebook-feed {
-            width: 100%; /* Make it responsive */
-            max-width: 400px; /* Limit maximum width */
-            height: 400px; /* Adjust height for mobile */
-            margin: 0 auto; /* Center align the feed */
-            border-radius: 8px; /* Add slight rounding */
-            overflow: hidden; /* Ensure no overflow */
+            margin-top: 10px;
         }
 
-        .news-updates h3, .upcoming-events h3 {
-            font-size: 1.5rem; /* Adjust header size */
+        /* Upcoming Events Section */
+        .upcoming-events {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            flex: 1;
+            min-width: 350px;
+            max-width: 550px;
+            text-align: left;
+        }
+
+        .upcoming-events h3 {
+            font-size: 1.8rem;
+            color: #0b1647;
+            text-align: center;
             margin-bottom: 15px;
-            text-align: center; /* Center headers */
         }
 
         .upcoming-events ul {
-            padding-left: 20px;
-            margin-top: 10px;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
         }
 
-        .upcoming-events ul li {
-            margin-bottom: 10px;
+        .upcoming-events li {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .upcoming-events li:last-child {
+            border-bottom: none;
+        }
+
+        .upcoming-events li .event-date {
+            font-weight: bold;
+            color: #007bff;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .upcoming-events li .event-title {
             font-size: 1.1rem;
-            line-height: 1.5;
-        }
-    }
-
-    /* Styles for Smaller Screens (Phones) */
-    @media (max-width: 576px) {
-            .highlights .highlight p {
-            font-size: 1rem; /* Even smaller paragraph text for small screens */
-            line-height: 1.4; /* Adjust line height */
-            margin-bottom: 10px; /* Add some space between paragraphs */
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
         }
 
-        .highlights .highlight h2 {
-            font-size: 1.5rem; /* Adjust heading size for small screens */
+        .upcoming-events li .event-time {
+            font-size: 0.9rem;
+            color: #555;
+            display: flex;
+            align-items: center;
+            margin-bottom: 2px;
         }
 
-        .info-section {
-            padding: 10px; /* Reduce padding for smaller phones */
+        .upcoming-events li .event-location {
+            font-size: 0.9rem;
+            color: #777;
+            display: flex;
+            align-items: center;
         }
 
-        .facebook-feed {
-            max-width: 320px; /* Adjust width for small phones */
-            height: 300px; /* Adjust height */
+        .upcoming-events li i {
+            margin-right: 5px;
         }
 
-        .news-updates h3, .upcoming-events h3 {
-            font-size: 1.25rem; /* Smaller header size */
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .hero p {
+                font-size: 1.2rem;
+            }
+            .info-section .content {
+                flex-direction: column;
+                gap: 20px;
+            }
         }
-
-        .upcoming-events ul li {
-            font-size: 1rem; /* Smaller text size */
-            margin-bottom: 8px;
-        }
-
-        .info-section {
-            margin-top: 15px;
-        }
-    }
-
     </style>
 </head>
+<body>
+    <header>
+        @include('components.header')
+    </header>
 
-<header>
-    @include('components.header')
-</header>
-
-<div class="hero" style="background-image: url('{{ asset('images/homePageImages/homeBanner1.png') }}');">
-    <div class="hero-content">
-        <div class="hero-text">
-            <h1>Welcome To Kota Kinabalu Archery Association</h1>
-            <p>Energizing Archery to the highest level</p>
-        </div>
-        <div class="hero-image">
-            <img src="{{ asset('images/pmdkkLogo.png') }}" alt="PMDKK Logo">
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Welcome to Kota Kinabalu Archery Association</h1>
+            <p>Energizing Archery to the Highest Level</p>
+            <a href="/register" class="cta-button">Join Us Now</a>
         </div>
     </div>
-</div>
 
-<div class="highlights">
-    <div class="highlight">
-        <div class="slideshow-container">
+    <!-- Highlights Section -->
+    <div class="highlights">
+        <div class="highlight event-highlight">
             <img src="{{ asset('/images/homePageImages/highlight1.png') }}" class="active" alt="Highlight 1">
             <img src="{{ asset('images/homePageImages/highlight1.2.jpg') }}" alt="Highlight 1">
             <img src="{{ asset('images/homePageImages/highlight1.3.jpg') }}" alt="Highlight 1">
             <img src="{{ asset('images/homePageImages/highlight1.4.jpg') }}" alt="Highlight 1">
+            <h2>Event Highlights</h2>
+            <p>Discover our key archery events, achievements, and memorable moments.</p>
         </div>
-        <div class="highlight-text">
-            <h2>HIGHLIGHT 1:</h2>
-            <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."</p>
-        </div>
-    </div>
-    <div class="highlight">
-        <div class="slideshow-container">
+        <div class="highlight practice-highlight">
             <img src="{{ asset('images/homePageImages/highlight2.png') }}" class="active" alt="Highlight 2">
             <img src="{{ asset('images/homePageImages/highlight2.2.jpg') }}" alt="Highlight 2">
             <img src="{{ asset('images/homePageImages/highlight2.3.jpg') }}" alt="Highlight 2">
-        </div>
-        <div class="highlight-text">
-            <h2>HIGHLIGHT 2:</h2>
-            <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."</p>
+            <h2>Practice & Training</h2>
+            <p>Our training sessions are tailored to improve your archery skills and performance.</p>
         </div>
     </div>
-</div>
 
-<div class="info-section">
-    <div class="news-updates">
-        <h3>News & Updates</h3>
-        
-        <!-- Facebook Feed -->
-        <div class="facebook-feed">
-            <div id="fb-root"></div>
-            <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v10.0" nonce="ABC123"></script>
-            <div class="fb-page" data-href="https://www.facebook.com/profile.php?id=100063573754394" data-tabs="timeline" data-width="500" data-height="600" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
-                <blockquote cite="https://www.facebook.com/profile.php?id=100063573754394" class="fb-xfbml-parse-ignore">
-                    <a href="https://www.facebook.com/profile.php?id=100063573754394">Kota Kinabalu Archery Association</a>
-                </blockquote>
+    <!-- Info Section -->
+    <div class="info-section">
+        <div class="content">
+            <!-- News & Updates -->
+            <div class="news-updates">
+                <h3>News & Updates</h3>
+                <div id="fb-root"></div>
+                <script async defer crossorigin="anonymous" 
+                    src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v16.0"></script>
+                <div class="facebook-feed">
+                    <div class="fb-page" 
+                        data-href="https://www.facebook.com/profile.php?id=100063573754394" 
+                        data-tabs="timeline" 
+                        data-width="500" 
+                        data-height="400" 
+                        data-small-header="false" 
+                        data-adapt-container-width="true" 
+                        data-hide-cover="false" 
+                        data-show-facepile="true">
+                        <blockquote cite="https://www.facebook.com/profile.php?id=100063573754394" class="fb-xfbml-parse-ignore">
+                            <a href="https://www.facebook.com/profile.php?id=100063573754394">Kota Kinabalu Archery Association</a>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Events -->
+            <div class="upcoming-events">
+                <h3>Upcoming Events</h3> 
+                <ul>
+                    @if($upcomingEvents->isEmpty())
+                        <li>No upcoming events available.</li>
+                    @else
+                        @foreach($upcomingEvents as $event)
+                            <li>
+                                <span class="event-date">{{ \Carbon\Carbon::parse($event->event_date)->format('d M') }}</span>
+                                <span class="event-title">{{ $event->title }}</span>
+                                <div class="event-time">
+                                    <i class="fa fa-clock"></i>
+                                    {{ \Carbon\Carbon::parse($event->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }}
+                                </div>
+                                <div class="event-location">
+                                    <i class="fa fa-map-marker"></i>
+                                    {{ $event->location }}
+                                </div>
+                            </li>
+                        @endforeach
+                    @endif
+                </ul>
             </div>
         </div>
     </div>
 
-    <div class="upcoming-events">
-        <h3>Upcoming Events</h3>
-        <ul>
-            @if($upcomingEvents->isEmpty())
-                <!-- Display this message when there are no events -->
-                <li>No upcoming events available.</li>
-            @else
-                @foreach($upcomingEvents as $event)
-                    <li>
-                        <span>{{ \Carbon\Carbon::parse($event->event_date)->format('d M') }}:</span> {{ $event->title }} <br>
-                        <i class="fa fa-clock"></i> {{ \Carbon\Carbon::parse($event->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }} <br>
-                        <i class="fa fa-map-marker"></i> {{ $event->location }}
-                    </li>
-                @endforeach
-            @endif
-        </ul>
-    </div>
-</div>
+    <footer>
+        @include('components.footer')
+    </footer>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const highlights = document.querySelectorAll('.highlight');
-    highlights.forEach((highlight) => {
-        const images = highlight.querySelectorAll('img');
-        let currentIndex = 0;
+    document.addEventListener('DOMContentLoaded', function () {
+        // Rotate images for Event Highlights
+        let eventImages = document.querySelectorAll('.event-highlight img');
+        let eventIndex = 0;
 
-        setInterval(() => {
-            images[currentIndex].classList.remove('active');
-            currentIndex = (currentIndex + 1) % images.length;
-            images[currentIndex].classList.add('active');
-        }, 3000);
+        function rotateEventImages() {
+            eventImages[eventIndex].classList.remove('active');
+            eventIndex = (eventIndex + 1) % eventImages.length;
+            eventImages[eventIndex].classList.add('active');
+        }
+
+        setInterval(rotateEventImages, 3000); // Change Event Highlights image every 3 seconds
+
+        // Rotate images for Practice & Training
+        let practiceImages = document.querySelectorAll('.practice-highlight img');
+        let practiceIndex = 0;
+
+        function rotatePracticeImages() {
+            practiceImages[practiceIndex].classList.remove('active');
+            practiceIndex = (practiceIndex + 1) % practiceImages.length;
+            practiceImages[practiceIndex].classList.add('active');
+        }
+
+        setInterval(rotatePracticeImages, 5000); // Change Practice & Training image every 5 seconds
     });
-});
 </script>
-
-<footer>
-    @include('components.footer')
-</footer>
+</body>
 </html>

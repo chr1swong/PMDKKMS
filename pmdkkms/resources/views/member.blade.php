@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Membership</title>
-    <!-- Add your external CSS and JS files here -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     
@@ -16,24 +15,20 @@
             min-height: 100vh;
             margin: 0;
             padding: 0;
-        }
-
-        .content-wrapper {
-            flex: 1;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            background-color: #f4f4f9;
         }
 
         /* Hero Section */
         .hero {
-            position: relative;
-            background-size: cover;
-            background-position: center;
-            padding: 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: auto; /* Adjust height to fit content */
+            padding: 40px;
             background-color: #e7f0fa;
-            color: white;
+            color: #333;
+            border-bottom: 1px solid #ccc;
         }
 
         .hero-content {
@@ -42,92 +37,114 @@
         }
 
         .hero-content h1 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 20px; /* Add margin below the title */
+            font-size: 3rem;
+            font-weight: 600;
+            color: #0b1647;
+            margin-bottom: 20px;
         }
 
         .hero-content p {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 20px; /* Add margin below the paragraph */
+            font-size: 1.25rem;
+            color: #555;
+            margin-bottom: 20px;
         }
 
         .hero-image img {
-            max-width: 20vw;
+            max-width: 300px;
             height: auto;
         }
 
         /* Membership Cards */
         .membership-section {
             display: flex;
-            justify-content: start;
-            margin-bottom: 10px;
-            gap: 40px; /* Added gap between membership cards */
+            justify-content: space-around;
+            margin-top: 20px;
+            gap: 20px;
         }
 
         .membership-card {
-            background-color: #d3d3d3;
+            background-color: #ffffff;
             border-radius: 8px;
             padding: 20px;
-            width: 40%; /* Adjust width for two cards side by side */
+            width: 45%;
             text-align: center;
             font-size: 1.25rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #ddd;
+        }
+
+        .membership-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
         }
 
         .membership-card h2 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: #000;
-            font-weight: 900;
+            font-size: 1.75rem;
+            margin-bottom: 15px;
+            color: #0b1647;
+            font-weight: 700;
         }
 
         .membership-card ul {
             list-style-type: disc;
             padding-left: 20px;
             text-align: left;
-            color: #333;
+            color: #555;
         }
 
         .membership-card ul li {
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
 
-        /* Contact Section */
-        .contact-section {
+        /* Register Link */
+        .hero-content a {
+            font-size: 1.25rem;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .hero-content a:hover {
+            text-decoration: underline;
+        }
+
+        /* Centered Contact Section */
+        .contact-section, .find-us-section {
+            padding: 60px 20px; /* Consistent padding for both sections */
+            background-color: #f9f9f9;
+            text-align: center;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            padding: 30px;
-            background-color: #f9f9f9;
-            text-align: left;
+            align-items: center;
         }
 
-        .contact-section h2 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #000;
+        .contact-section h2, .find-us-section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #0b1647;
         }
 
         .contact-card-container {
             display: flex;
-            justify-content: space-between; /* Distribute cards evenly */
-            align-items: center; /* Align cards vertically */
+            justify-content: center;
             gap: 40px;
-            flex-wrap: nowrap; /* Prevent wrapping to the next line */
-            width: 100%;
-            max-width: 800px; /* Optional: Limit container width */
+            flex-wrap: nowrap;
+            max-width: 800px;
             margin-top: 20px;
         }
 
         .contact-card {
-            background-color: #d3d3d3;
+            background-color: #ffffff;
             border-radius: 8px;
             padding: 20px;
-            width: 48%; /* Adjust width to fit two cards side by side */
-            text-align: left;
+            width: 48%;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
         }
 
         .contact-card img {
@@ -135,48 +152,36 @@
             height: 80px;
             border-radius: 50%;
             background-color: #007bff;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .contact-card p {
-            margin: 5px 0;
-            color: #000;
-            font-size: 1.25rem;
+            margin: 10px 0;
+            color: #333;
+            font-size: 1.1rem;
         }
 
         /* Find Us Section */
-        .find-us-section {
-            padding: 30px;
-            background-color: #f9f9f9;
-        }
-
-        .find-us-section h2 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #000;
-            margin-bottom: 20px;
-        }
-
         .find-us-section p {
             font-size: 1.25rem;
-            font-weight: bold;
-            color: #000;
+            color: #555;
             margin-bottom: 20px;
         }
 
         .location-section {
             display: flex;
-            justify-content: left;
-            gap: 50px;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
         }
 
-        .location-section img, .map-image {
+        .location-section img {
             width: 100%;
             height: auto;
-            max-width: 50vh;
+            max-width: 600px;
             border-radius: 8px;
-            border: 3px solid #333;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         /* Footer Styles */
@@ -184,7 +189,7 @@
             background-color: #0b1647;
             color: white;
             padding: 20px 0;
-            text-align: left;
+            text-align: center;
         }
 
         .footer-container {
@@ -200,32 +205,28 @@
             min-width: 250px;
             margin: 10px;
             text-align: left;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         .footer-section h4 {
-            font-weight: 900;
-            font-size: 30px;
+            font-weight: 700;
+            font-size: 1.5rem;
         }
 
         .footer-section p {
-            margin: 0;
             line-height: 1.5;
+            font-size: 0.9rem;
         }
 
         .social-icons {
             display: flex;
             justify-content: center;
-            gap: 30px;
+            gap: 15px;
         }
 
         .social-icons a {
-            font-size: 40px;
+            font-size: 1.5rem;
             color: white;
             transition: transform 0.3s;
-            margin-top: -10px;
         }
 
         .social-icons a:hover {
@@ -233,10 +234,22 @@
         }
 
         .footer-bottom {
-            text-align: center;
-            font-size: 13px;
-            padding-top: 20px;
+            font-size: 0.8rem;
+            padding-top: 10px;
             border-top: 1px solid #333;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .contact-card-container, .location-section {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .contact-card, .location-section img {
+                width: 100%;
+                max-width: 350px;
+            }
         }
     </style>
 </head>
@@ -248,7 +261,6 @@
     <div class="hero">
         <div class="hero-content">
             <h1>Membership Information</h1>
-
             <div class="membership-section">
                 <div class="membership-card">
                     <h2>Non-Member</h2>
@@ -267,12 +279,10 @@
                     </ul>
                 </div>
             </div>
-
             <p style="margin-top: 20px; font-size: 1.25rem;">
-                To register, please <a href="{{ route('register') }}" style="color: #007bff; text-decoration: none;">click here</a>.
+                To register, please <a href="{{ route('register') }}">click here</a>.
             </p>
         </div>
-
         <div class="hero-image">
             <img src="{{ asset('images/memberPageImages/membershipBanner.png') }}" alt="Membership Illustration">
         </div>
@@ -283,11 +293,11 @@
         <div class="contact-card-container">
             <div class="contact-card">
                 <img src="{{ asset('images/fillerimage.png') }}" alt="Secretary">
-                <p><strong>Secretary Name</strong><br>Secretary Contact</p>
+                <p><strong>Shiu Vay Leung (Secretary)</strong><br>019-850 7682</p>
             </div>
             <div class="contact-card">
                 <img src="{{ asset('images/fillerimage.png') }}" alt="Treasurer">
-                <p><strong>Treasurer Name</strong><br>Treasurer Contact</p>
+                <p><strong>Stephanie Chin (Treasurer)</strong><br>016-832 2509</p>
             </div>
         </div>
     </div>

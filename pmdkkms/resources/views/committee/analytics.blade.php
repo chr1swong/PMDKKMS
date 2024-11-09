@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archer Performance Analytics</title>
+    <title>Committee - Archer Performance Analytics</title>
     
     <!-- External CSS and Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -56,8 +56,6 @@
             transition: all 0.3s ease;
         }
 
-        
-
         h4 {
             font-size: 1.5rem;
             margin-bottom: 20px;
@@ -87,7 +85,6 @@
     <header>
         @include('components.committeeHeader')
     </header>
-
     <div class="analytics-container">
         <h1 class="analytics-header">Archer Performance Analytics</h1>
         <div class="archer-details">
@@ -126,7 +123,7 @@
             </div>
         </div>
     </div>
-
+    
     <script>
         var currentDate = new Date();
         var monthNames = [

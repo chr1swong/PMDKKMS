@@ -503,10 +503,12 @@ class AccountController extends Controller
         $members = DB::table('account')
             ->where('account.account_role', 1) // Specify the table name to resolve ambiguity
             ->leftJoin('coach_archer', 'account.account_id', '=', 'coach_archer.archer_id') // Join coach_archer table to link archers with their coaches
+            ->leftJoin('membership', 'account.account_id', '=', 'membership.account_id') // Join the membership table to get membership details
             ->leftJoin('account as coach', 'coach_archer.coach_id', '=', 'coach.account_id') // Join 'account' again to get coach details
             ->select(
                 'account.account_full_name', // Select the archer's name
-                'coach.account_full_name as coach_name' // Select the coach's name
+                'coach.account_full_name as coach_name', // Select the coach's name
+                'membership.membership_id' // Select the membership ID
             )
             ->get();
 

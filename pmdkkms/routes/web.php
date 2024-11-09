@@ -237,7 +237,7 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
 
     //Route for Analytics
     Route::get('/committee/analyticsList', [AccountController::class, 'viewAnalyticsList'])->name('committee.analyticsList');
-    Route::get('/committee/analyticsDetails/{archerId}', [AnalyticsController::class, 'showCommitteeAnalytics'])->name('committee.analyticsDetails');
+    Route::get('/committee/analytics/{archerId}', [AnalyticsController::class, 'viewArcherAnalytics'])->name('committee.analytics');
     
     //Routes for payments
     Route::get('/committee/paymentForm', function () {

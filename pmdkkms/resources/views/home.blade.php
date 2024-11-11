@@ -220,19 +220,121 @@
             margin-right: 5px;
         }
 
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            .hero p {
-                font-size: 1.2rem;
-            }
-            .info-section .content {
-                flex-direction: column;
-                gap: 20px;
-            }
+    /* General Mobile Adjustments */
+    @media (max-width: 768px) {
+        /* Adjust Hero Section for Mobile */
+        .hero {
+            padding: 40px 15px;
         }
+
+        .hero h1 {
+            font-size: 2rem;
+        }
+
+        .hero p {
+            font-size: 1rem;
+        }
+
+        /* Stack Highlights Section */
+        .highlights {
+            padding: 25px 10px;
+            display: block;
+        }
+
+        .highlight {
+            margin-bottom: 20px;
+        }
+
+        /* Adjust Info Section for Mobile */
+        .info-section {
+            padding: 15px 10px;
+        }
+
+        .info-section .content {
+            flex-direction: column;
+            gap: 10px;
+            padding: 0 8px;
+        }
+
+        /* Ensure consistent width for News & Updates and Upcoming Events */
+        .news-updates,
+        .upcoming-events {
+            width: 100%; /* Full width on mobile */
+            max-width: 550px; /* Set a consistent max width */
+            margin: 0 auto 15px; /* Centered and with bottom margin */
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        /* Facebook Feed Fix */
+        .facebook-feed {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .facebook-feed .fb-page {
+            width: 100% !important;
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Update Upcoming Events Styles */
+        .upcoming-events ul {
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Adjust Image Sizes for Mobile */
+        .highlight img {
+            width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+    }
+
+    /* Extra Small Screen Adjustments */
+    @media (max-width: 480px) {
+        .hero h1 {
+            font-size: 1.6rem;
+        }
+
+        .hero p {
+            font-size: 0.85rem;
+        }
+
+        /* Reduce Padding for Smaller Screens */
+        .hero {
+            padding: 25px 10px;
+        }
+
+        .highlights {
+            padding: 10px 8px;
+        }
+
+        .info-section {
+            padding: 15px 8px;
+        }
+
+        .upcoming-events li {
+            font-size: 0.75rem;
+        }
+
+        .upcoming-events li .event-date {
+            font-size: 0.8rem;
+        }
+
+        .upcoming-events li .event-title {
+            font-size: 0.9rem;
+        }
+
+        .upcoming-events li .event-time,
+        .upcoming-events li .event-location {
+            font-size: 0.7rem;
+        }
+    }
+
+
     </style>
 </head>
 <body>

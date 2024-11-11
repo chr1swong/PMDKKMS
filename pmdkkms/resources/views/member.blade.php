@@ -239,18 +239,64 @@
             border-top: 1px solid #333;
         }
 
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            .contact-card-container, .location-section {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .contact-card, .location-section img {
-                width: 100%;
-                max-width: 350px;
-            }
+         /* Responsive Styles for Hero Content */
+    @media (max-width: 768px) {
+        .hero-content h1 {
+            font-size: 1.7rem;
         }
+
+        .membership-card h2 {
+            font-size: 1.5rem;
+        }
+        
+        .hero-content p,
+        .membership-card ul li {
+            font-size: 1.0rem;
+        }
+
+        .hero {
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .hero-content {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .hero-content p {
+            font-size: 1rem;
+        }
+
+        .hero-image {
+            display: none;
+        }
+
+        .membership-section {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .membership-card {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .location-section {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .location-section img {
+            max-width: 100%;
+            margin-bottom: 20px;
+        }
+    }
     </style>
 </head>
 <body>
@@ -267,15 +313,16 @@
                     <ul>
                         <li>Walk-In</li>
                         <li>RM30/Month</li>
-                        <li>Not eligible for PMDKK Events</li>
+                        <li>No access to <br> - PMDKK Events <br> - Attendance <br> - Scoring <br> - Training Analytics
+                        </li>
                     </ul>
                 </div>
                 <div class="membership-card">
                     <h2>Member</h2>
                     <ul>
-                        <li>Adults - RM30/Month</li>
-                        <li>Eligible for PMDKK Events</li>
-                        <li>Monthly or Annual membership renewal is available</li>
+                        <li>Membership Fee - RM30/Month</li>
+                        <li>Membership Renewal can be done through online banking</li>
+                        <li>Access to <br> - PMDKK Events <br> - Attendance <br> - Scoring <br> - Training Analytics 
                     </ul>
                 </div>
             </div>

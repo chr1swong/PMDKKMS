@@ -252,40 +252,54 @@
             }
 
             .image-block {
-                width: 100%;
-                height: 200px;
+                height: 200px; /* Adjust height for smaller screens */
             }
 
-            .team-member {
-                width: 160px;
-                padding: 15px;
+            .team-section {
+                gap: 10px;
             }
 
-            .team-member img {
-                width: 100px;
-                height: 100px;
-            }
-
-            .president-message-section {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .message-block {
-                max-width: 100%;
-                text-align: center;
-            }
-        }
-
-        @media (max-width: 480px) {
             .team-member {
                 width: 140px;
                 padding: 10px;
             }
 
             .team-member img {
-                width: 80px;
-                height: 80px;
+                width: 70px;
+                height: 70px;
+            }
+
+            .president-message-section {
+                gap: 10px;
+            }
+
+            .message-block {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 1.8rem;
+            }
+
+            .content-section {
+                padding: 20px 10px;
+                gap: 15px;
+            }
+
+            .team-member {
+                width: 120px;
+                padding: 8px;
+            }
+
+            .team-member img {
+                width: 60px;
+                height: 60px;
+            }
+
+            .message-block p {
+                font-size: 0.9rem;
             }
         }
     </style>

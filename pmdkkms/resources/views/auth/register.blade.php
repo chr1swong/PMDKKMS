@@ -205,7 +205,16 @@
         color: #483a99;
     }
 
-    /* Media Queries for Responsiveness */
+    #togglePassword, #toggleConfirmPassword {
+        position: absolute;
+        right: 10px; /* Distance from the right edge */
+        top: 50%; /* Center the icon vertically */
+        transform: translateY(-80%) !important; /* Centering */
+        cursor: pointer;
+        color: #888; /* Icon color */
+        font-size: 1.2rem; /* Adjust size if needed */
+        z-index: 10; /* Ensure it stays above the input field */
+    }
 
     /* General Mobile Styles */
 @media (max-width: 768px) {
@@ -346,12 +355,18 @@
 
                 <div class="block">
                     <label for="password" class="block font-medium text-sm text-gray-700">Password</label>
-                    <input id="password" type="password" name="account_password" required autocomplete="new-password" />
+                    <div style="position: relative;">
+                        <input id="password" type="password" name="account_password" required autocomplete="new-password" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" />
+                        <i class="fas fa-eye" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; font-size: 1.2rem;"></i>
+                    </div>
                 </div>
 
                 <div class="block">
                     <label for="password_confirmation" class="block font-medium text-sm text-gray-700">Confirm Password</label>
-                    <input id="password_confirmation" type="password" name="account_password_confirmation" required autocomplete="new-password" />
+                    <div style="position: relative;">
+                        <input id="password_confirmation" type="password" name="account_password_confirmation" required autocomplete="new-password" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" />
+                        <i class="fas fa-eye" id="toggleConfirmPassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; font-size: 1.2rem;"></i>
+                    </div>
                 </div>
 
                 <div class="mt-6">
@@ -374,5 +389,21 @@
         button.classList.add('loading');
         button.disabled = true;
     }
+
+    // Toggle password visibility for "Password" field
+     document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordInput = document.getElementById('password');
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.classList.toggle('fa-eye-slash'); // Toggle icon
+    });
+
+    // Toggle password visibility for "Confirm Password" field
+    document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+        const confirmPasswordInput = document.getElementById('password_confirmation');
+        const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        confirmPasswordInput.setAttribute('type', type);
+        this.classList.toggle('fa-eye-slash'); // Toggle icon
+    });
 </script>
 </html>

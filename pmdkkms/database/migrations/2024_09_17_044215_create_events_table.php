@@ -20,6 +20,9 @@ class CreateEventsTable extends Migration
             $table->string('location'); // Event location
             $table->string('color')->default('#5A67D8');  // Event color, default to purple
             $table->timestamps(); // Timestamps for created_at and updated_at
+            $table->unsignedInteger('account_id'); // Link back to the account table
+
+            $table->foreign('account_id')->references('account_id')->on('account')->onDelete('cascade');
         });
     }
 

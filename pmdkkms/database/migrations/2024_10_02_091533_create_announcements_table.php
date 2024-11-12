@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('title'); // Title of the announcement
             $table->text('content'); // Content of the announcement
             $table->timestamps(); // Automatically managed 'created_at' and 'updated_at' fields
+            $table->unsignedInteger('account_id'); // Link back to the account table
+
+            $table->foreign('account_id')->references('account_id')->on('account')->onDelete('cascade');
         });
     }
 

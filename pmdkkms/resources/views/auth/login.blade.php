@@ -129,6 +129,10 @@
             margin-bottom: 0.5rem;
         }
 
+        .block div {
+            position: relative;
+        }
+
         .block label {
             font-weight: bold;
         }
@@ -303,6 +307,17 @@
             }
         }
 
+        #togglePassword {
+            position: absolute;
+            right: 10px; /* Distance from the right edge */
+            top: 50%; /* Center the icon vertically */
+            transform: translateY(-50%); /* Centering */
+            cursor: pointer;
+            color: #888; /* Icon color */
+            font-size: 1.2rem; /* Adjust size if needed */
+            z-index: 10; /* Ensure it stays above the input field */
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
         .authentication-card {
@@ -459,8 +474,11 @@
                         </div>
 
                         <div class="block">
-                            <label for="password" class="block font-medium text-sm text-gray-700">{{ __('Password') }}</label>
-                            <input id="password" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="password" name="account_password" required autocomplete="current-password" />
+                            <label for="password" class="block font-medium text-sm text-gray-700">Password</label>
+                            <div style="position: relative;">
+                                <input id="password" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" type="password" name="account_password" required autocomplete="current-password" />
+                                <i class="fas fa-eye" id="togglePassword"></i>
+                            </div>
                         </div>
 
                         <div class="remember-me-container">
@@ -532,6 +550,14 @@
                 });
             }
         });
+
+        //Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordInput = document.getElementById('password');
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.classList.toggle('fa-eye-slash'); // Toggle icon
+    });
     </script>
 </body>
 </html>

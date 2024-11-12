@@ -307,11 +307,11 @@
             }
         }
 
-        #togglePassword {
+        #togglePassword { 
             position: absolute;
             right: 10px; /* Distance from the right edge */
             top: 50%; /* Center the icon vertically */
-            transform: translateY(-50%); /* Centering */
+            transform: translateY(-90%) !important; /* Centering */ 
             cursor: pointer;
             color: #888; /* Icon color */
             font-size: 1.2rem; /* Adjust size if needed */
@@ -423,12 +423,6 @@
         <header>
             @include('components.header')
         </header>
-
-        @if (!Auth::user()) 
-            INTENDED! NOT LOGGED IN!
-        @else 
-            FORBIDDEN! LOGGED IN WITH ID {{ Auth::user()->account_id }} AND ROLE {{ Auth::user()->account_role }}
-        @endif
 
         <div class="flex-center">
             <div class="authentication-card">

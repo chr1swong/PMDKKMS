@@ -622,7 +622,7 @@
             }
 
             // Save the PDF with the current date in the filename
-            pdf.save(`member_list_${formattedDate}.pdf`);
+            pdf.save(`member_list_${currentDate}.pdf`);
         };
     });
 

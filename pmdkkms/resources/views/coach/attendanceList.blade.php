@@ -155,22 +155,80 @@
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
-            .filter-search-container {
+            .attendance-header {
                 flex-direction: column;
                 align-items: flex-start;
+            }
+
+            .filter-container {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .filter-container select {
+                width: calc(50% - 5px);
+            }
+
+            .search-wrapper input {
+                font-size: 14px;
             }
 
             .table-container {
                 max-height: 300px;
             }
 
-            .attendance-header {
-                flex-direction: column;
-                align-items: flex-start;
+            table th, table td {
+                font-size: 12px;
+                padding: 8px;
+            }
+
+            .btn-view {
+                font-size: 12px;
+                padding: 6px 10px;
             }
 
             .btn-download {
-                margin-top: 15px;
+                font-size: 12px;
+                padding: 8px 15px;
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .filter-search-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .filter-container {
+                flex-direction: row;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .filter-container select {
+                font-size: 12px;
+                padding: 6px;
+            }
+
+            .search-wrapper input {
+                font-size: 12px;
+                padding: 6px;
+            }
+
+            .table-container {
+                max-height: 250px;
+            }
+
+            table th, table td {
+                font-size: 10px;
+                padding: 5px;
+            }
+
+            .btn-download {
+                font-size: 10px;
+                padding: 6px 12px;
             }
         }
     </style>

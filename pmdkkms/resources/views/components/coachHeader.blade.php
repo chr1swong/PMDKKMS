@@ -284,6 +284,7 @@
                 <ul class="nav-links-mobile" id="mobile-menu">
                     <li><a href="/coach/dashboard">Home</a></li>
                     <li><a href="/coach/events">Events</a></li>
+                    <li><a href="{{ route('coach.myArcher') }}">myArcher</a></li>
                     <li><a href="{{ route('coach.attendanceList') }}">Attendance</a></li>
                     <li><a href="{{ route('coach.scoringList') }}">Scoring</a></li>
                     <li><a href="{{ route('coach.paymentHistory') }}">Transactions</a></li>

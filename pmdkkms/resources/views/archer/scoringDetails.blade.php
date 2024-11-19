@@ -162,6 +162,38 @@
             height: 100px;
             overflow-y: auto;
         }
+
+        @media (max-width: 768px) {
+        .main-container {
+            display: flex;
+            flex-direction: column; /* Stack the image and the right column */
+            align-items: center; /* Center align the items */
+            gap: 20px; /* Add some gap between the image and the right column */
+        }
+
+        .image-container {
+            width: 100%; /* Make the image container full width */
+            max-width: 350px; /* Limit the maximum width */
+            height: auto; /* Adjust height automatically to maintain aspect ratio */
+        }
+
+        .right-column {
+            width: 100%; /* Make the right column full width */
+            max-width: 400px; /* Limit the maximum width */
+            box-sizing: border-box;
+        }
+
+        .grid-container {
+            grid-template-columns: 80px repeat(6, 1fr) 70px; /* Adjust the columns for better fit */
+            gap: 5px; /* Reduce the gap for smaller screens */
+        }
+
+        .btn {
+            font-size: 14px; /* Reduce font size for buttons */
+            padding: 10px 16px; /* Adjust padding for smaller buttons */
+            max-width: 120px; /* Limit the button width */
+        }
+    }
     </style>
 </head>
 <body>

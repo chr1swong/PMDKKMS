@@ -244,6 +244,91 @@
             padding: 5px 10px;
             border-radius: 5px;
         }
+
+        @media (max-width: 768px) {
+    .payment-history-container {
+        padding: 15px;
+    }
+
+    .header-row {
+        flex-direction: column; /* Stack elements vertically */
+        align-items: flex-start;
+    }
+
+    .btn-download {
+        font-size: 12px;
+        padding: 6px 12px; /* Reduced padding */
+    }
+
+    .filter-container {
+        display: flex;
+        justify-content: flex-start; /* Align items to the left */
+        flex-wrap: wrap; /* Allow wrapping for better responsiveness */
+        gap: 15px; /* Space between filter elements */
+    }
+
+    .status-search-container,
+    .date-filters {
+        flex: 0 1 auto; /* Adjust flex properties for better alignment */
+        min-width: 150px; /* Set a minimum width for elements */
+    }
+
+    .search-wrapper {
+        flex: 0 1 auto; /* Adjust flex properties */
+        min-width: 180px; /* Ensure search bar has a minimum width */
+    }
+
+    table {
+        font-size: 12px; /* Reduced font size */
+    }
+
+    table th, table td {
+        padding: 8px; /* Reduced padding */
+    }
+
+    .table-container {
+        max-height: 400px; /* Reduced height */
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-history-container {
+        padding: 10px;
+    }
+
+    .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .payment-history-header {
+        font-size: 18px; /* Adjusted font size */
+    }
+
+    .filter-container {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .search-wrapper input {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    table {
+        font-size: 11px; /* Further reduced font size */
+    }
+
+    table th, table td {
+        padding: 6px;
+    }
+
+    .btn-download {
+        font-size: 10px;
+        padding: 5px 10px; /* Reduced padding */
+    }
+}
     </style>
 </head>
 <body>

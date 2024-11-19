@@ -74,12 +74,65 @@
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
         }
 
-        /* Responsive Styling */
         @media (max-width: 768px) {
-            .analytics-summary {
-                grid-template-columns: 1fr;
-            }
+        .analytics-summary {
+            grid-template-columns: 1fr; /* Stack cards in a single column */
         }
+
+        .analytics-container {
+            padding: 15px;
+        }
+
+        .analytics-header {
+            font-size: 20px;
+            padding: 10px;
+        }
+
+        .card-container {
+            padding: 10px;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+        }
+
+        .chart-container, .card-container {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: auto !important;
+            max-width: 100%; /* Ensure charts do not exceed their container */
+        }
+    }
+
+    @media (max-width: 480px) {
+        .analytics-container {
+            margin: 15px auto;
+            padding: 10px;
+        }
+
+        .analytics-header {
+            font-size: 18px;
+            padding: 8px;
+        }
+
+        .card-container {
+            padding: 8px;
+        }
+
+        h4 {
+            font-size: 1.1rem;
+        }
+
+        /* Ensure charts fit within the screen */
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+    }
     </style>
 </head>
 
@@ -422,6 +475,16 @@
                     }
                 }
             }
+        });
+
+        window.addEventListener('resize', () => {
+            scoreTrendChart.resize();
+            x10CountsChart.resize();
+            averageScoreChart.resize();
+            performanceConsistencyChart.resize();
+            setPerformanceComparisonChart.resize();
+            hitZoneChart.resize();
+            dailyAttendanceChart.resize();
         });
     </script>
 </body>

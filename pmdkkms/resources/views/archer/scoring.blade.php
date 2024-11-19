@@ -320,27 +320,47 @@
             transform-origin: top left;
         }
 
-        /* Responsive design for mobile devices */
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .grid-container {
-                grid-template-columns: 80px repeat(6, 1fr) 60px; /* Adjusted for smaller screens */
-            }
-
-            .buttons {
-                flex-direction: column; /* Stack buttons vertically */
-                width: 100%;
-            }
-
-            .buttons-container {
-                flex-direction: column; /* Stack buttons on smaller screens */
-                gap: 10px;
-            }
-
-            .btn {
-                width: 80%; /* Full width for buttons on smaller screens */
-                max-width: none;
-            }
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 10px; /* Reduce padding for a better fit */
         }
+
+        #targetCanvas {
+            width: 100%; /* Make the canvas responsive */
+            height: auto; /* Adjust the height to maintain aspect ratio */
+            max-width: 400px; /* Set a max-width for better fit */
+            margin-bottom: 20px; /* Add space below the canvas */
+        }
+
+        .right-column {
+            width: 100%; /* Full width for the right column */
+            max-width: 100%; /* Remove the max-width restriction */
+            padding: 0 15px; /* Add some padding for content spacing */
+        }
+
+        .input-section {
+            width: 100%; /* Ensure full width */
+            max-width: 100%; /* Remove any max-width restriction */
+            box-sizing: border-box;
+        }
+
+        .grid-container {
+            grid-template-columns: 80px repeat(6, 1fr) 60px;
+            gap: 5px; /* Adjust gap for smaller screens */
+            max-width: 100%; /* Allow the grid to take full width */
+        }
+
+        .btn {
+            font-size: 14px; /* Reduce button font size */
+            padding: 8px 12px; /* Adjust button padding */
+            max-width: 120px; /* Set a smaller max-width for buttons */
+        }
+    }
 
         .alert-success {
             background-color: #d4edda;

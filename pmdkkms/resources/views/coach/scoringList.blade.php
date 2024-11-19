@@ -192,29 +192,120 @@
             background-color: #5a32a3;
         }
 
-        /* Responsive adjustments */
+       /* Adjustments for screens up to 768px */
         @media (max-width: 768px) {
             .filter-container {
-                flex-direction: column;
-                align-items: flex-start;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-start; /* Align filters to the left */
+                align-items: center; /* Center items vertically */
+                gap: 12px; /* Slightly increased gap for better spacing */
             }
 
-            .btn {
-                width: 100%;
-                margin-bottom: 10px;
+            .status-search-container,
+            .date-filters {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: nowrap; /* Keep all filters in a single row */
             }
 
-            .table-container {
-                max-height: 300px;
-            }
-
-            .scoring-header-container {
-                flex-direction: column;
-                align-items: flex-start;
+            .status-search-container select,
+            .date-filters input,
+            .date-filters button {
+                font-size: 14px;
+                padding: 8px;
+                width: auto; /* Allow elements to adjust based on content */
+                flex-shrink: 0; /* Prevent elements from shrinking */
             }
 
             .btn-download {
-                margin-top: 15px;
+                font-size: 14px;
+                padding: 10px;
+                width: 100%; /* Full width on smaller screens */
+                margin-top: 10px;
+            }
+
+            /* Table container and table adjustments for better fit */
+            .table-container {
+                overflow-x: auto; /* Allow horizontal scrolling if needed */
+                max-height: 400px; /* Adjust max height for better fit */
+            }
+
+            table {
+                width: 100%; /* Ensure the table takes the full width */
+                font-size: 14px; /* Adjust font size for better readability */
+            }
+
+            table th, table td {
+                font-size: 14px;
+                padding: 8px; /* Adjust padding to save space */
+                white-space: nowrap; /* Prevent text wrapping */
+            }
+
+            table th {
+                background-color: #444; /* Darker header for contrast */
+                color: white;
+                position: sticky; /* Make headers sticky */
+                top: 0; /* Keep headers at the top when scrolling */
+                z-index: 2;
+            }
+        }
+
+        /* Adjustments for screens up to 480px */
+        @media (max-width: 480px) {
+            .filter-container {
+                flex-direction: column; /* Stack elements vertically on very small screens */
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .status-search-container,
+            .date-filters {
+                width: 100%; /* Make each filter full width */
+            }
+
+            .status-search-container select,
+            .date-filters input,
+            .date-filters button {
+                font-size: 12px;
+                padding: 8px;
+            }
+
+            .btn-download {
+                font-size: 12px;
+                padding: 8px;
+                width: 100%; /* Full width for better layout */
+            }
+
+            table th, table td {
+                font-size: 12px;
+                padding: 6px;
+            }
+
+            /* Table container and table adjustments for smaller screens */
+            .table-container {
+                overflow-x: auto; /* Horizontal scroll for small screens */
+                max-height: 300px; /* Reduce height for smaller screens */
+            }
+
+            table {
+                width: 100%;
+                font-size: 12px; /* Smaller font size for compact display */
+            }
+
+            table th, table td {
+                font-size: 12px;
+                padding: 6px; /* Reduce padding for compactness */
+                white-space: nowrap; /* Prevent text wrapping */
+            }
+
+            /* Optional: Collapse some columns for very small screens */
+            table th:nth-child(3),
+            table td:nth-child(3),
+            table th:nth-child(6),
+            table td:nth-child(6) {
+                display: none; /* Hide columns like MemberID or Bill Code if needed */
             }
         }
     </style>

@@ -189,20 +189,93 @@
             color: #0c3d20;
         }
 
-        /* Responsive adjustments */
+        /*Responsive Adjustments */
         @media (max-width: 768px) {
-            .filter-container {
+            .scoring-history-container {
+                padding: 15px;
+                border-radius: 8px;
+                text-align: center;
+            }
+
+            .scoring-header {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: center;
+                gap: 10px;
             }
-            .btn {
-                width: 100%;
+
+            .filter-container {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start; /* Align all elements to the left */
+                width: 100%; /* Ensure the container takes full width */
+            }
+
+            .membership-id {
+                font-size: 14px;
+                text-align: left;
                 margin-bottom: 10px;
+                width: 100%; /* Make it full width */
             }
+            
+            .filter-container form {
+                display: flex;
+                flex-wrap: nowrap;
+                gap: 10px;
+                justify-content: flex-start; /* Align the date fields and button to the left */
+                width: 100%; /* Ensure the form takes full width */
+            }
+
+            .filter-container input {
+                width: auto; /* Adjust width to fit content */
+                max-width: 130px; /* Limit maximum width */
+                font-size: 14px;
+            }
+
+            .filter-container button {
+                width: auto; /* Adjust width to fit content */
+                max-width: 100px; /* Limit maximum width */
+                font-size: 14px;
+            }
+
+            .btn {
+                font-size: 12px;
+                padding: 8px 10px;
+                width: 100%;
+                max-width: 150px;
+                margin: 5px auto;
+            }
+
+            .back-btn {
+                width: 90%;
+                max-width: 300px;
+                padding: 10px 15px;
+                font-size: 14px;
+                margin: 15px auto;
+                text-align: center;
+            }
+
+            /* Responsive adjustments for the table */
             .table-container {
-                max-height: 300px;
+                max-height: 300px; /* Adjust max height for smaller screens */
+                overflow-y: auto; /* Keep vertical scrolling */
             }
-        }
+
+            table th, table td {
+                font-size: 14px; /* Reduce font size for better fit */
+                padding: 8px; /* Reduce padding for compact layout */
+            }
+
+            table th {
+                cursor: pointer;
+            }
+
+            .btn-view {
+                font-size: 12px;
+                padding: 8px 12px;
+                max-width: 100px; /* Adjust button size */
+            }
+        }   
     </style>
 </head>
 <body>

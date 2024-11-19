@@ -244,6 +244,102 @@
             padding: 5px 10px;
             border-radius: 5px;
         }
+
+        @media (max-width: 768px) {
+        .payment-history-container {
+            padding: 15px;
+        }
+
+        .payment-history-header {
+            font-size: 20px;
+        }
+
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center; /* Center items vertically */
+            justify-content: space-between; /* Distribute space horizontally */
+            width: 100%;
+        }
+
+        .status-search-container {
+            flex: 1; /* Make the status dropdown take available space */
+            min-width: 150px; /* Ensure a reasonable minimum width */
+        }
+
+        .date-filters {
+            display: flex; /* Align date inputs and button horizontally */
+            gap: 10px; /* Add space between inputs and button */
+            flex: 2; /* Make the date filters take more space */
+            min-width: 250px; /* Ensure a reasonable minimum width for date filters */
+        }
+
+        .search-wrapper input,
+        .date-filters input,
+        .date-filters button {
+            padding: 8px;
+            font-size: 12px;
+            flex: 1; /* Allow inputs to grow evenly */
+        }
+
+        .date-filters button {
+            flex-shrink: 0; /* Prevent the button from shrinking */
+        }
+
+        .table-container {
+            max-height: 350px; /* Reduce table height for smaller screens */
+        }
+
+        table th, table td {
+            font-size: 12px;
+            padding: 8px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .payment-history-container {
+            padding: 10px;
+        }
+
+        .payment-history-header {
+            font-size: 18px;
+        }
+
+        .filter-container {
+            flex-direction: column; /* Stack elements vertically */
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .status-search-container,
+        .date-filters {
+            width: 100%; /* Full width for each element */
+        }
+
+        .search-wrapper input,
+        .date-filters input,
+        .date-filters button {
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        table th, table td {
+            font-size: 11px;
+            padding: 6px;
+        }
+
+        .btn-download {
+            font-size: 12px;
+            padding: 8px;
+        }
+
+        .pagination {
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+    }
     </style>
 </head>
 <body>

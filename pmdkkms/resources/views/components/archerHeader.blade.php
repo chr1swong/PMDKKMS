@@ -273,6 +273,7 @@
                 <ul class="nav-links-mobile" id="mobile-menu">
                     <li><a href="/archer/dashboard">Home</a></li>
                     <li><a href="/archer/events">Events</a></li>
+                    <li><a href="{{ route('archer.analytics') }}">Analytics</a></li>
                     <li><a href="/archer/attendance">Attendance</a></li>
                     <li><a href="/archer/scoring">Scoring</a></li>
                     <li><a href="{{ route('archer.paymentHistory') }}">Transactions</a></li>

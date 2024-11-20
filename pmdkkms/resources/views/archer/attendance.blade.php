@@ -7,6 +7,7 @@
     <!-- External CSS and Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
     
     <!-- FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet">
@@ -230,10 +231,11 @@
             <div class="membership-id-container">
                 <label for="membership_id">Archer Membership ID</label>
                 <div class="id-input-with-button">
-                    <input type="text" name="membership_id" id="membership_id" value="{{ $membership->membership_id }}" readonly>
+                    <div class="id-with-scanner">
+                        <input type="text" name="membership_id" id="membership_id" value="{{ $membership->membership_id }}" readonly>
+                        <button type="button" class="open-camera-btn" onclick="openCamera()">Open Scanner</button>
+                    </div>
                     <input type="file" accept="image/*" capture="camera" id="cameraInput" style="display: none;">
-                    <button type="button" class="open-camera-btn" onclick="openCamera()">Open Camera</button>
-
                     <video id="video" width="320" height="240" autoplay style="display: none;"></video>
                 </div>
             </div>
@@ -316,9 +318,66 @@
         });
 
         function openCamera() {
-            // Trigger the click event on the hidden file input
-            document.getElementById('cameraInput').click();
+            const video = document.getElementById('video');
+
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+                .then((stream) => {
+                    console.log("Camera access granted.");
+                    video.style.display = 'block'; // Show video feed
+                    video.srcObject = stream;
+                    video.play();
+
+                    // Create a canvas element for scanning
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+
+                    // Recursive function to scan for QR code
+                    function scanQRCode() {
+                        if (!video.srcObject || !video.srcObject.active) {
+                            console.log("Video stream inactive.");
+                            return;
+                        }
+
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+
+                        // Draw the current video frame to the canvas
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                        // Decode QR code from the canvas
+                        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                        const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                        if (code) {
+                            console.log("QR Code detected:", code.data);
+
+                            // Stop the video stream
+                            video.srcObject.getTracks().forEach(track => track.stop());
+                            video.style.display = 'none';
+
+                            // Handle QR code data
+                            alert(`QR Code Scanned: ${code.data}`);
+                            if (code.data.startsWith("http")) {
+                                window.location.href = code.data; // Redirect if URL
+                            } else {
+                                document.getElementById('membership_id').value = code.data; // Populate membership ID
+                            }
+                        } else {
+                            console.log("No QR code detected. Retrying...");
+                            requestAnimationFrame(scanQRCode); // Retry
+                        }
+                    }
+
+                    // Start scanning
+                    scanQRCode();
+                })
+                .catch((error) => {
+                    console.error("Error accessing camera:", error);
+                    alert("Unable to access camera. Please check your permissions and try again.");
+                });
         }
+
+
     </script>
 </body>
 </html>

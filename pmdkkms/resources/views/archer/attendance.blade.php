@@ -68,13 +68,30 @@
             border: none;
             outline: none;
         }
-
+        
         #membership_id {
             width: 200px; /* Fixed width for membership ID */
         }
 
         #attendance_status {
             width: 220px; /* Fixed width for attendance status */
+        }
+
+        .open-camera-btn {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px; /* Same padding as submit button */
+            border-radius: 6px;  /* Same border-radius as submit button */
+            font-size: 16px;     /* Same font size as submit button */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: fit-content;  /* Adjust width to match content */
+            display: none;
+        }
+
+        .open-camera-btn:hover {
+            background-color: #0056b3;
         }
 
         .full-width {
@@ -125,6 +142,11 @@
             .attendance-form select,
             .attendance-form input {
                 width: 100%; /* Full width on smaller screens */
+            }
+
+            .open-camera-btn {
+                display: inline-block; /* Show the button only on mobile view */
+                margin-top: 10px;
             }
 
             .selected-date-container {
@@ -205,9 +227,15 @@
 
         <form action="{{ route('attendance.store') }}" method="POST" class="attendance-form">
             @csrf
-            <div>
+            <div class="membership-id-container">
                 <label for="membership_id">Archer Membership ID</label>
-                <input type="text" name="membership_id" id="membership_id" value="{{ $membership->membership_id }}" readonly>
+                <div class="id-input-with-button">
+                    <input type="text" name="membership_id" id="membership_id" value="{{ $membership->membership_id }}" readonly>
+                    <input type="file" accept="image/*" capture="camera" id="cameraInput" style="display: none;">
+                    <button type="button" class="open-camera-btn" onclick="openCamera()">Open Camera</button>
+
+                    <video id="video" width="320" height="240" autoplay style="display: none;"></video>
+                </div>
             </div>
 
             <div class="full-width">
@@ -286,6 +314,11 @@
             });
             calendar.render();
         });
+
+        function openCamera() {
+            // Trigger the click event on the hidden file input
+            document.getElementById('cameraInput').click();
+        }
     </script>
 </body>
 </html>

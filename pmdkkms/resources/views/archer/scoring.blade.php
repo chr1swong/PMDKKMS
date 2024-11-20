@@ -905,14 +905,19 @@
 
 
     //Touch Screen part
-    // Helper function to get the correct event (touch or mouse)
+    // Helper function to get touch or mouse event coordinates
     function getEventCoords(event) {
         const rect = canvas.getBoundingClientRect();
         let clientX, clientY;
 
-        if (event.touches) {
+        if (event.touches && event.touches.length > 0) {
             // Handle touch events
             const touch = event.touches[0];
+            clientX = touch.clientX;
+            clientY = touch.clientY;
+        } else if (event.changedTouches && event.changedTouches.length > 0) {
+            // Handle touchend events
+            const touch = event.changedTouches[0];
             clientX = touch.clientX;
             clientY = touch.clientY;
         } else {
@@ -927,53 +932,250 @@
         };
     }
 
-    // Updated start drag for both mouse and touch events
+    // Start dragging on touchstart or mousedown
     function startDrag(event) {
-        event.preventDefault(); // Prevents default behavior like scrolling on mobile
-
+        event.preventDefault(); // Prevent default behavior
         const { x, y } = getEventCoords(event);
-        currentX = x;
-        currentY = y;
+
+        if (event.touches) {
+            // Touch-specific adjustments for touch input
+            const blackDotXOffset = 225; // Adjust for black dot placement
+            const blackDotYOffset = 220;
+
+            // Set initial position for touch input
+            currentX = x + blackDotXOffset;
+            currentY = y + blackDotYOffset;
+
+            // Immediately draw the black dot
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+            drawTarget(); // Redraw the target
+            drawAllDots(); // Redraw any previously placed dots
+            drawDot(currentX, currentY); // Draw the black dot at the current position
+
+            // Adjust the magnifier for touch input
+            const magnifiedXOffset = 245; // Offset for magnified area on x-axis
+            const magnifiedYOffset = 238; // Offset for magnified area on y-axis
+            const magnifiedX = x + magnifiedXOffset;
+            const magnifiedY = y + magnifiedYOffset;
+
+            const zoomSize = 75; // Size of the area to be magnified
+            magnifierCtx.clearRect(0, 0, 150, 150);
+            magnifierCtx.drawImage(
+                canvas,
+                magnifiedX - zoomSize / 2, magnifiedY - zoomSize / 2, // Center the zoomed area
+                zoomSize, zoomSize, // Area size to zoom in
+                0, 0, // Top-left corner of the magnifier canvas
+                150, 150 // Fill the magnifier canvas
+            );
+        } else {
+            // For mouse input, use raw coordinates
+            currentX = x;
+            currentY = y;
+
+            // Immediately draw the black dot for mouse input
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+            drawTarget(); // Redraw the target
+            drawAllDots(); // Redraw any previously placed dots
+            drawDot(currentX, currentY); // Draw the black dot at the current position
+
+            // Adjust the magnifier for mouse input
+            const magnifiedXOffset = +20; // Offset for magnified area on x-axis
+            const magnifiedYOffset = +20; // Offset for magnified area on y-axis
+            const magnifiedX = x + magnifiedXOffset;
+            const magnifiedY = y + magnifiedYOffset;
+
+            const zoomSize = 75; // Size of the area to be magnified
+            magnifierCtx.clearRect(0, 0, 150, 150);
+            magnifierCtx.drawImage(
+                canvas,
+                magnifiedX - zoomSize / 2, magnifiedY - zoomSize / 2, // Center the zoomed area
+                zoomSize, zoomSize, // Area size to zoom in
+                0, 0, // Top-left corner of the magnifier canvas
+                150, 150 // Fill the magnifier canvas
+            );
+        }
+
         isDragging = true;
 
-        // Show the magnifier
+        // Show magnifier
+        const touch = event.touches ? event.touches[0] : event;
         magnifier.style.display = 'block';
-        magnifier.style.left = `${event.pageX + 10}px`;
-        magnifier.style.top = `${event.pageY + 10}px`;
+        magnifier.style.left = `${touch.pageX + 10}px`;
+        magnifier.style.top = `${touch.pageY + 10}px`;
     }
 
-    // Handle drag movement for mouse and touch events
     function moveDrag(event) {
         if (!isDragging) return;
 
         const { x, y } = getEventCoords(event);
-        currentX = x;
-        currentY = y;
 
-        // Update magnifier position
-        const touch = event.touches ? event.touches[0] : event;
-        magnifier.style.left = `${touch.pageX + 10}px`;
-        magnifier.style.top = `${touch.pageY + 10}px`;
+        if (event.touches) {
+            // Touch-specific behavior
+            event.preventDefault(); // Prevent default scrolling
 
-        // Draw zoomed-in view
-        const zoomSize = 75;
-        magnifierCtx.clearRect(0, 0, 150, 150);
-        magnifierCtx.drawImage(
-            canvas,
-            currentX - zoomSize / 3, currentY - zoomSize / 3,
-            zoomSize, zoomSize,
-            0, 0,
-            115, 115
-        );
+            // Define offset values for the magnified area and black dot
+            const magnifiedXOffset = 245; // Shift for magnified area on the x-axis
+            const magnifiedYOffset = 238; // Shift for magnified area on the y-axis
+            const blackDotXOffset = 225;  // Separate shift for black dot on the x-axis
+            const blackDotYOffset = 220;  // Separate shift for black dot on the y-axis
+
+            // Adjust positions for the magnified area
+            const magnifiedX = x + magnifiedXOffset;
+            const magnifiedY = y + magnifiedYOffset;
+
+            // Adjust positions for the black dot
+            currentX = x + blackDotXOffset;
+            currentY = y + blackDotYOffset;
+
+            // Keep the magnifier's position fixed relative to the touch
+            const touch = event.touches[0];
+            magnifier.style.left = `${touch.pageX + 10}px`;
+            magnifier.style.top = `${touch.pageY + 10}px`;
+
+            // Draw the zoomed-in view of the adjusted magnified area
+            const zoomSize = 75; // Size of the area to be magnified
+            magnifierCtx.clearRect(0, 0, 150, 150);
+            magnifierCtx.drawImage(
+                canvas,
+                magnifiedX - zoomSize / 2, magnifiedY - zoomSize / 2, // Center the zoomed area
+                zoomSize, zoomSize, // Area size to zoom in on
+                0, 0, // Top-left corner of the magnifier canvas
+                150, 150 // Fill the magnifier canvas
+            );
+
+            // Clear the canvas and redraw everything
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawTarget(); // Redraw the target
+            drawAllDots(); // Draw all previously placed dots
+            drawDot(currentX, currentY); // Draw the black dot at the current position
+        } else {
+            // Mouse-specific behavior
+            const magnifiedXOffset = +20; // Adjust magnified area for mouse on x-axis
+            const magnifiedYOffset = +20; // Adjust magnified area for mouse on y-axis
+
+            // Adjust positions for the magnified area
+            const magnifiedX = x + magnifiedXOffset;
+            const magnifiedY = y + magnifiedYOffset;
+
+            // Update magnifier position for mouse
+            magnifier.style.left = `${event.pageX + 10}px`;
+            magnifier.style.top = `${event.pageY + 10}px`;
+
+            // Draw the zoomed-in view of the adjusted magnified area
+            const zoomSize = 75; // Size of the area to be magnified
+            magnifierCtx.clearRect(0, 0, 150, 150);
+            magnifierCtx.drawImage(
+                canvas,
+                magnifiedX - zoomSize / 2, magnifiedY - zoomSize / 2, // Center the zoomed area
+                zoomSize, zoomSize, // Area size to zoom in on
+                0, 0, // Top-left corner of the magnifier canvas
+                150, 150 // Fill the magnifier canvas
+            );
+
+            // Update the black dot position for mouse
+            currentX = x;
+            currentY = y;
+
+            // Clear the canvas and redraw everything
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawTarget(); // Redraw the target
+            drawAllDots(); // Draw all previously placed dots
+            drawDot(currentX, currentY); // Draw the black dot at the current position
+        }
     }
 
-    // Handle drag end for both mouse and touch
-    function endDrag() {
+
+
+    function endDrag(event) {
+        if (!isDragging) return; // Only proceed if dragging was active
         isDragging = false;
         magnifier.style.display = 'none';
+
+        if (scoreHistory.length >= 36) {
+            alert('All grid boxes are filled!');
+            return; // Stop further processing if the grid is full
+        }
+
+        const { x, y } = getEventCoords(event);
+
+        if (event.touches) {
+            // Apply touch-specific offsets to align with the magnified area
+            const blackDotXOffset = 225; // Adjust for black dot placement
+            const blackDotYOffset = 220;
+
+            // Correct the x and y for touch
+            currentX = x + blackDotXOffset;
+            currentY = y + blackDotYOffset;
+        } else {
+            // For mouse, use the raw coordinates
+            currentX = x;
+            currentY = y;
+        }
+
+        // Calculate the distance from the center of the canvas
+        const distance = Math.sqrt(
+            (currentX - canvas.width / 2) ** 2 + (currentY - canvas.height / 2) ** 2
+        );
+
+        // Define tolerances for the innermost `X` ring and the `10` ring
+        const innerRingTolerance = 5; // Tolerance for `X` ring
+        const tenRingTolerance = 5;   // Tolerance for `10` ring
+
+        let score;
+        if (distance > radii[0]) {
+            score = 'M'; // Miss
+        } else if (distance <= radii[radii.length - 1] + innerRingTolerance) {
+            // Use tolerance to make the `X` ring more sensitive
+            score = 'X'; // Innermost circle
+            xCount++;
+            xAndTenCount++;
+        } else if (distance <= radii[radii.length - 2] + tenRingTolerance) {
+            // Use tolerance to make the `10` ring more sensitive
+            score = 10;
+            tenCount++;
+            xAndTenCount++;
+        } else {
+            // Calculate the score for other rings
+            score = 10 - Math.floor(distance / 30);
+
+            // Check if the dot is on the line and assign the higher score
+            const remainder = distance % 30; // Distance within the ring
+            if (remainder < 5) {
+                // Close to the line towards the higher score
+                score += 1;
+            }
+
+            if (score < 1) score = 1; // Ensure minimum score of 1
+        }
+
+        let scorePlaced = false;
+        for (let i = 0; i < 6 && !scorePlaced; i++) {
+            for (let j = 0; j < 6; j++) {
+                if (scoreGrid[i][j] === null) {
+                    scoreGrid[i][j] = score;
+                    document.getElementById(`set${i + 1}-score${j + 1}`).textContent = score;
+                    scoreHistory.push({ set: i, position: j, dot: { x: currentX, y: currentY }, score });
+                    scorePlaced = true;
+                    calculateTotal(i);
+                    break;
+                }
+            }
+        }
+
+        updateScoreSummary();
+
+        // Store the dot's final position
+        dots.push({ x: currentX, y: currentY });
+
+        // Redraw the canvas with all dots
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawTarget();
+        drawAllDots();
     }
 
-    // Add event listeners for both mouse and touch events
+
+
+    // Add event listeners for mouse and touch events
     canvas.addEventListener('mousedown', startDrag);
     canvas.addEventListener('mousemove', moveDrag);
     canvas.addEventListener('mouseup', endDrag);

@@ -26,6 +26,38 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        /* PDF and Excel Button Styles */
+        .btn-pdf {
+            background-color: #dc3545; /* Red for PDF */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn-pdf:hover {
+            background-color: #B22222 !important; /* Darker red */
+            color: #f8d7da; /* Light text color */
+        }
+
+        .btn-excel {
+            background-color: #28a745; /* Green for Excel */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-excel:hover {
+            background-color: #218838; /* Darker green */
+        }
+
         .hr-divider {
             border: none;
             border-top: 2px solid #e0e0e0;
@@ -326,8 +358,12 @@
 <div class="scoring-history-container">
     <div class="scoring-header">
         <h1 class="scoring-history-header">Scoring History of Archers</h1>
-        <!-- PDF Download Button -->
-        <button id="generate-pdf" class="btn-download">Download PDF</button>
+        <div>
+            <!-- PDF Download Button -->
+            <button id="generate-pdf" class="btn-pdf">Download PDF</button>
+            <!-- Excel Export Button -->
+            <button id="export-excel" class="btn-excel">Export to Excel</button>
+        </div>
     </div>
     <hr class="hr-divider">
 
@@ -391,6 +427,7 @@
 <!-- jsPDF and autoTable libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
     // Sorting function for the table
@@ -573,6 +610,45 @@
             const date = new Date().toISOString().split('T')[0];
             pdf.save(`scoring_history_${date}.pdf`);
         };
+    });
+
+    document.getElementById('export-excel').addEventListener('click', function () {
+        // Get all visible rows in the table
+        const rows = Array.from(document.querySelectorAll('#scoring-table tr'))
+            .filter(row => row.style.display !== 'none')
+            .map((row, index) => {
+                const cells = Array.from(row.cells);
+                return [
+                    index + 1, // Recalculate index for visible rows
+                    cells[1]?.innerText || '', // Archer Name
+                    cells[2]?.innerText || '', // Date
+                    cells[3]?.innerText || '', // Distance
+                    cells[4]?.innerText || ''  // Total Score
+                ];
+            });
+
+        // Add headers to the rows
+        const headers = ['No.', 'Archer Name', 'Date', 'Distance', 'Total Score'];
+        rows.unshift(headers);
+
+        // Create a new worksheet and workbook
+        const worksheet = XLSX.utils.aoa_to_sheet(rows);
+
+        // Set column widths for better readability
+        worksheet['!cols'] = [
+            { wch: 5 },   // No.
+            { wch: 20 },  // Archer Name
+            { wch: 15 },  // Date
+            { wch: 10 },  // Distance
+            { wch: 15 }   // Total Score
+        ];
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'ScoringHistory');
+
+        // Export workbook to a file
+        const date = new Date().toISOString().split('T')[0];
+        XLSX.writeFile(workbook, `scoring_history_${date}.xlsx`);
     });
 
 </script>

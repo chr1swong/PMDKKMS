@@ -6,6 +6,7 @@
     <title>Manage Members</title>
     <!-- External CSS and Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
@@ -24,6 +25,43 @@
             padding: 40px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-group {
+            display: flex; /* Align buttons horizontally */
+            gap: 10px; /* Add spacing between buttons */
+            margin-left: auto; /* Align buttons to the right */
+        }
+
+        .btn-pdf {
+            background-color: #dc3545; /* Red for PDF */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn-pdf:hover {
+            background-color: #B22222 !important; /* Darker red */
+            color: #f8d7da; /* Light color for text (optional) */
+        }
+
+        .btn-excel {
+            background-color: #28a745; /* Green for Excel */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-excel:hover {
+            background-color: #218838; /* Darker green on hover */
         }
 
         .hr-divider {
@@ -281,6 +319,108 @@
         .close:hover {
             color: #0c3d20;
         }
+
+        @media (max-width: 768px) {
+            .filter-container {
+                flex-direction: column; /* Stack main filters vertically */
+                gap: 15px; /* Add space between filter sections */
+                align-items: stretch; /* Stretch elements to fit full width */
+            }
+
+            .left-filters {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px; /* Add spacing between role dropdown and search bar */
+                justify-content: space-between;
+            }
+
+            .search-wrapper {
+                position: relative;
+                flex-grow: 1; /* Allow search bar to fill available space */
+            }
+
+            .search-wrapper input {
+                width: 100%; /* Ensure the search bar takes full width */
+                padding: 10px 10px 10px 40px; /* Adjust padding for the search icon */
+            }
+
+            .search-icon {
+                position: absolute;
+                left: 10px; /* Align icon correctly inside input */
+                font-size: 18px; /* Icon size for better visibility */
+                top: 50%; /* Vertically align icon */
+                transform: translateY(-50%);
+            }
+
+            .date-filters {
+                display: flex;
+                flex-wrap: nowrap; /* Keep date filters and button in one row */
+                align-items: center;
+                gap: 10px; /* Space between inputs and button */
+                justify-content: space-between; /* Align elements across the row */
+            }
+
+            .date-filters input[type="date"] {
+                flex-grow: 1; /* Allow inputs to scale properly */
+                width: auto; /* Adjust width to avoid overflow */
+            }
+
+            .date-filters button {
+                flex-shrink: 0; /* Prevent button from shrinking */
+                width: auto; /* Keep button size consistent */
+                padding: 8px 15px; /* Adjust button padding for smaller screens */
+            }
+
+            .table-container {
+                overflow-x: auto; /* Enable horizontal scrolling for the table */
+                max-width: 100%; /* Ensure table does not exceed the screen width */
+            }
+
+            table {
+                width: 100%; /* Ensure table adjusts to container width */
+                border-collapse: collapse; /* Avoid gaps between cells */
+            }
+
+            table th, table td {
+                font-size: 14px; /* Adjust font size for better readability */
+                padding: 8px; /* Reduce padding for smaller screens */
+                text-align: center; /* Keep text centered */
+                white-space: nowrap; /* Prevent table content from wrapping */
+            }
+
+            .btn-container {
+                display: flex; /* Align buttons horizontally */
+                justify-content: center; /* Center align buttons */
+                gap: 8px; /* Add spacing between buttons */
+                flex-wrap: wrap; /* Allow buttons to wrap to the next line if necessary */
+            }
+
+            .btn {
+                width: 100%; /* Buttons take full width in their container */
+                max-width: 150px; /* Set a maximum width for better alignment */
+                font-size: 12px; /* Adjust font size for better usability */
+                padding: 8px; /* Adjust padding for smaller screens */
+                text-align: center;
+            }
+
+            .btn-view {
+                background-color: #5f4bb6;
+                color: white;
+            }
+
+            .btn-view:hover {
+                background-color: #3b1f8b;
+            }
+
+            .btn-delete {
+                background-color: #ff6b6b;
+                color: white;
+            }
+
+            .btn-delete:hover {
+                background-color: #e04a4a;
+            }
+        }
     </style>
 </head>
 <body>
@@ -300,7 +440,10 @@
 <div class="member-management-container">
     <div class="header-row">
         <h1 class="member-management-header">Manage Members</h1>
-        <button id="generate-pdf" class="btn-download">Download PDF</button>
+        <div class="button-group"> <!-- Button group for alignment -->
+            <button id="generate-pdf" class="btn-pdf">Download PDF</button>
+            <button id="export-excel" class="btn-excel">Export to Excel</button>
+        </div>
     </div>
     <hr class="hr-divider">
 
@@ -625,6 +768,43 @@
             pdf.save(`member_list_${currentDate}.pdf`);
         };
     });
+
+    document.getElementById('export-excel').addEventListener('click', function () {
+    // Select the table and extract rows
+    const table = document.getElementById('memberTable');
+    const rows = Array.from(table.rows);
+
+    // Create a new array for filtered data (excluding the "Action" column)
+    const filteredData = rows.map(row => {
+        const cells = Array.from(row.cells);
+        return cells.slice(0, cells.length - 1).map(cell => cell.innerText); // Exclude the last column
+    });
+
+    // Create a new worksheet with the filtered data
+    const worksheet = XLSX.utils.aoa_to_sheet(filteredData);
+
+    // Adjust the column widths (e.g., for the "Member Expiry" column)
+    worksheet['!cols'] = [
+        { wch: 10 }, // "No."
+        { wch: 15 }, // "MemberID"
+        { wch: 20 }, // "Name"
+        { wch: 15 }, // "Role"
+        { wch: 15 }, // "Coach"
+        { wch: 10 }, // "Status"
+        { wch: 20 }, // "Member Expiry"
+    ];
+
+    // Create a new workbook and append the worksheet
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Members');
+
+    // Define the filename
+    const filename = `member_list_${new Date().toISOString().slice(0, 10)}.xlsx`;
+
+    // Trigger the download
+    XLSX.writeFile(workbook, filename);
+});
+
 
     function closeSuccessMessage() {
         document.getElementById('success-message').style.display = 'none';

@@ -76,6 +76,38 @@
             background-color: #333;
         }
 
+        /* PDF and Excel Button Styles */
+        .btn-pdf {
+            background-color: #dc3545; /* Red for PDF */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn-pdf:hover {
+            background-color: #b22222 !important; /* Darker red */
+            color: #f8d7da; /* Light text color */
+        }
+
+        .btn-excel {
+            background-color: #28a745; /* Green for Excel */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-excel:hover {
+            background-color: #218838; /* Darker green */
+        }
+
         .hr-divider {
             border: none;
             border-top: 2px solid #e0e0e0;
@@ -294,7 +326,10 @@
 <div class="scoring-history-container">
     <div class="scoring-header">
         <h1 class="scoring-history-header">Scoring History</h1>
-        <button id="generate-pdf" class="btn-download">Download PDF</button>
+        <div>
+            <button id="generate-pdf" class="btn-pdf">Download PDF</button>
+            <button id="export-excel" class="btn-excel">Export to Excel</button>
+        </div>
     </div>
 
     <hr class="hr-divider">
@@ -355,6 +390,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
     function sortTable(n) {
@@ -500,6 +536,43 @@
             // Save the PDF file with a dynamic filename
             pdf.save(`scoring_history_${currentDate}.pdf`);
         };
+    });
+
+    document.getElementById('export-excel').addEventListener('click', function () {
+        // Get all visible rows in the table
+        const rows = Array.from(document.querySelectorAll('#scoringTable tbody tr'))
+            .filter(row => row.style.display !== 'none') // Only include visible rows
+            .map((row, index) => {
+                const cells = Array.from(row.cells);
+                return [
+                    index + 1, // Visible row index
+                    cells[1]?.innerText || '', // Date
+                    cells[2]?.innerText || '', // Distance
+                    cells[3]?.innerText || ''  // Total Score
+                ];
+            });
+
+        // Add table headers
+        const headers = ['No.', 'Date', 'Distance', 'Total Score'];
+        rows.unshift(headers);
+
+        // Create worksheet and workbook
+        const worksheet = XLSX.utils.aoa_to_sheet(rows);
+
+        // Adjust column widths for better readability
+        worksheet['!cols'] = [
+            { wch: 5 },   // No.
+            { wch: 20 },  // Date
+            { wch: 15 },  // Distance
+            { wch: 15 }   // Total Score
+        ];
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'ScoringHistory');
+
+        // Generate a filename with the current date
+        const date = new Date().toISOString().split('T')[0];
+        XLSX.writeFile(workbook, `scoring_history_${date}.xlsx`);
     });
 </script>
 

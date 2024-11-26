@@ -26,6 +26,39 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        /* PDF and Excel Button Styles */
+        .btn-pdf {
+            background-color: #dc3545; /* Red for PDF */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            margin-right: 10px;
+        }
+
+        .btn-pdf:hover {
+            background-color: #b22222; /* Darker red */
+            color: #f8d7da; /* Light text color */
+        }
+
+        .btn-excel {
+            background-color: #28a745; /* Green for Excel */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-excel:hover {
+            background-color: #218838; /* Darker green */
+        }
+
         .hr-divider {
             border: none;
             border-top: 2px solid #e0e0e0;
@@ -359,7 +392,10 @@
 <div class="payment-history-container">
     <div class="header-row">
         <h1 class="payment-history-header">Transaction History</h1>
-        <button id="generate-pdf" class="btn-download">Download PDF</button>
+        <div>
+            <button id="generate-pdf" class="btn-pdf">Download PDF</button>
+            <button id="export-excel" class="btn-excel">Export to Excel</button>
+        </div>
     </div>
     <hr class="hr-divider">
 
@@ -445,6 +481,7 @@
 <!-- jsPDF and autoTable libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
     function filterByStatus() {
@@ -633,7 +670,50 @@
         pdf.save(`transaction_history_${date}.pdf`);
     });
 
+    document.getElementById('export-excel').addEventListener('click', function () {
+        // Get all visible rows in the table
+        const rows = Array.from(document.querySelectorAll('#paymentTable tbody tr'))
+            .filter(row => row.style.display !== 'none') // Include only visible rows
+            .map((row, index) => {
+                const cells = Array.from(row.cells);
+                return [
+                    index + 1, // Serial Number
+                    cells[1]?.innerText || '', // Name
+                    cells[2]?.innerText || '', // MemberID
+                    cells[3]?.innerText || '', // Amount
+                    cells[4]?.innerText || '', // Duration
+                    cells[5]?.innerText || '', // Status
+                    cells[6]?.innerText || '', // Bill Code
+                    cells[7]?.innerText || ''  // Transaction Date
+                ];
+            });
 
+        // Add table headers
+        const headers = ['No.', 'Name', 'MemberID', 'Amount (RM)', 'Duration', 'Status', 'Bill Code', 'Transaction Date'];
+        rows.unshift(headers);
+
+        // Create worksheet and workbook
+        const worksheet = XLSX.utils.aoa_to_sheet(rows);
+
+        // Adjust column widths for better readability
+        worksheet['!cols'] = [
+            { wch: 5 },   // No.
+            { wch: 25 },  // Name
+            { wch: 15 },  // MemberID
+            { wch: 15 },  // Amount
+            { wch: 15 },  // Duration
+            { wch: 20 },  // Status
+            { wch: 20 },  // Bill Code
+            { wch: 15 }   // Transaction Date
+        ];
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'TransactionHistory');
+
+        // Generate a filename with the current date
+        const date = new Date().toISOString().split('T')[0];
+        XLSX.writeFile(workbook, `transaction_history_${date}.xlsx`);
+    });
 
     function closeSuccessMessage() {
         document.getElementById('success-message').style.display = 'none';

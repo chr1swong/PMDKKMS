@@ -41,6 +41,38 @@
             margin-bottom: 20px;
         }
 
+        /* PDF and Excel Button Styles */
+        .btn-pdf {
+            background-color: #dc3545; /* Red for PDF */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn-pdf:hover {
+            background-color: #B22222 !important; /* Darker red */
+            color: #f8d7da; /* Light color for text (optional) */
+        }
+
+        .btn-excel {
+            background-color: #28a745; /* Green for Excel */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-excel:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
         .hr-divider {
             border: none;
             border-top: 2px solid #e0e0e0;
@@ -241,9 +273,13 @@
 
 <div class="attendance-list-container" id="attendance-list">
     <div class="attendance-header">
-        <h1 class="attendance-list-header">Archer Attendance for {{ $filterMonth }} {{ $filterYear }}</h1> <!-- Display both month and year -->
-        <!-- PDF Download Button -->
-        <button id="generate-pdf" class="btn-download">Download PDF</button>
+        <h1 class="attendance-list-header">Archer Attendance for {{ $filterMonth }} {{ $filterYear }}</h1>
+        <div>
+            <!-- PDF Download Button -->
+            <button id="generate-pdf" class="btn-pdf">Download PDF</button>
+            <!-- Excel Export Button -->
+            <button id="export-excel" class="btn-excel">Export to Excel</button>
+        </div>
     </div>
     <hr class="hr-divider">
 
@@ -325,6 +361,7 @@
 <!-- jsPDF and autoTable libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
     // Function to search rows by name
@@ -470,19 +507,54 @@
 
         // Center-aligned page numbers in the footer
         const pageCount = pdf.internal.getNumberOfPages();
-        for (let i = 1; i <= pageCount; i++) {
-            pdf.setPage(i);
-            pdf.setFontSize(10);
-            const pageText = `Page ${i} of ${pageCount}`;
-            const pageWidth = pdf.internal.pageSize.width;
-            const textWidth = pdf.getTextWidth(pageText);
-            pdf.text(pageText, (pageWidth - textWidth) / 2, pdf.internal.pageSize.height - 10); // Center-aligned
-        }
+            for (let i = 1; i <= pageCount; i++) {
+                pdf.setPage(i);
+                pdf.setFontSize(10);
+                const pageText = `Page ${i} of ${pageCount}`;
+                const pageWidth = pdf.internal.pageSize.width;
+                const textWidth = pdf.getTextWidth(pageText);
+                pdf.text(pageText, (pageWidth - textWidth) / 2, pdf.internal.pageSize.height - 10); // Center-aligned
+            }
 
-        // Save the PDF with the current date in the filename
-        pdf.save(`attendance_list_{{ $filterMonth }}_{{ $filterYear }}.pdf`);
-    };
-});
+            // Save the PDF with the current date in the filename
+            pdf.save(`attendance_list_{{ $filterMonth }}_{{ $filterYear }}.pdf`);
+        };
+    });
+
+    document.getElementById('export-excel').addEventListener('click', function () {
+            // Select the table element
+            const table = document.getElementById('attendanceTable');
+            const rows = Array.from(table.rows);
+
+            // Extract data into a 2D array for XLSX
+            const tableData = rows.map(row => Array.from(row.cells).map(cell => cell.innerText));
+
+            // Create a new worksheet with the table data
+            const worksheet = XLSX.utils.aoa_to_sheet(tableData);
+
+            // Define column widths
+            worksheet['!cols'] = [
+                { wch: 5 },  // No.
+                { wch: 20 }, // Name
+                { wch: 15 }, // MemberID
+                { wch: 20 }, // Coach
+                { wch: 15 }  // Attendance
+            ];
+
+            // Create a new workbook and append the worksheet
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Attendance');
+
+            // Get the selected month and year
+            const month = document.getElementById('attendance-filter').value;
+            const year = document.getElementById('year-filter').value;
+
+            // Generate the filename using the selected month and year
+            const filename = `attendance_list_${month}_${year}.xlsx`;
+
+            // Trigger the download
+            XLSX.writeFile(workbook, filename);
+        });
 </script>
 
 </body>

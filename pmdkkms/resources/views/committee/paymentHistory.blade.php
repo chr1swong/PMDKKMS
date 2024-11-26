@@ -26,6 +26,38 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        /* PDF and Excel Button Styles */
+        .btn-pdf {
+            background-color: #dc3545; /* Red for PDF */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn-pdf:hover {
+            background-color: #B22222 !important; /* Darker red */
+            color: #f8d7da; /* Light color for text (optional) */
+        }
+
+        .btn-excel {
+            background-color: #28a745; /* Green for Excel */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-excel:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
         .hr-divider {
             border: none;
             border-top: 2px solid #e0e0e0;
@@ -348,7 +380,10 @@
 <div class="payment-history-container">
     <div class="header-row">
         <h1 class="payment-history-header">Transaction History</h1>
-        <button id="generate-pdf" class="btn-download">Download PDF</button>
+        <div>
+            <button id="generate-pdf" class="btn-pdf">Download PDF</button>
+            <button id="export-excel" class="btn-excel">Export to Excel</button>
+        </div>
     </div>
     <hr class="hr-divider">
 
@@ -440,6 +475,7 @@
 <!-- jsPDF and autoTable libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
     function filterByStatus() {
@@ -643,6 +679,43 @@
         // Save the PDF
         const date = new Date().toISOString().split('T')[0];
         pdf.save(`transaction_history_${date}.pdf`);
+    });
+
+    document.getElementById('export-excel').addEventListener('click', function () {
+        // Select the table and extract rows
+        const table = document.getElementById('paymentTable');
+        const rows = Array.from(table.rows);
+
+        // Create a new array for table data (excluding hidden rows)
+        const filteredData = rows
+            .filter(row => row.style.display !== 'none') // Exclude hidden rows
+            .map(row => Array.from(row.cells).map(cell => cell.innerText)); // Extract text from visible rows
+
+        // Create a new worksheet with the filtered data
+        const worksheet = XLSX.utils.aoa_to_sheet(filteredData);
+
+        // Adjust the column widths
+        worksheet['!cols'] = [
+            { wch: 5 },  // "No."
+            { wch: 20 }, // "Name"
+            { wch: 15 }, // "MemberID"
+            { wch: 15 }, // "Amount (RM)"
+            { wch: 15 }, // "Extend Duration"
+            { wch: 15 }, // "Status"
+            { wch: 15 }, // "Bill Code"
+            { wch: 20 }  // "Transaction Date"
+        ];
+
+        // Create a new workbook and append the worksheet
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Transaction History');
+
+        // Define the filename using the current date
+        const date = new Date().toISOString().split('T')[0];
+        const filename = `transaction_history_${date}.xlsx`;
+
+        // Trigger the download
+        XLSX.writeFile(workbook, filename);
     });
     
     function closeSuccessMessage() {

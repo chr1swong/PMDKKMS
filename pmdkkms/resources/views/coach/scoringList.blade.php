@@ -26,6 +26,40 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        /* PDF Button Styles */
+        .btn-pdf {
+            background-color: #dc3545 !important; /* Force red for PDF button */
+            color: white !important;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn-pdf:hover {
+            background-color: #b22222 !important; /* Darker red on hover */
+            color: #f8d7da !important; /* Light text on hover */
+        }
+
+        /* Excel Button Styles */
+        .btn-excel {
+            background-color: #28a745; /* Green for Excel */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-excel:hover {
+            background-color: #218838; /* Darker green */
+        }
+
         .hr-divider {
             border: none;
             border-top: 2px solid #e0e0e0;
@@ -326,8 +360,12 @@
 <div class="scoring-history-container">
     <div class="scoring-header-container">
         <h1 class="scoring-history-header">Scoring History of Enrolled Archers</h1>
-        <!-- PDF Download Button -->
-        <button id="generate-pdf" class="btn-download">Download PDF</button>
+        <div class="btn-container">
+            <!-- PDF Download Button -->
+            <button id="generate-pdf" class="btn-download btn-pdf">Download PDF</button>
+            <!-- Excel Export Button -->
+            <button id="export-excel" class="btn-download btn-excel">Export to Excel</button>
+        </div>
     </div>
     <hr class="hr-divider">
 
@@ -388,6 +426,7 @@
 <!-- jsPDF and autoTable libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
     // Sorting function for the table
@@ -580,6 +619,48 @@
         };
     });
 
+    document.getElementById('export-excel').addEventListener('click', function () {
+        // Collect visible rows for the Excel sheet
+        const tableRows = Array.from(document.querySelectorAll('#scoringTable tbody tr'))
+            .filter(row => row.style.display !== 'none') // Include only visible rows
+            .map((row, index) => {
+                const cells = Array.from(row.cells);
+                return [
+                    index + 1, // Index
+                    cells[1]?.innerText || '', // Archer Name
+                    cells[2]?.innerText || '', // Date
+                    cells[3]?.innerText || '', // Distance
+                    cells[4]?.innerText || ''  // Total Score
+                ];
+            });
+
+        // Add table headers
+        const headers = ['No.', 'Archer Name', 'Date', 'Distance', 'Total Score'];
+        tableRows.unshift(headers);
+
+        // Create worksheet and workbook
+        const worksheet = XLSX.utils.aoa_to_sheet(tableRows);
+
+        // Adjust column widths for better readability
+        worksheet['!cols'] = [
+            { wch: 5 },   // No.
+            { wch: 25 },  // Archer Name
+            { wch: 15 },  // Date
+            { wch: 15 },  // Distance
+            { wch: 15 }   // Total Score
+        ];
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'ScoringHistory');
+
+        // Generate a filename with the current date
+        const today = new Date();
+        const currentDate = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}-${today.getFullYear()}`;
+        const filename = `scoring_history_${currentDate}.xlsx`;
+
+        // Export to Excel
+        XLSX.writeFile(workbook, filename);
+    });
 </script>
 
 </body>

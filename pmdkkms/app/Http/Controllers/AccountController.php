@@ -532,4 +532,46 @@ class AccountController extends Controller
         // Pass all these variables to the view
         return view('committee.dashboard', compact('archerCount', 'coachCount', 'committeeCount', 'upcomingEvents', 'announcements'));
     }
+    
+    public function committeeEditMemberProfile(Request $request, $membership_id)
+    {
+        // Retrieve the member's account and membership details based on the provided membership ID
+        $member = DB::table('account')
+            ->join('membership', 'account.account_id', '=', 'membership.account_id')
+            ->where('membership.membership_id', $membership_id)
+            ->select('account.*', 'membership.membership_id', 'membership.membership_status', 'membership.membership_expiry')
+            ->first();
+
+        // Check if the member exists
+        if (!$member) {
+            return redirect()->route('committee.member')->with('error', 'Member not found.');
+        }
+
+        // If the request method is POST, process the update
+        if ($request->isMethod('post')) {
+            // Validate the input
+            $request->validate([
+                'account_full_name' => 'required|string|max:255',
+                'account_email_address' => 'required|string|email|max:255|unique:account,account_email_address,' . $member->account_id . ',account_id', // Exclude the member being updated
+                'account_contact_number' => 'required|string|max:15',
+            ]);
+
+            // Update the account details
+            DB::table('account')
+                ->where('account_id', $member->account_id)
+                ->update([
+                    'account_full_name' => $request->account_full_name,
+                    'account_email_address' => $request->account_email_address,
+                    'account_contact_number' => $request->account_contact_number,
+                ]);
+
+            return redirect()->route('committee.member')->with('success', 'Member profile updated successfully.');
+        }
+
+        // Render the edit form if the method is GET
+        return view('committee.memberEditProfile', ['member' => $member]);
+    }
+
+
+
 }

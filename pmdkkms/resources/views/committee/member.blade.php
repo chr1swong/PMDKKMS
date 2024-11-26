@@ -337,8 +337,8 @@
             <thead>
                 <tr>
                     <th>No.</th> <!-- Index column without sorter -->
-                    <th onclick="sortTable(1)">Name <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(2)">MemberID <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(1)">MemberID <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(2)">Name <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(3)">Role <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(4)">Coach <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(5)">Status <i class="fas fa-sort"></i></th>
@@ -350,8 +350,8 @@
                 @foreach($members as $key => $member)
                 <tr data-name="{{ strtolower($member->account_full_name) }}" data-role="{{ strtolower($member->account_role == 1 ? 'archer' : ($member->account_role == 2 ? 'coach' : 'committee')) }}">
                     <td>{{ $key + 1 }}</td>
-                    <td>{{ $member->account_full_name }}</td>
-                    <td>{{ $member->membership_id }}</td>
+                    <td>{{ $member->membership_id }}</td> 
+                    <td>{{ $member->account_full_name }}</td> 
                     <td>{{ $member->account_role == 1 ? 'Archer' : ($member->account_role == 2 ? 'Coach' : 'Committee') }}</td>
                     <td>{{ $member->coach_name ?? 'N/A' }}</td>
                     <td>{{ $member->membership_status == 1 ? 'Active' : 'Inactive' }}</td>
@@ -567,7 +567,7 @@
             pdf.text("Member List", 14, 55);
 
             // Table headers
-            const headers = [['No.', 'Name', 'MemberID', 'Role', 'Coach', 'Status', 'Member Expiry']];
+            const headers = [['No.', 'MemberID', 'Name', 'Role', 'Coach', 'Status', 'Member Expiry']];
 
             // Get table data
             const tableRows = [];

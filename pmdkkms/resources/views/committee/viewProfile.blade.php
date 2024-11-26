@@ -170,8 +170,12 @@
             <img src="{{ $member->account_profile_picture_path ? asset('storage/' . $member->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile Picture">
             
             <!-- Back Button -->
-            <a href="{{ url()->previous() }}" class="back-button">
+            <a href="{{ route('committee.member') }}" class="back-button">
                 <button type="button">Back</button>
+            </a>
+            <!-- Edit Profile Button -->
+            <a href="{{ route('committee.editMemberProfile', ['membership_id' => $member->membership_id]) }}" class="edit-button">
+                <button type="button">Edit Profile</button>
             </a>
         </div>
 

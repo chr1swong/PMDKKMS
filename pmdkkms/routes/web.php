@@ -202,10 +202,11 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
     Route::get('/committee/member', [AccountController::class, 'manageMember'])->name('committee.member');
     Route::get('/committee/member/profile/{membership_id}', [AccountController::class, 'viewProfile'])->name('view.profile');
     Route::delete('/committee/member/{id}', [AccountController::class, 'deleteProfile'])->name('delete.profile');
+    Route::match(['get', 'post'], '/committee/editMemberProfile/{membership_id}', [AccountController::class, 'committeeEditMemberProfile'])->name('committee.editMemberProfile');
 
     //Route for Attendance
     Route::get('/committee/attendanceList', [AttendanceController::class, 'viewAllAttendance'])->name('committee.attendanceList'); // Updated route
-    // Route for committee to view a specific archer's attendance
+    // Route for committee to view a specific archer's attendancea
     Route::get('/committee/attendance/{membership_id}', [AttendanceController::class, 'viewArcherAttendance'])->name('committee.attendanceView');
 
     // Committee Profile

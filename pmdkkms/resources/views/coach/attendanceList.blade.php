@@ -433,51 +433,42 @@
     document.getElementById('generate-pdf').addEventListener('click', function () {
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF('p', 'mm', 'a4');
-        
-        // Set the font to Arial
+
+        // Set the font
         pdf.setFont("Arial");
 
         // Add the logo
         const img = new Image();
-        img.src = '/images/pmdkkLogo.png'; 
+        img.src = '/images/pmdkkLogo.png'; // Ensure the image path is correct
 
         img.onload = function () {
-            // Draw the logo on the PDF
             pdf.addImage(img, 'PNG', 10, 15, 30, 30); // X, Y, Width, Height
 
-            // Header with Organization Name, ID, Date, Address, and Email
+            // Add header details
             const textXPosition = 45;
             pdf.setFontSize(14.5);
             pdf.setFont("Arial", "bold");
             pdf.text("PERSATUAN MEMANAH DAERAH KOTA KINABALU (PMDKK)", textXPosition, 18);
-
-            // Organization ID
             pdf.setFontSize(10);
             pdf.text("(D-SBH-03075)", textXPosition, 24);
 
-            // Date
-            pdf.setFontSize(10);
+            // Add date and address details
             const today = new Date();
-            const currentDate = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}-${today.getFullYear()}`; // Format: MM-DD-YYYY
+            const currentDate = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}-${today.getFullYear()}`;
             pdf.text(`Date: ${currentDate}`, textXPosition, 30);
-
-            // Address
-            pdf.setFontSize(10);
             pdf.text("Peti Surat 16536, 88700 Kota Kinabalu, Sabah, Malaysia.", textXPosition, 36);
-
-            // Email and Contact Information
             pdf.text("Email: pmdkk2015@gmail.com", textXPosition, 42);
-            pdf.text("Contact: 088-794 327", pdf.internal.pageSize.width - 45, 42); 
+            pdf.text("Contact: 088-794 327", pdf.internal.pageSize.width - 45, 42);
 
-            // Title
+            // Add the title
             pdf.setFontSize(14);
             pdf.setFont("Arial", "bold");
             pdf.text(`Archer Attendance for {{ $filterMonth }} {{ $filterYear }}`, 14, 55);
 
-            // Table headers
-            const headers = [['No.', 'Name', 'MemberID', 'Coach', 'Attendance']];
+            // Define headers for the table
+            const headers = [['No.', 'Name', 'MemberID', 'Attendance']];
 
-            // Get table data
+            // Extract data from the HTML table (excluding the "Action" column)
             const tableRows = [];
             const rows = document.querySelectorAll('#attendanceTable tbody tr');
             rows.forEach((row, index) => {
@@ -486,13 +477,12 @@
                     index + 1, // No.
                     cells[1].innerText, // Name
                     cells[2].innerText, // MemberID
-                    cells[3].innerText, // Coach
-                    cells[4].innerText  // Attendance
+                    cells[3].innerText, // Attendance
                 ];
                 tableRows.push(rowData);
             });
 
-            // Create the table in the PDF
+            // Generate the table in the PDF
             pdf.autoTable({
                 head: headers,
                 body: tableRows,
@@ -507,8 +497,8 @@
                     lineWidth: 0.1
                 },
                 headStyles: {
-                    fillColor: [169, 169, 169], // Grey color for header
-                    textColor: [255, 255, 255]
+                    fillColor: [169, 169, 169], // Grey for header
+                    textColor: [255, 255, 255]  // White text for header
                 },
                 bodyStyles: {
                     fillColor: [255, 255, 255],
@@ -516,7 +506,7 @@
                 }
             });
 
-            // Center-aligned page numbers in the footer
+            // Add page numbers in the footer
             const pageCount = pdf.internal.getNumberOfPages();
             for (let i = 1; i <= pageCount; i++) {
                 pdf.setPage(i);
@@ -527,7 +517,7 @@
                 pdf.text(pageText, (pageWidth - textWidth) / 2, pdf.internal.pageSize.height - 10); // Center-aligned
             }
 
-            // Save the PDF with the current date in the filename
+            // Save the PDF
             pdf.save(`attendance_list_{{ $filterMonth }}_{{ $filterYear }}.pdf`);
         };
     });

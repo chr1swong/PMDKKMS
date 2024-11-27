@@ -230,27 +230,19 @@
             @csrf
             <div class="membership-id-container">
                 <label for="membership_id">Archer Membership ID</label>
-                <div class="id-input-with-button">
-                    <div class="id-with-scanner">
-                        <input type="text" name="membership_id" id="membership_id" value="{{ $membership->membership_id }}" readonly>
-                        <button type="button" class="open-camera-btn" onclick="openCamera()">Open Scanner</button>
-                    </div>
-                    <input type="file" accept="image/*" capture="camera" id="cameraInput" style="display: none;">
-                    <video id="video" width="320" height="240" autoplay style="display: none;"></video>
-                </div>
+                <input type="text" name="membership_id" id="membership_id" 
+                    value="{{ $membership->membership_id }}" readonly>
             </div>
 
             <div class="full-width">
                 <label for="attendance_status">Attendance Status</label>
-                <select name="attendance_status" id="attendance_status" required>
-                    <option value="present">Present</option>
+                <select name="attendance_status" id="attendance_status" disabled>
+                    <option value="present" selected>Present</option>
                     <option value="absent">Absent</option>
                 </select>
             </div>
 
-            <input type="hidden" name="attendance_date" id="attendance_date">
-
-            <button type="submit" class="submit-btn">Submit Attendance</button>
+            <button type="submit" class="submit-btn" disabled>Submit Attendance</button>
         </form>
 
         <!-- Selected Date and Present Count Section -->

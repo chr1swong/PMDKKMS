@@ -31,7 +31,8 @@ class AttendanceController extends Controller
         // Pass the membership and attendance data to the view
         return view('archer.attendance', [
             'membership' => $membership,
-            'attendanceData' => $attendanceData
+            'attendanceData' => $attendanceData,
+            'readOnly' => true // Pass a flag to disable the form in the view
         ]);
     }
 

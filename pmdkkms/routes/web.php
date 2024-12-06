@@ -93,6 +93,7 @@ Route::middleware(['auth', RoleAccessMiddleware::class . ':1'])->group(function 
     Route::get('/archer/attendance', [AttendanceController::class, 'showAttendanceForm'])->name('archer.attendance');
     Route::post('/archer/attendance', [AttendanceController::class, 'storeAttendance'])->name('attendance.store');
     Route::get('/archer/attendance/view', [AttendanceController::class, 'viewAttendance'])->name('attendance.view');
+    Route::get('/archer/attendance/{membership_id}/more', [AttendanceController::class, 'viewMoreAttendanceArcher'])->name('archer.attendanceMore');
 
     // Events
     Route::get('/archer/events', [EventController::class, 'viewEvents'])->name('archer.events');
@@ -154,6 +155,7 @@ Route::middleware(['auth', RoleAccessMiddleware::class . ':2'])->group(function 
     Route::get('/coach/attendance/{membership_id}', [AttendanceController::class, 'viewCoachArcherAttendance'])->name('coach.attendanceView');
     Route::post('/coach/attendance/{membership_id}/update', [AttendanceController::class, 'updateCoachArcherAttendance'])->name('coach.updateAttendance');
     Route::get('/coach/attendance-list', [AttendanceController::class, 'viewAllAttendanceForCoach'])->name('coach.attendanceList');
+    Route::get('/coach/attendance/{membership_id}/more', [AttendanceController::class, 'viewMoreAttendanceCoach'])->name('coach.attendanceMore');
 
     // QR Code Routes
     Route::get('/coach/qr/{membership_id}', [AttendanceController::class, 'generateArcherQrCode'])->name('coach.archerQrCode');
@@ -206,8 +208,9 @@ Route::middleware(['auth', RoleAccessMiddleware::class.':3'])->group(function ()
 
     //Route for Attendance
     Route::get('/committee/attendanceList', [AttendanceController::class, 'viewAllAttendance'])->name('committee.attendanceList'); // Updated route
-    // Route for committee to view a specific archer's attendancea
     Route::get('/committee/attendance/{membership_id}', [AttendanceController::class, 'viewArcherAttendance'])->name('committee.attendanceView');
+    Route::post('/committee/attendance/update/{membership_id}', [AttendanceController::class, 'updateCommitteeArcherAttendance'])->name('committee.updateCommitteeArcherAttendance');
+    Route::get('/committee/attendance/{membership_id}/more', [AttendanceController::class, 'viewMoreAttendanceCommittee'])->name('committee.attendanceMore');
 
     // Committee Profile
     Route::get('/committee/profile', [AccountController::class, 'committeeProfile'])->name('committee.profile');

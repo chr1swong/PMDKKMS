@@ -36,9 +36,52 @@
             background-color: #E0ECF8;
             padding: 20px;
             border-radius: 10px;
-            text-align: center;
             font-size: 24px;
             font-weight: 500;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
+        .attendance-header .header-text {
+            flex-grow: 1;  /* Allow the text to take available space */
+            text-align: center;  /* Ensure the text is centered */
+            margin-left: 80px;
+        }
+
+        .view-more-btn {
+            background-color: #4CAF50; /* Green background */
+            color: white;
+            padding: 12px 20px;  /* Add some padding */
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            transition: background-color 0.3s, transform 0.3s ease;
+            margin-left: auto;  /* Push button to the right */
+            display: inline-block; /* Ensure button is inline-block */
+            text-align: center; /* Center the text */
+            width: auto;
+        }
+
+        .view-more-btn a {
+            display: block; /* Makes the anchor tag fill the button */
+            color: white;
+            text-decoration: none; /* Remove the underline */
+            width: 100%; /* Make sure the anchor tag takes full width of the button */
+            height: 100%; /* Ensure it occupies full height as well */
+        }
+
+        .view-more-btn:hover {
+            background-color: #45a049;  /* Darker shade of green on hover */
+            transform: scale(1.0); /* Slightly scale up on hover */
+        }
+
+        .view-more-btn:active {
+            background-color: #388e3c; /* Even darker green on click */
+            transform: scale(0.98); /* Slightly scale down on click */
         }
 
         .attendance-form {
@@ -119,9 +162,10 @@
 
         .selected-date-container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
+            justify-content: center; 
+            align-items: center;     
+            margin-top: 10px;
+            width: 100%;  
         }
 
         .selected-date {
@@ -223,7 +267,10 @@
 
     <div class="attendance-container">
         <div class="attendance-header">
-            Record Archer Attendance
+            <div class="header-text">Record Archer Attendance</div>
+            <form action="{{ route('archer.attendanceMore', ['membership_id' => $membership->membership_id]) }}" method="GET">
+                <button type="submit" class="view-more-btn">View More</button>
+            </form>
         </div>
 
         <form action="{{ route('attendance.store') }}" method="POST" class="attendance-form">
@@ -235,21 +282,17 @@
             </div>
 
             <div class="full-width">
-                <label for="attendance_status">Attendance Status</label>
-                <select name="attendance_status" id="attendance_status" disabled>
-                    <option value="present" selected>Present</option>
-                    <option value="absent">Absent</option>
+                <label for="attendance_status">Name</label>
+                <input type="text" name="membership_id" id="membership_id" 
+                    value="{{ $membership->account->account_full_name }}" readonly>
                 </select>
             </div>
 
-            <button type="submit" class="submit-btn" disabled>Submit Attendance</button>
+            
         </form>
 
         <!-- Selected Date and Present Count Section -->
         <div class="selected-date-container">
-            <div class="selected-date" id="selected-date-display">
-                Selected Date: None
-            </div>
             <div class="present-count" id="present-count-display">
                 Present Days this Month: 0
             </div>

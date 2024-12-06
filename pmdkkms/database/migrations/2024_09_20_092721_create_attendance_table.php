@@ -17,6 +17,7 @@ return new class extends Migration
             $table->date('attendance_date');
             $table->enum('attendance_status', ['present', 'absent']);
             $table->string('session')->nullable();
+            $table->time('check_in_time')->nullable(); 
             $table->timestamps();
 
             // Foreign key constraint

@@ -234,7 +234,7 @@ class AttendanceController extends Controller
             ->get();
 
         // Return the view with membership data and attendance records
-        return view('archer.attendanceMore', [
+        return view('committee.attendanceMore', [
             'archer' => $archer, // Pass the archer variable (with the 'account' relationship)
             'attendanceRecords' => $attendanceRecords, // Pass attendance records
         ]);
@@ -243,8 +243,6 @@ class AttendanceController extends Controller
     // **Coach Section**: View attendance details of an archer for the coach
     public function viewCoachArcherAttendance($membership_id)
     {
-        dd("you're not supposed to go here");
-
         // Fetch the membership and related archer details from the account table
         $membership = DB::table('membership')
             ->join('account', 'membership.account_id', '=', 'account.account_id')

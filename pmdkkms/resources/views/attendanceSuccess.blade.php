@@ -35,6 +35,7 @@
             <p><strong>Membership ID:</strong> {{ $membershipId }}</p>
             <p><strong>Archer Name:</strong> {{ $archerName }}</p>
             <p><strong>Date:</strong> {{ $attendanceDate }}</p>
+            <p><strong>Check-In Time:</strong> {{ $checkInTime }}</p>
         </div>
     </div>
 </body>

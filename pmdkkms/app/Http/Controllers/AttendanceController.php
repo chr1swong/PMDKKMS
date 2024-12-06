@@ -44,7 +44,11 @@ class AttendanceController extends Controller
             'membership_id' => 'required|exists:membership,membership_id',
             'attendance_date' => 'required|date',
             'attendance_status' => 'required|in:present,absent,excused',
+            'check_in_time' => 'required|date_format:H:i',
         ]);
+
+        // Format check_in_time to ensure no seconds are included
+        $formattedCheckInTime = \Carbon\Carbon::parse($request->check_in_time)->format('H:i');
 
         // Create or update the attendance record
         Attendance::updateOrCreate(
@@ -54,6 +58,7 @@ class AttendanceController extends Controller
             ],
             [
                 'attendance_status' => $request->attendance_status,
+                'check_in_time' => $formattedCheckInTime,
             ]
         );
 
@@ -74,6 +79,30 @@ class AttendanceController extends Controller
         return view('archer.viewAttendance', [
             'membership' => $membership,
             'attendances' => $attendances
+        ]);
+    }
+
+    public function viewMoreAttendanceArcher($membership_id)
+    {
+        // Get the archer's membership and related account details
+        $archer = Membership::with('account') // Ensure the 'account' relationship is loaded
+            ->where('membership_id', $membership_id)
+            ->first();
+
+        // Check if the archer's membership exists
+        if (!$archer || !$archer->account) {
+            return redirect()->back()->with('error', 'Archer or account not found.');
+        }
+
+        // Fetch attendance records for this specific archer's membership
+        $attendanceRecords = Attendance::where('membership_id', $membership_id)
+            ->orderBy('attendance_date', 'desc') // Sort by attendance date (descending)
+            ->get();
+
+        // Return the view with membership data and attendance records
+        return view('archer.attendanceMore', [
+            'archer' => $archer, // Pass the archer variable (with the 'account' relationship)
+            'attendanceRecords' => $attendanceRecords, // Pass attendance records
         ]);
     }
 
@@ -150,9 +179,72 @@ class AttendanceController extends Controller
         ]);
     }
 
+    // **Committee Section**: Update a specific archer's attendance by the committee member
+    public function updateCommitteeArcherAttendance(Request $request, $membership_id)
+    {
+        // Validate the request inputs
+        $request->validate([
+            'attendance_date' => 'required|date',
+            'attendance_status' => 'required|in:present,absent',
+            'check_in_time' => 'nullable|date_format:H:i',
+        ]);
+
+        // Format check_in_time to ensure no seconds are included
+        $formattedCheckInTime = $request->has('check_in_time') ? \Carbon\Carbon::parse($request->check_in_time)->format('H:i') : null;
+
+        // Get the archer's information (membership and account)
+        $archer = Membership::with('account')->where('membership_id', $membership_id)->first();
+
+        // Create or update the attendance record for the specific date
+        Attendance::updateOrCreate(
+            [
+                'membership_id' => $membership_id,
+                'attendance_date' => $request->attendance_date,
+            ],
+            [
+                'attendance_status' => $request->attendance_status,
+                'check_in_time' => $formattedCheckInTime,
+            ]
+        );
+
+        // Return back with the updated data
+        return back()->with([
+            'archer' => $archer,  // Pass the archer data (membership and account)
+            'attendance_status' => $request->attendance_status,
+            'check_in_time' => $formattedCheckInTime,
+            'attendance_date' => $request->attendance_date,
+        ]);
+    }
+
+    public function viewMoreAttendanceCommittee($membership_id)
+    {
+        // Get the archer's membership and related account details
+        $archer = Membership::with('account') // Ensure the 'account' relationship is loaded
+            ->where('membership_id', $membership_id)
+            ->first();
+
+        // Check if the archer's membership exists
+        if (!$archer || !$archer->account) {
+            return redirect()->back()->with('error', 'Archer or account not found.');
+        }
+
+        // Fetch attendance records for this specific archer's membership
+        $attendanceRecords = Attendance::where('membership_id', $membership_id)
+            ->orderBy('attendance_date', 'desc') // Sort by attendance date (descending)
+            ->get();
+
+        // Return the view with membership data and attendance records
+        return view('archer.attendanceMore', [
+            'archer' => $archer, // Pass the archer variable (with the 'account' relationship)
+            'attendanceRecords' => $attendanceRecords, // Pass attendance records
+        ]);
+    }
+
     // **Coach Section**: View attendance details of an archer for the coach
     public function viewCoachArcherAttendance($membership_id)
     {
+        dd("you're not supposed to go here");
+
         // Fetch the membership and related archer details from the account table
         $membership = DB::table('membership')
             ->join('account', 'membership.account_id', '=', 'account.account_id')
@@ -189,7 +281,14 @@ class AttendanceController extends Controller
         $request->validate([
             'attendance_date' => 'required|date',
             'attendance_status' => 'required|in:present,absent',
+            'check_in_time' => 'nullable|date_format:H:i',
         ]);
+
+        // Format check_in_time to ensure no seconds are included
+        $formattedCheckInTime = $request->has('check_in_time') ? \Carbon\Carbon::parse($request->check_in_time)->format('H:i') : null;
+
+        // Get the archer's information (membership and account)
+        $archer = Membership::with('account')->where('membership_id', $membership_id)->first();
 
         // Create or update the attendance record for the specific date
         Attendance::updateOrCreate(
@@ -199,11 +298,17 @@ class AttendanceController extends Controller
             ],
             [
                 'attendance_status' => $request->attendance_status,
+                'check_in_time' => $formattedCheckInTime,
             ]
         );
 
-        // Redirect back with a success message
-        return back()->with('success', 'Attendance updated successfully.');
+        // Return back without the success message, but pass necessary data
+        return back()->with([
+            'archer' => $archer,  // Pass the archer data (membership and account)
+            'attendance_status' => $request->attendance_status,
+            'check_in_time' => $formattedCheckInTime,
+            'attendance_date' => $request->attendance_date,
+        ]);
     }
 
     public function viewAllAttendanceForCoach(Request $request)
@@ -211,7 +316,7 @@ class AttendanceController extends Controller
         // Get the current logged-in coach
         $coachId = Auth::user()->account_id;
         
-        // Get the selected month and year from the request, or default to current month and year
+        // Get the selected month and year from the request, or default to the current month and year
         $filterMonth = $request->input('attendance-filter', date('F')); // Default to current month
         $filterYear = $request->input('year-filter', date('Y'));        // Default to current year
 
@@ -236,16 +341,49 @@ class AttendanceController extends Controller
             // Calculate number of 'present' days for each archer
             $presentCount = $attendanceRecords->where('attendance_status', 'present')->count();
 
+            // Format check_in_time to show only hours and minutes (no seconds)
+            $attendanceRecords->each(function ($attendance) {
+                if ($attendance->check_in_time) {
+                    // Format the check_in_time to HH:mm
+                    $attendance->check_in_time = \Carbon\Carbon::parse($attendance->check_in_time)->format('H:i');
+                }
+            });
+
             // Return structured data for the view
             return [
                 'membership' => $attendanceRecords->first()->membership,
                 'presentCount' => $presentCount,
                 'daysInMonth' => $daysInMonth,
+                'attendanceRecords' => $attendanceRecords, // Add attendance records for each archer
             ];
         });
 
         // Ensure we pass the correct month and year to the view, even when no records exist
         return view('coach.attendanceList', compact('attendanceSummary', 'filterMonth', 'filterYear'));
+    }
+
+    public function viewMoreAttendanceCoach($membership_id)
+    {
+        // Get the archer's information along with the associated account (including name)
+        $archer = Membership::with('account') // Ensure the 'account' relationship is loaded
+            ->where('membership_id', $membership_id)
+            ->first();
+
+        // Check if the archer's membership exists
+        if (!$archer || !$archer->account) {
+            return redirect()->back()->with('error', 'Archer or account not found.');
+        }
+
+        // Fetch attendance records for this specific archer's membership
+        $attendanceRecords = Attendance::where('membership_id', $membership_id)
+            ->orderBy('attendance_date', 'desc') // Sort by date (descending)
+            ->get();
+
+        // Return the view with membership data and attendance records
+        return view('coach.attendanceMore', [
+            'archer' => $archer, // Pass the $archer variable (with the 'account' relationship)
+            'attendanceRecords' => $attendanceRecords, // Pass attendanceRecords variable
+        ]);
     }
 
     public function generateArcherQrCode($membership_id)
@@ -281,6 +419,7 @@ class AttendanceController extends Controller
             ],
             [
                 'attendance_status' => 'present',
+                'check_in_time' => now()->format('H:i') // Add check-in time
             ]
         );
 
@@ -289,10 +428,14 @@ class AttendanceController extends Controller
         $archerName = $membership->account->account_full_name ?? 'N/A';
         $membershipId = $membership->membership_id;
         $attendanceDate = $request->date;
+        $checkInTime = now()->format('H:i'); // Get the current check-in time
 
         // Pass the details to the success view
-        return view('attendanceSuccess', compact('archerName', 'membershipId', 'attendanceDate'));
+        return view('attendanceSuccess', [
+            'archerName' => $archerName,
+            'membershipId' => $membershipId,
+            'attendanceDate' => $attendanceDate,
+            'checkInTime' => $checkInTime
+        ]);
     }
-
-
 }

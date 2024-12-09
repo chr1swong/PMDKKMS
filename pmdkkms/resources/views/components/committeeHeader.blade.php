@@ -252,7 +252,7 @@
                     <img src="{{ asset('images/pmdkkLogo.png') }}" alt="Logo" class="headerLogo">
                 </a>
                 <!-- Hamburger Icon for Mobile -->
-                <div class="hamburger" onclick="toggleMenu()">
+                <div class="hamburger" onclick="toggleMenu()" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleMenu();" tabindex="0"></div>
                     <div></div>
                     <div></div>
                     <div></div>

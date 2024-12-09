@@ -478,16 +478,28 @@
     <div class="table-container">
         <table id="memberTable">
             <thead>
-                <tr>
-                    <th>No.</th> <!-- Index column without sorter -->
-                    <th onclick="sortTable(1)">MemberID <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(2)">Name <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(3)">Role <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(4)">Coach <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(5)">Status <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(6)">Member Expiry <i class="fas fa-sort"></i></th>
-                    <th>Action</th>
-                </tr>
+            <tr>
+                <th>No.</th> <!-- Index column without sorter -->
+                <th onclick="sortTable(1)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(1);" tabindex="0">
+                    MemberID <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable(2)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(2);" tabindex="0">
+                    Name <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable(3)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(3);" tabindex="0">
+                    Role <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable(4)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(4);" tabindex="0">
+                    Coach <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable(5)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(5);" tabindex="0">
+                    Status <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable(6)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(6);" tabindex="0">
+                    Member Expiry <i class="fas fa-sort"></i>
+                </th>
+                <th>Action</th>
+            </tr>
             </thead>
             <tbody id="members-table">
                 @foreach($members as $key => $member)

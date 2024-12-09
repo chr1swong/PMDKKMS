@@ -188,6 +188,24 @@
 
             .hamburger {
                 display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                width: 30px; /* Width of the hamburger button */
+                height: 20px; /* Height of the hamburger button */
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0;
+                margin: 0;
+            }
+
+            .hamburger span {
+                display: block;
+                width: 100%; /* Full width of the button */
+                height: 3px; /* Thickness of each line */
+                background-color: #fff; /* Line color */
+                border-radius: 2px; /* Rounded edges for lines */
+                transition: background-color 0.3s, transform 0.3s; /* Smooth animations */
             }
 
             .login-container {
@@ -214,11 +232,11 @@
                     <img src="{{ asset('images/pmdkkLogo.png') }}" alt="Logo" class="headerLogo">
                 </a>
                 <!-- Hamburger Icon for Mobile -->
-                <div class="hamburger" onclick="toggleMenu()">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
+                <button class="hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
                 <!-- Navigation Links for Desktop -->
                 <ul class="nav-links">
                     <li><a href="/">Home</a></li>

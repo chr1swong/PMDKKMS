@@ -393,7 +393,7 @@
 
 <body>
     <header>
-        @include('components.coachHeader')
+        @include('components.committeeHeader')
     </header>
 
     @if (session('success'))

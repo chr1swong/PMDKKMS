@@ -133,41 +133,41 @@
         /* General Mobile Styles */
         @media (max-width: 768px) {
             .authentication-card {
-                flex-direction: column; 
-                margin: 1rem; 
-                width: 90%; 
-                min-height: unset; 
+                flex-direction: column;
+                margin: 1rem;
+                width: 90%;
+                min-height: unset;
             }
 
             .left-panel, .right-panel {
                 width: 100%;
                 padding: 2rem 1rem;
-                box-sizing: border-box; 
+                box-sizing: border-box;
             }
 
             .left-panel {
                 align-items: center;
                 justify-content: center;
-                text-align: center; 
+                text-align: center;
             }
 
             .left-panel h2 {
-                font-size: 2rem; 
+                font-size: 2rem;
             }
 
             .left-panel img {
-                max-width: 70%; 
+                max-width: 70%;
                 margin: 1rem 0;
             }
 
             .block input {
-                padding: 0.75rem; 
-                font-size: 1rem; 
+                padding: 0.75rem;
+                font-size: 1rem;
             }
 
             .reset-button {
                 font-size: 1rem;
-                padding: 1rem; 
+                padding: 1rem;
             }
         }
 
@@ -178,7 +178,7 @@
             }
 
             .left-panel h2 {
-                font-size: 1.5rem; 
+                font-size: 1.5rem;
             }
 
             .left-panel img {
@@ -186,12 +186,12 @@
             }
 
             .block input {
-                font-size: 0.85rem; 
+                font-size: 0.85rem;
             }
 
             .reset-button {
                 padding: 0.75rem;
-                font-size: 0.9rem; 
+                font-size: 0.9rem;
             }
         }
     </style>

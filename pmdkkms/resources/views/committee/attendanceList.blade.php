@@ -427,7 +427,7 @@
 
     // Add the logo
     const img = new Image();
-    img.src = '/images/pmdkkLogo.png'; 
+    img.src = '/images/pmdkkLogo.png';
     img.onload = function () {
         // Draw the logo on the PDF
         pdf.addImage(img, 'PNG', 10, 15, 30, 30); // X, Y, Width, Height
@@ -456,7 +456,7 @@
 
         // Email and Contact Information
         pdf.text("Email: pmdkk2015@gmail.com", textXPosition, 42);
-        pdf.text("Contact: 088-794 327", pdf.internal.pageSize.width - 45, 42); 
+        pdf.text("Contact: 088-794 327", pdf.internal.pageSize.width - 45, 42);
 
         // Title
         pdf.setFontSize(14);

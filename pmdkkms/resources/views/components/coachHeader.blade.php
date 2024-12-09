@@ -153,7 +153,7 @@
 
         /* Fix for unwanted circle near dropdown */
         .dropdown-menu li,
-        .dropdown-menu a::before, 
+        .dropdown-menu a::before,
         .dropdown-menu a::after {
             content: none; /* Remove any unwanted pseudo-elements */
             background: none; /* Ensure no background is applied */

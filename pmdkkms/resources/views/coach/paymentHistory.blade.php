@@ -123,12 +123,12 @@
             font-size: 16px;
             border-radius: 5px;
             border: 1px solid #ccc;
-            width: 180px; 
+            width: 180px;
         }
 
         .status-search-container {
             display: flex;
-            gap: 10px; 
+            gap: 10px;
             align-items: center;
         }
 
@@ -378,7 +378,7 @@
 <body>
 
 <header>
-    @include('components.coachHeader') 
+    @include('components.coachHeader')
 </header>
 
 <!-- Success Message -->
@@ -432,7 +432,7 @@
                     <th onclick="sortTable(3)">Amount (RM) <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(4)">Extend Duration <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(5)">Status <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(6)">Bill Code <i class="fas fa-sort"></i></th> 
+                    <th onclick="sortTable(6)">Bill Code <i class="fas fa-sort"></i></th>
                     <th onclick="sortTable(7)">Transaction Date <i class="fas fa-sort"></i></th>
                 </tr>
             </thead>
@@ -454,7 +454,7 @@
                         @endif">
                         {{ ucfirst($payment->payment_status) }}
                     </td>
-                    <td>{{ $payment->toyyibpay_billcode ?? 'N/A' }}</td> 
+                    <td>{{ $payment->toyyibpay_billcode ?? 'N/A' }}</td>
                     <td>{{ $payment->created_at->format('Y-m-d') }}</td>
                 </tr>
                 @endforeach
@@ -505,7 +505,7 @@
         const table = document.querySelector("table");
         let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
         switching = true;
-        dir = "asc"; 
+        dir = "asc";
         const isDurationColumn = (n === 4); // Adjust this index based on your table structure
 
         while (switching) {

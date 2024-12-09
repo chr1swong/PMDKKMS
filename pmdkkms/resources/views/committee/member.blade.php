@@ -426,7 +426,7 @@
 <body>
 
 <header>
-    @include('components.committeeHeader') 
+    @include('components.committeeHeader')
 </header>
 
 <!-- Success Message -->
@@ -493,8 +493,8 @@
                 @foreach($members as $key => $member)
                 <tr data-name="{{ strtolower($member->account_full_name) }}" data-role="{{ strtolower($member->account_role == 1 ? 'archer' : ($member->account_role == 2 ? 'coach' : 'committee')) }}">
                     <td>{{ $key + 1 }}</td>
-                    <td>{{ $member->membership_id }}</td> 
-                    <td>{{ $member->account_full_name }}</td> 
+                    <td>{{ $member->membership_id }}</td>
+                    <td>{{ $member->account_full_name }}</td>
                     <td>{{ $member->account_role == 1 ? 'Archer' : ($member->account_role == 2 ? 'Coach' : 'Committee') }}</td>
                     <td>{{ $member->coach_name ?? 'N/A' }}</td>
                     <td>{{ $member->membership_status == 1 ? 'Active' : 'Inactive' }}</td>
@@ -540,7 +540,7 @@
         document.getElementById('deleteModal').style.display = 'none';
         memberToDelete = '';
         deleteUrl = '';
-        document.getElementById('delete-confirmation-input').value = ''; 
+        document.getElementById('delete-confirmation-input').value = '';
     }
 
     document.getElementById('confirmDeleteButton').addEventListener('click', function() {
@@ -621,7 +621,7 @@
         let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
         table = document.querySelector("table");
         switching = true;
-        dir = "asc"; 
+        dir = "asc";
         while (switching) {
             switching = false;
             rows = table.rows;
@@ -659,7 +659,7 @@
     function updateIndex() {
         const rows = document.querySelectorAll('#members-table tr');
         rows.forEach((row, index) => {
-            row.cells[0].innerHTML = index + 1; 
+            row.cells[0].innerHTML = index + 1;
         });
     }
 
@@ -673,7 +673,7 @@
 
         // Add the logo
         const img = new Image();
-        img.src = '/images/pmdkkLogo.png'; 
+        img.src = '/images/pmdkkLogo.png';
         img.onload = function () {
             // Draw the logo on the PDF
             pdf.addImage(img, 'PNG', 10, 15, 30, 30); // X, Y, Width, Height
@@ -702,7 +702,7 @@
 
             // Email and Contact Information
             pdf.text("Email: pmdkk2015@gmail.com", textXPosition, 42);
-            pdf.text("Contact: 088-794 327", pdf.internal.pageSize.width - 45, 42); 
+            pdf.text("Contact: 088-794 327", pdf.internal.pageSize.width - 45, 42);
 
             // Move to the main content area
             pdf.setFontSize(14);

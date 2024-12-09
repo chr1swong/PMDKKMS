@@ -172,7 +172,7 @@
 
 <div class="main-container">
     <div class="image-container">
-        <img src="{{ asset('images/scoring/' . $score->canvas_image) }}" alt="Scoring Target Image">
+        <img src="{{ asset('images/scoring/' . $score->canvas_image) }}" alt="Scoring Target">
     </div>
 
     <div class="right-column">

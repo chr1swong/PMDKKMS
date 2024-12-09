@@ -217,7 +217,7 @@
             .btn-download {
                 display: inline-block;
                 width: 100%; /* Full-width buttons */
-                margin-top: 10px; 
+                margin-top: 10px;
                 text-align: center;
                 font-size: 14px; /* Adjust font size for readability */
                 padding: 10px 15px; /* Add padding for larger touch area */
@@ -226,7 +226,7 @@
             /* Back Button */
             .back-btn {
                 display: inline-block; /* Ensure the button behaves like a standard element */
-                margin-top: 0px; 
+                margin-top: 0px;
                 padding: 12px 20px;
                 text-align: center;
                 font-size: 14px;
@@ -493,7 +493,7 @@
 
     // Export to Excel function
    // Pass the PHP variable to JavaScript
-    const membershipId = "{{ $archer->membership_id }}"; 
+    const membershipId = "{{ $archer->membership_id }}";
 
     // Export to Excel function
     document.getElementById('export-excel').addEventListener('click', function () {

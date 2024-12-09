@@ -345,7 +345,7 @@
 <body>
 
 <header>
-    @include('components.committeeHeader') 
+    @include('components.committeeHeader')
 </header>
 
 @if (session('success'))

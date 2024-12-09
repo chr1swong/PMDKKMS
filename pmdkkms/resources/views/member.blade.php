@@ -322,7 +322,7 @@
                     <ul>
                         <li>Membership Fee - RM30/Month</li>
                         <li>Membership Renewal can be done through online banking</li>
-                        <li>Access to <br> - PMDKK Events <br> - Attendance <br> - Scoring <br> - Training Analytics 
+                        <li>Access to <br> - PMDKK Events <br> - Attendance <br> - Scoring <br> - Training Analytics
                     </ul>
                 </div>
             </div>
@@ -354,7 +354,7 @@
         <p>Location: Likas Archery Range, 88400, Kota Kinabalu, Sabah</p>
         <div class="location-section">
             <img src="{{ asset('images/memberPageImages/likasrange2.png') }}" alt="Map" class="map-image">
-            <img src="{{ asset('images/memberPageImages/likasrange1.jpg') }}" alt="Location Image">
+            <img src="{{ asset('images/memberPageImages/likasrange1.jpg') }}" alt="Location">
         </div>
     </div>
 

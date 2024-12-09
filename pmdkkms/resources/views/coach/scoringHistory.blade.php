@@ -13,7 +13,7 @@
             font-family: 'Poppins', sans-serif;
             background-color: #f4f4f4;
             margin: 0;
-            overflow-x: hidden; 
+            overflow-x: hidden;
             padding: 20px;
         }
 
@@ -194,7 +194,7 @@
 <body>
 
 <header>
-    @include('components.coachHeader') 
+    @include('components.coachHeader')
 </header>
 
 @if (session('success'))
@@ -245,7 +245,7 @@
                         <td>{{ $score->distance }}M</td>
                         <td>{{ $score->overall_total }}/360</td>
                         <td>
-                            <a href="{{ route('coach.scoringDetails', ['id' => $score->id, 'referrer' => 'scoringHistory']) }}" 
+                            <a href="{{ route('coach.scoringDetails', ['id' => $score->id, 'referrer' => 'scoringHistory']) }}"
                             class="btn btn-view">View Details</a>
                         </td>
                     </tr>

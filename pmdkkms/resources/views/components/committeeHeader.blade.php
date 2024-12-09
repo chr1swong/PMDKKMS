@@ -146,7 +146,7 @@
 
         /* Fix for unwanted bullet points or pseudo-elements */
         .dropdown-menu li,
-        .dropdown-menu a::before, 
+        .dropdown-menu a::before,
         .dropdown-menu a::after {
             content: none;  /* Ensure no pseudo-elements */
             background: none;

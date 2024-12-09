@@ -204,77 +204,66 @@
             color: white;  /* Ensure white text on hover */
         }
 
-        /* Responsive adjustments */
+        /* Mobile adjustments for buttons */
         @media (max-width: 768px) {
-            .attendance-header {
-                flex-direction: column;
-                align-items: flex-start;
+            .btn-container {
+                display: inline-block;
+                flex-direction: column; /* Stack buttons vertically */
+                align-items: center; /* Center align buttons */
+                gap: 10px; /* Add spacing between buttons */
+                margin: 0px 0; /* Add spacing above and below */
             }
 
-            .filter-container {
-                width: 100%;
-                justify-content: space-between;
+            .btn-download {
+                display: inline-block;
+                width: 100%; /* Full-width buttons */
+                margin-top: 10px; 
+                text-align: center;
+                font-size: 14px; /* Adjust font size for readability */
+                padding: 10px 15px; /* Add padding for larger touch area */
             }
 
-            .filter-container select {
-                width: calc(50% - 5px);
-            }
-
-            .search-wrapper input {
+            /* Back Button */
+            .back-btn {
+                display: inline-block; /* Ensure the button behaves like a standard element */
+                margin-top: 0px; 
+                padding: 12px 20px;
+                text-align: center;
                 font-size: 14px;
+                font-weight: bold;
+                background-color: #5f4bb6;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
             }
 
-            .attendance-table-container {
-                max-height: 300px;
+            .attendance-header {
+                flex-direction: column; /* Stack elements vertically */
+                align-items: flex-start; /* Align text and buttons to the left */
+                gap: 15px;
             }
 
-            .attendance-table th,
-            .attendance-table td {
-                font-size: 12px;
-                padding: 8px;
-            }
-
-            .btn-view {
-                font-size: 12px;
-                padding: 6px 10px;
+            .header-text {
+                font-size: 16px; /* Adjust font size */
+                margin-bottom: 10px;
             }
         }
 
         @media (max-width: 480px) {
-            .filter-search-container {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .filter-container {
-                flex-direction: row;
-                justify-content: space-between;
-                width: 100%;
-            }
-
-            .filter-container select {
-                font-size: 12px;
-                padding: 6px;
-            }
-
-            .search-wrapper input {
-                font-size: 12px;
-                padding: 6px;
-            }
-
-            .attendance-table-container {
-                max-height: 250px;
-            }
-
-            .attendance-table th,
-            .attendance-table td {
-                font-size: 10px;
-                padding: 5px;
+            .btn-container {
+                width: 100%; /* Ensure buttons fit smaller screens */
+                gap: 8px; /* Reduce gap for tight spaces */
             }
 
             .btn-download {
-                font-size: 10px;
-                padding: 6px 12px;
+                font-size: 12px; /* Smaller font for smaller screens */
+                padding: 8px 10px; /* Reduce padding */
+            }
+
+            .back-btn {
+                margin-top: 10px; /* Add space from the header */
+                width: 100%;
             }
         }
     </style>
@@ -282,7 +271,7 @@
 <body>
 
 <header>
-    @include('components.coachHeader')
+    @include('components.committeeHeader')
 </header>
 
 <div class="attendance-container">

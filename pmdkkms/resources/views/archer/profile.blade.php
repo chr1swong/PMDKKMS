@@ -11,7 +11,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
-            overflow-x: hidden; 
+            overflow-x: hidden;
             background-color: #f4f4f4;
         }
 
@@ -167,7 +167,7 @@
         <!-- Sidebar Section -->
         <div class="profile-sidebar">
             <!-- Display user profile picture if exists, else use placeholder -->
-            <img src="{{ $user->account_profile_picture_path ? asset('storage/' . $user->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile Picture">
+            <img src="{{ $user->account_profile_picture_path ? asset('storage/' . $user->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile">
             
             <a href="{{ url('/archer/editProfile') }}">
                 <button>Edit Profile</button>

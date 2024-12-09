@@ -307,11 +307,11 @@
             }
         }
 
-        #togglePassword { 
+        #togglePassword {
             position: absolute;
             right: 10px; /* Distance from the right edge */
             top: 50%; /* Center the icon vertically */
-            transform: translateY(-90%) !important; /* Centering */ 
+            transform: translateY(-90%) !important; /* Centering */
             cursor: pointer;
             color: #888; /* Icon color */
             font-size: 1.2rem; /* Adjust size if needed */

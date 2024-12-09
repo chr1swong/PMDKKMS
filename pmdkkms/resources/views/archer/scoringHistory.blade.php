@@ -11,7 +11,7 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            overflow-x: hidden; 
+            overflow-x: hidden;
             background-color: #f4f4f4;
             margin: 0;
             padding: 20px;
@@ -307,13 +307,13 @@
                 padding: 8px 12px;
                 max-width: 100px; /* Adjust button size */
             }
-        }   
+        }
     </style>
 </head>
 <body>
 
 <header>
-    @include('components.archerHeader') 
+    @include('components.archerHeader')
 </header>
 
 @if (session('success'))
@@ -417,7 +417,7 @@
                 cellA = parseInt(cellA.replace(/[^0-9]/g, ""), 10); // Remove non-numeric characters
                 cellB = parseInt(cellB.replace(/[^0-9]/g, ""), 10); // Remove non-numeric characters
                 comparison = cellA - cellB;
-            } 
+            }
             // Handle string comparison
             else {
                 comparison = cellA.localeCompare(cellB);

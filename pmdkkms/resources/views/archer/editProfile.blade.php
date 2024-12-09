@@ -11,7 +11,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
-            overflow-x: hidden; 
+            overflow-x: hidden;
             background-color: #f4f4f4;
         }
 
@@ -238,7 +238,7 @@
         <!-- Sidebar Section -->
         <div class="profile-sidebar">
             <h2>Edit Profile</h2>
-            <img src="{{ $user->account_profile_picture_path ? asset('storage/' . $user->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile Picture">
+            <img src="{{ $user->account_profile_picture_path ? asset('storage/' . $user->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile">
             <!-- Profile Picture Upload Form -->
             <form action="{{ route('archer.updateProfilePicture') }}" method="POST" enctype="multipart/form-data">
                 @csrf

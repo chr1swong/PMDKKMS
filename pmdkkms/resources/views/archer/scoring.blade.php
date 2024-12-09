@@ -16,13 +16,13 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center; 
+            align-items: center;
             box-sizing: border-box;
         }
 
         .title {
-            margin: 0; 
-            padding: 0; 
+            margin: 0;
+            padding: 0;
             font-size: 24px;
             font-weight: 600;
             text-align: left;
@@ -102,7 +102,7 @@
         }
 
         .input-section select {
-            width: 100%; 
+            width: 100%;
             padding: 10px;
             padding-right: 40px; /* Add space for the arrow */
             font-size: 16px;
@@ -263,13 +263,13 @@
         }
 
         .btn:hover {
-            transform: scale(1.05); 
+            transform: scale(1.05);
         }
 
         .btn-cancel {
             background-color: #f44336;
             color: white;
-            margin-top: 20px; 
+            margin-top: 20px;
         }
 
         .btn-cancel:hover {
@@ -617,7 +617,7 @@
 
         // Scores at the edges of each ring
         const scores = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        ctx.font = '14px Poppins'; 
+        ctx.font = '14px Poppins';
         ctx.fillStyle = 'black';
         ctx.textAlign = 'center';
 
@@ -630,7 +630,7 @@
     }
 
     const scoreGrid = Array(6).fill(null).map(() => Array(6).fill(null));
-    let scoreHistory = []; 
+    let scoreHistory = [];
 
     // Calculate score based on click distance from center (inner = X, outer = 1)
     let isDragging = false; // Track if the mouse is being dragged

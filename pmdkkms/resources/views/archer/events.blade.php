@@ -14,7 +14,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
-            overflow-x: hidden; 
+            overflow-x: hidden;
             background-color: #f4f4f4;
         }
 
@@ -37,13 +37,13 @@
 
         /* Modal styles */
         .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
-            left: 0; 
-            top: 0; 
-            width: 100%; 
-            height: 100%; 
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
             background-color: rgba(0,0,0,0.5);
             justify-content: center;
             align-items: center;

@@ -16,7 +16,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
-            overflow-x: hidden; 
+            overflow-x: hidden;
             background-color: #f0f2f5;
             color: #333;
         }
@@ -37,7 +37,7 @@
             text-align: center;
             font-size: 26px;
             font-weight: 600;
-            color: #000; 
+            color: #000;
             letter-spacing: 1px;
         }
 
@@ -448,8 +448,8 @@
                 datasets: [{
                     label: 'Present',
                     data: @json($attendanceValues), // Y-axis: 1 for present, 0 for absent
-                    backgroundColor: 'rgba(0, 255, 0, 0.5)', 
-                    borderColor: 'rgba(0, 255, 0, 1)', 
+                    backgroundColor: 'rgba(0, 255, 0, 0.5)',
+                    borderColor: 'rgba(0, 255, 0, 1)',
                     borderWidth: 1
                 }]
             },

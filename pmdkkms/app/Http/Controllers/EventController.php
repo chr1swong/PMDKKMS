@@ -163,9 +163,9 @@ class EventController extends Controller
     {
         // Fetch upcoming events from the database
         $upcomingEvents = Event::where('event_date', '>=', now())
-                            ->orderBy('event_date', 'asc')  
-                            ->orderBy('start_time', 'asc')  
-                            ->take(5) 
+                            ->orderBy('event_date', 'asc')
+                            ->orderBy('start_time', 'asc')
+                            ->take(5)
                             ->get();
 
         // Pass the events to the view
@@ -185,7 +185,7 @@ class EventController extends Controller
         $upcomingEvents = DB::table('events')
             ->where('event_date', '>=', now())
             ->orderBy('event_date', 'asc')
-            ->take(5) 
+            ->take(5)
             ->get();
 
         return view('archer.dashboard', compact('announcements', 'upcomingEvents'));

@@ -38,9 +38,9 @@
             border-radius: 10px;
             font-size: 24px;
             font-weight: 500;
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .attendance-header .header-text {
@@ -162,10 +162,10 @@
 
         .selected-date-container {
             display: flex;
-            justify-content: center; 
-            align-items: center;     
+            justify-content: center;
+            align-items: center;
             margin-top: 10px;
-            width: 100%;  
+            width: 100%;
         }
 
         .selected-date {
@@ -277,13 +277,13 @@
             @csrf
             <div class="membership-id-container">
                 <label for="membership_id">Archer Membership ID</label>
-                <input type="text" name="membership_id" id="membership_id" 
+                <input type="text" name="membership_id" id="membership_id"
                     value="{{ $membership->membership_id }}" readonly>
             </div>
 
             <div class="full-width">
                 <label for="attendance_status">Name</label>
-                <input type="text" name="membership_id" id="membership_id" 
+                <input type="text" name="membership_id" id="membership_id"
                     value="{{ $membership->account->account_full_name }}" readonly>
                 </select>
             </div>

@@ -9,11 +9,11 @@ class Attendance extends Model
     protected $table = 'attendance';
 
     protected $fillable = [
-        'membership_id', 
-        'attendance_date', 
+        'membership_id',
+        'attendance_date',
         'attendance_status',
         'check_in_time',
-        'session',  
+        'session',
     ];
 
     // Define relationship with membership

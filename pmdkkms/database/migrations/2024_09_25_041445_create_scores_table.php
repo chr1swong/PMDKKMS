@@ -21,7 +21,7 @@ class CreateScoresTable extends Migration
             $table->string('set1_score4')->default('');
             $table->string('set1_score5')->default('');
             $table->string('set1_score6')->default('');
-            $table->integer('set1_total')->default(0); 
+            $table->integer('set1_total')->default(0);
 
             $table->string('set2_score1')->default('');
             $table->string('set2_score2')->default('');
@@ -63,13 +63,13 @@ class CreateScoresTable extends Migration
             $table->string('set6_score6')->default('');
             $table->integer('set6_total')->default(0);
 
-            $table->integer('overall_total')->default(0); 
-            $table->integer('x_count')->default(0); 
-            $table->integer('ten_count')->default(0); 
-            $table->integer('x_and_ten_count')->default(0); 
+            $table->integer('overall_total')->default(0);
+            $table->integer('x_count')->default(0);
+            $table->integer('ten_count')->default(0);
+            $table->integer('x_and_ten_count')->default(0);
 
             $table->string('canvas_image')->nullable();
-            $table->text('notes')->nullable(); 
+            $table->text('notes')->nullable();
             $table->timestamps();
 
             $table->foreign('membership_id')

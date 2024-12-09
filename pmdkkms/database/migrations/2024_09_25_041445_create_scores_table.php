@@ -11,7 +11,7 @@ class CreateScoresTable extends Migration
         Schema::create('scores', function (Blueprint $table) {
             $table->id();
             $table->string('membership_id'); // Link to membership table
-            $table->integer('distance'); 
+            $table->integer('distance');
             $table->date('date');
 
             // Changing score fields to string

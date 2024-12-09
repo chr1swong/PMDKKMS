@@ -181,7 +181,7 @@
 <body>
 
 <header>
-    @include('components.committeeHeader') 
+    @include('components.committeeHeader')
 </header>
 
 <div class="analytics-container">
@@ -245,7 +245,7 @@
         let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
         table = document.getElementById("analyticsTable");
         switching = true;
-        dir = "asc"; 
+        dir = "asc";
         while (switching) {
             switching = false;
             rows = table.rows;
@@ -284,7 +284,7 @@
         const rows = document.querySelectorAll('#analytics-table tr');
         let index = 1; // Start the index from 1
         rows.forEach((row) => {
-            row.cells[0].innerHTML = index++; 
+            row.cells[0].innerHTML = index++;
         });
     }
 </script>

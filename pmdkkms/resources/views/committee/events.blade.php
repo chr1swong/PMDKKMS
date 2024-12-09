@@ -192,7 +192,7 @@
         /* Style for the Add Event Button */
         .add-event-btn {
             padding: 12px 25px;
-            background-color: #483EA8; 
+            background-color: #483EA8;
             color: white; /* White text */
             border: none;
             border-radius: 5px; /* Rounded corners */
@@ -203,7 +203,7 @@
         }
 
         .add-event-btn:hover {
-            background-color: #627DFF; 
+            background-color: #627DFF;
             transform: scale(1.05); /* Grow slightly when hovered */
         }
 

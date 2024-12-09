@@ -15,7 +15,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
-            overflow-x: hidden; 
+            overflow-x: hidden;
             background-color: #f4f4f4;
         }
 
@@ -39,8 +39,8 @@
             font-size: 24px;
             font-weight: 500;
             display: flex;
-            justify-content: space-between;  
-            align-items: center;            
+            justify-content: space-between;
+            align-items: center;
         }
 
         .attendance-header .header-text {
@@ -129,10 +129,10 @@
 
         .selected-date-container {
             display: flex;
-            justify-content: center; 
-            align-items: center;     
+            justify-content: center;
+            align-items: center;
             margin-top: 10px;
-            width: 100%;  
+            width: 100%;
         }
 
         .selected-date {
@@ -207,7 +207,7 @@
         }
 
         .selected-date-input {
-            width: 204px !important; 
+            width: 204px !important;
             padding: 8px;
             font-size: 16px;
             background-color: #E0E0E0;

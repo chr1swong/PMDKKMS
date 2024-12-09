@@ -164,7 +164,7 @@
         <!-- Profile Sidebar -->
         <div class="profile-sidebar">
             <h2>Edit Profile</h2>
-            <img src="{{ $member->account_profile_picture_path ? asset('storage/' . $member->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile Picture">
+            <img src="{{ $member->account_profile_picture_path ? asset('storage/' . $member->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile">
             
             <form action="{{ route('committee.updateProfilePicture') }}" method="POST" enctype="multipart/form-data">
                 @csrf

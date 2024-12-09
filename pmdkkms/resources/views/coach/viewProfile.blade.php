@@ -11,7 +11,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
-            overflow-x: hidden; 
+            overflow-x: hidden;
             background-color: #f4f4f4;
         }
 
@@ -167,7 +167,7 @@
     <div class="profile-container">
         <!-- Sidebar Section -->
         <div class="profile-sidebar">
-            <img src="{{ $member->account_profile_picture_path ? asset('storage/' . $member->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile Picture">
+            <img src="{{ $member->account_profile_picture_path ? asset('storage/' . $member->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile">
             
             <!-- Back Button -->
             <a href="{{ url()->previous() }}" class="back-button">

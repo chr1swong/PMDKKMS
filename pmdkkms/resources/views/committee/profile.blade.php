@@ -166,7 +166,7 @@
     <div class="profile-container">
         <!-- Sidebar Section -->
         <div class="profile-sidebar">
-            <img src="{{ $user->account_profile_picture_path ? asset('storage/' . $user->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile Picture">
+            <img src="{{ $user->account_profile_picture_path ? asset('storage/' . $user->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile">
             <a href="{{ route('committee.editProfile') }}">
                 <button>Edit Profile</button>
             </a>

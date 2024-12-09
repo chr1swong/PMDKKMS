@@ -66,11 +66,11 @@
         .grid-container {
             display: grid;
             grid-template-columns: 90px repeat(6, 1fr) 80px;
-            gap: 10; 
+            gap: 10;
             border: 1px solid #ccc;
             background-color: #f9f9f9;
             border-radius: 8px;
-            width: 100%; 
+            width: 100%;
             box-sizing: border-box;
             overflow: hidden;
         }
@@ -172,7 +172,7 @@
 
 <div class="main-container">
     <div class="image-container">
-        <img src="{{ asset('images/scoring/' . $score->canvas_image) }}" alt="Scoring Target Image">
+        <img src="{{ asset('images/scoring/' . $score->canvas_image) }}" alt="Scoring Target">
     </div>
 
     <div class="right-column">
@@ -199,10 +199,10 @@
 
         <div class="score-summary">
             <p>
-                <strong>X:</strong> <span style="font-weight: normal;">{{ $score->x_count }}</span>,&nbsp;&nbsp;&nbsp; 
+                <strong>X:</strong> <span style="font-weight: normal;">{{ $score->x_count }}</span>,&nbsp;&nbsp;&nbsp;
                 <strong>10:</strong> <span style="font-weight: normal;">{{ $score->ten_count }}</span>,&nbsp;&nbsp;&nbsp;
                 <strong>X+10:</strong> <span style="font-weight: normal;">{{ $score->x_and_ten_count }}</span>
-            </p> 
+            </p>
         </div>
 
         <div class="notes-section">

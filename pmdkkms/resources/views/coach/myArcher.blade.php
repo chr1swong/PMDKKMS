@@ -14,7 +14,7 @@
             font-family: 'Poppins', sans-serif;
             background-color: #f4f4f4;
             margin: 0;
-            overflow-x: hidden; 
+            overflow-x: hidden;
             padding: 20px;
         }
 
@@ -283,7 +283,7 @@
 <body>
 
 <header>
-    @include('components.coachHeader') 
+    @include('components.coachHeader')
 </header>
 
 @if(session('popupMessage'))
@@ -396,7 +396,7 @@
         let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
         table = document.querySelector("table");
         switching = true;
-        dir = "asc"; 
+        dir = "asc";
         while (switching) {
             switching = false;
             rows = table.rows;

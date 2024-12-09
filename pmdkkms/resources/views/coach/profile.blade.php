@@ -11,7 +11,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
-            overflow-x: hidden; 
+            overflow-x: hidden;
             background-color: #f4f4f4;
         }
 
@@ -166,7 +166,7 @@
     <div class="profile-container">
         <!-- Sidebar Section -->
         <div class="profile-sidebar">
-            <img src="{{ $user->account_profile_picture_path ? asset('storage/' . $user->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile Picture">
+            <img src="{{ $user->account_profile_picture_path ? asset('storage/' . $user->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile">
             <a href="{{ route('coach.editProfile') }}">
                 <button>Edit Profile</button>
             </a>

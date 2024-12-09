@@ -167,7 +167,7 @@
     <div class="profile-container">
         <!-- Sidebar Section -->
         <div class="profile-sidebar">
-            <img src="{{ $member->account_profile_picture_path ? asset('storage/' . $member->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile Picture">
+            <img src="{{ $member->account_profile_picture_path ? asset('storage/' . $member->account_profile_picture_path) : 'https://via.placeholder.com/150' }}" alt="Profile">
             
             <!-- Back Button -->
             <a href="{{ route('committee.member') }}" class="back-button">

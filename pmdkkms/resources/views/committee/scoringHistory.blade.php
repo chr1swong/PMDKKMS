@@ -389,14 +389,22 @@
     <div class="table-container">
         <table id="scoringTable">
             <thead>
-                <tr>
-                    <th>No.</th>
-                    <th onclick="sortTable(1)">Archer Name <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(2)">Date <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(3)">Distance <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(4)">Total Score <i class="fas fa-sort"></i></th>
-                    <th>Performance</th>
-                </tr>
+            <tr>
+                <th>No.</th>
+                <th onclick="sortTable(1)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(1);" tabindex="0">
+                    Archer Name <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable(2)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(2);" tabindex="0">
+                    Date <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable(3)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(3);" tabindex="0">
+                    Distance <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable(4)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(4);" tabindex="0">
+                    Total Score <i class="fas fa-sort"></i>
+                </th>
+                <th>Performance</th>
+            </tr>
             </thead>
             <tbody id="scoring-table">
                 @forelse($scoringData as $index => $score)

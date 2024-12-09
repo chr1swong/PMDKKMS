@@ -419,16 +419,30 @@
     <div class="table-container" style="height: 570px; overflow-y: auto;">
         <table id="paymentTable">
             <thead style="position: sticky; top: 0; background-color: #333; color: white; z-index: 1;">
-                <tr>
-                    <th>No.</th>
-                    <th onclick="sortTable(1)">Name <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(2)">MemberID <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(3)">Amount (RM) <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(4)">Extend Duration <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(5)">Status <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(6)">Bill Code <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(7)">Transaction Date <i class="fas fa-sort"></i></th>
-                </tr>
+            <tr>
+                <th>No.</th>
+                <th onclick="sortTable(1)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(1);" tabindex="0">
+                    Name <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable(2)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(2);" tabindex="0">
+                    MemberID <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable(3)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(3);" tabindex="0">
+                    Amount (RM) <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable(4)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(4);" tabindex="0">
+                    Extend Duration <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable(5)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(5);" tabindex="0">
+                    Status <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable(6)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(6);" tabindex="0">
+                    Bill Code <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable(7)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(7);" tabindex="0">
+                    Transaction Date <i class="fas fa-sort"></i>
+                </th>
+            </tr>
             </thead>
             <tbody id="payments-table">
                 @php

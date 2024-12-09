@@ -199,12 +199,16 @@
     <div class="table-container">
         <table id="analyticsTable">
             <thead>
-                <tr>
-                    <th>No.</th> <!-- Index column without sorter -->
-                    <th onclick="sortTable(1)">Name <i class="fas fa-sort"></i></th>
-                    <th onclick="sortTable(2)">Coach <i class="fas fa-sort"></i></th>
-                    <th>Action</th>
-                </tr>
+            <tr>
+                <th>No.</th>
+                <th onclick="sortTable(1)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(1);" tabindex="0">
+                    Name <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable(2)" onkeydown="if(event.key === 'Enter' || event.key === ' ') sortTable(2);" tabindex="0">
+                    Coach <i class="fas fa-sort"></i>
+                </th>
+                <th>Action</th>
+            </tr>
             </thead>
             <tbody id="analytics-table">
                 @foreach($members as $key => $member)

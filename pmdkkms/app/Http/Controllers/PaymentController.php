@@ -203,22 +203,6 @@ class PaymentController extends Controller
         }
     }
 
-    // Handle payment notification (ToyyibPay calls this URL to notify payment status)
-    public function committeePaymentNotify(Request $request)
-    {
-        return $this->handlePaymentNotify($request, 'committee');
-    }
-
-    public function archerPaymentNotify(Request $request)
-    {
-        return $this->handlePaymentNotify($request, 'archer');
-    }
-
-    public function coachPaymentNotify(Request $request)
-    {
-        return $this->handlePaymentNotify($request, 'coach');
-    }
-
     // Common logic for handling payment notification
     private function handlePaymentNotify(Request $request, $role)
     {

@@ -339,7 +339,7 @@
 
         /* Close Modal Button */
         .close-modal-btn {
-            background-color: #4CAF50;
+            background-color: #FF0000; /* Change to red */
             color: white;
             padding: 12px 30px;
             border: none;
@@ -352,7 +352,7 @@
         }
 
         .close-modal-btn:hover {
-            background-color: #45a049;
+            background-color: #CC0000; /* Darker shade of red for hover effect */
         }
 
         /* Modal Open Animation */
